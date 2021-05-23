@@ -16,6 +16,9 @@ height_prediction(
   k = 10
 )
 }
+\arguments{
+\item{df_fit}{data frame with data being used for model fit}
+}
 \description{
 Height model
 }

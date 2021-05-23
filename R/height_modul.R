@@ -2,6 +2,7 @@
 #'
 #' Height model
 #'
+#' @param df_fit data frame with data being used for model fit
 #' @keywords internal
 #'
 
