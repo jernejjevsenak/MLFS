@@ -190,6 +190,9 @@ p_mortality <- NULL
     df_eval_mortality <- paste0("sim_mortality is set to FALSE.",
     "Mortality is not simulated. eval_mortality is not available.")
 
+    model_mortality <- paste0("sim_mortality is set to FALSE.",
+                                "Mortality is not simulated. model_mortality is not available.")
+
   }
 
   final_output_list <- list(
