@@ -6,8 +6,8 @@
 #'
 
 predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = NA,
-                              include_climate, site_vars, select_months_climate,
-                              mortality_model = "rf", nb_laplace = nb_laplace,
+                              include_climate, site_vars, select_months_climate = c(1:12),
+                              mortality_model = "rf", nb_laplace = 0,
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL){
 
