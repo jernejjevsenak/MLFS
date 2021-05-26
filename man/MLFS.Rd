@@ -13,7 +13,7 @@ MLFS(
   form_factors = NULL,
   sim_steps,
   volume_calculation = "volume_functions",
-  debeljad_drevnina = "debeljad",
+  merchantable_whole_tree = "merchantable",
   sim_harvesting = TRUE,
   sim_mortality = TRUE,
   harvesting_sum,
@@ -55,18 +55,20 @@ details.}
 \item{data_climate}{data frame with climate data, covering the initial
 calibration period and all the years which will be included in the simulation}
 
-\item{data_volF_param}{data frame with species-specific volume function
-parameters}
+\item{data_volF_param}{optional, data frame with species-specific volume
+function parameters}
 
-\item{form_factors}{data frame with species-specific form factors}
+\item{form_factors}{optional, data frame with species-specific form factors}
 
 \item{sim_steps}{The number of simulation steps}
 
 \item{volume_calculation}{character string defining the method for volume
-calculation: 'volume_functions', 'form_factors' or 'dvovhodne'}
+calculation: 'tariffs', 'volume_functions', 'form_factors' or
+'slo_2p_volume_functions'}
 
-\item{debeljad_drevnina}{character, it indicates which type of 2-parameter
-volume functions will be used}
+\item{merchantable_whole_tree}{character, 'merchantable' or 'whole_tree'. It
+indicates which type of volume functions will be used. This parameter is used
+only for volume calculation using the 'slo_2p_volume_functions'.}
 
 \item{sim_harvesting}{logical, should harvesting be simulated?}
 
