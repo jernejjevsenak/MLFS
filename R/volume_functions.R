@@ -21,23 +21,24 @@ V_general = function(df, data_volF_param = data_volF_param){
   #####################
   # 1 Volume for PCAB #
   #####################
-  df_PIAB <- filter(df, species == "PIAB")
-  param_PIAB <- filter(data_volF_param, species == "PIAB")
+  df_PCAB <- filter(df, species == "PCAB")
+  param_PCAB <- filter(data_volF_param, species == "PCAB")
 
-  a = param_PIAB$a
-  b = param_PIAB$b
-  c = param_PIAB$c
-  d = param_PIAB$d
-  e = param_PIAB$e
-  f = param_PIAB$f
-  g = param_PIAB$g
+  a = param_PCAB$a
+  b = param_PCAB$b
+  c = param_PCAB$c
+  d = param_PCAB$d
+  e = param_PCAB$e
+  f = param_PCAB$f
+  g = param_PCAB$g
 
-  df_PIAB <- mutate(df_PIAB,
+  df_PCAB <- mutate(df_PCAB,
                D = sqrt(4*BA/pi) * 100/10, #cm -> dm
                p_D = sqrt(4*p_BA/pi) * 100/10, #cm -> dm
                H = height * 10, # m -> dm
                p_H = p_height * 10,
                volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D) / 1000,   # dm3 -> m3
+               volume =  (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,   # dm3 -> m3
                p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*D) / 1000)   # dm3 -> m3
 
   #####################
@@ -59,7 +60,7 @@ V_general = function(df, data_volF_param = data_volF_param){
                     p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
                     H = height * 10, # m -> dm
                     p_H = p_height * 10,
-                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,   # dm3 -> m3
+
                     p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D+g)/1000)   # dm3 -> m3
 
 
@@ -135,10 +136,10 @@ V_general = function(df, data_volF_param = data_volF_param){
   # 4 Volume for Rest #
   #####################
 
-  df_REST <- filter(df, !(species %in% c("PIAB", "ABAL", "FASY", "PISY",
+  df_REST <- filter(df, !(species %in% c("PCAB", "ABAL", "FASY", "PISY",
                                          "QUSP", "QUCE", "QUPE", "QUPU", "QURO", "QURU", "QUSP")))
 
-  param_REST <- filter(data_volF_param, species == "PIAB") # is this the best option?
+  param_REST <- filter(data_volF_param, species == "REST") # is this the best option?
 
   a = param_REST$a
   b = param_REST$b
@@ -159,7 +160,8 @@ V_general = function(df, data_volF_param = data_volF_param){
   ########
   # Join #
   ########
-  df <- rbind(df_PIAB,
+
+  df <- rbind(df_PCAB,
               df_ABAL,
               df_FASY,
               df_PISY,
