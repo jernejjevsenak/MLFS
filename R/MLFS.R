@@ -10,11 +10,12 @@
 #' @param data_climate data frame with climate data, covering the initial
 #' calibration period and all the years which will be included in the simulation
 #' @param sim_mortality logical, should mortality be simulated?
-#' @param data_volF_param data frame with species-specific volume function
-#' parameters
-#' @param form_factors data frame with species-specific form factors
+#' @param data_volF_param optional, data frame with species-specific volume
+#' function parameters
+#' @param form_factors optional, data frame with species-specific form factors
 #' @param volume_calculation character string defining the method for volume
-#' calculation: 'volume_functions', 'form_factors' or 'dvovhodne'
+#' calculation: 'tariffs', 'volume_functions', 'form_factors' or
+#' 'slo_2p_volume_functions'
 #' @param sim_harvesting logical, should harvesting be simulated?
 #' @param harvesting_sum a value, or a vector of values defining the harvesting
 #' sums through the simulation stage. If a single value, then it is used in all
@@ -58,8 +59,9 @@
 #' @param ingrowth_model model to be used for ingrowth predictions. 'glm' for
 #' generalized linear models and 'rf' for random forest
 #' @param sim_steps The number of simulation steps
-#' @param debeljad_drevnina character, it indicates which type of 2-parameter
-#' volume functions will be used
+#' @param merchantable_whole_tree character, 'merchantable' or 'whole_tree'. It
+#' indicates which type of volume functions will be used. This parameter is used
+#' only for volume calculation using the 'slo_2p_volume_functions'.
 #' @param height_pred_level integer with value 0 or 1 defining the level of
 #' prediction for height-diameter (H-D) models. The value 1 defines a plot-level
 #' prediction, while the value 0 defines regional-level predictions. Default is
@@ -86,7 +88,7 @@ MLFS <- function(data_NFI, data_site,
                  data_volF_param = NULL,
                  form_factors = NULL, sim_steps,
                  volume_calculation = "volume_functions",
-                 debeljad_drevnina = "debeljad",
+                 merchantable_whole_tree = "merchantable",
                  sim_harvesting = TRUE, sim_mortality = TRUE,
                  harvesting_sum, forest_area_ha,
                  mortality_share = NA,
@@ -289,15 +291,15 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df <- vol_tariffs(df = initial_df, data_tariffs = data_tariffs)
 
-  } else if(volume_calculation == "dvovhodne"){
+  } else if(volume_calculation == "slo_2p_volume_functions"){
 
     initial_df$volume <- NA
     initial_df$p_volume <- NA
 
-    if (debeljad_drevnina == "debeljad"){
-      initial_df <- volDebeljad(df = initial_df)
-    } else if (debeljad_drevnina == "drevnina"){
-      initial_df <- volDrevnina(df = initial_df)
+    if (merchantable_whole_tree == "merchantable"){
+      initial_df <- volume_merchantable(df = initial_df)
+    } else if (merchantable_whole_tree == "whole_tree"){
+      initial_df <- volume_whole_tree(df = initial_df)
     }
 
   } else{
@@ -507,15 +509,15 @@ MLFS <- function(data_NFI, data_site,
 
       initial_df <- vol_tariffs(df = initial_df, data_tariffs = data_tariffs)
 
-    } else if(volume_calculation == "dvovhodne"){
+    } else if(volume_calculation == "slo_2p_volume_functions"){
 
       initial_df$volume <- NA
       initial_df$p_volume <- NA
 
-      if (debeljad_drevnina == "debeljad"){
-        initial_df <- volDebeljad(df = initial_df)
-      } else if (debeljad_drevnina == "drevnina"){
-        initial_df <- volDrevnina(df = initial_df)
+      if (merchantable_whole_tree == "merchantable"){
+        initial_df <- volume_merchantable(df = initial_df)
+      } else if (merchantable_whole_tree == "whole_tree"){
+        initial_df <- volume_whole_tree(df = initial_df)
       }
 
     } else {

@@ -32,6 +32,5 @@ tarifa_class <- NULL
 
   df <- select(df, all_of(initial_colnames))
 
-
   return(df)
 }

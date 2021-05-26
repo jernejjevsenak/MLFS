@@ -1,9 +1,9 @@
-#' volDebeljad
+#' volume_merchantable
 #'
 #' two-parameter volume functions for the MLFS
 #' @keywords internal
 
-volDebeljad <- function(df) {
+volume_merchantable <- function(df) {
 
   # Define global variables
   BA <- NULL
@@ -100,7 +100,7 @@ volDebeljad <- function(df) {
 ################################################################################################
 ################################################################################################
 
-volDrevnina <- function(df) {
+volume_whole_tree <- function(df) {
 
   # Define global variables
   BA <- NULL
