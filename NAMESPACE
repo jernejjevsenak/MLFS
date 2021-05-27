@@ -8,8 +8,8 @@ export(height_prediction)
 export(predict_ingrowth)
 export(predict_mortality)
 export(transform_data)
-export(V_general)
-export(volDebeljad)
+export(volume_whole_tree)
+export(volume_merchantable)
 export(vol_tariffs)
 
 importFrom("stats", "D", "as.formula", "glm", "lm",
