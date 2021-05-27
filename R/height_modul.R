@@ -274,11 +274,11 @@ height_prediction <- function(df_fit,  df_predict,
 
           if(height_pred_level == 1) {
 
-            mod_brnn <- brnn(height ~ BA + plotID, data = train, neurons = BRNN_neurons)
+            capture.output(mod_brnn <- brnn(height ~ BA + plotID, data = train, neurons = BRNN_neurons))
 
           } else if (height_pred_level == 0) {
 
-            mod_brnn <- brnn(height ~ BA, data = train, neurons = BRNN_neurons)
+            capture.output(mod_brnn <- brnn(height ~ BA, data = train, neurons = BRNN_neurons))
 
           }
 

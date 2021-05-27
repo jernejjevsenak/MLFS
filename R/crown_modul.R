@@ -113,7 +113,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
       } else if(crownHeight_model == "brnn") {
 
-        ch_model <- brnn(crownHeight ~ ., data = train, neurons = BRNN_neurons)
+        capture.output(ch_model <- brnn(crownHeight ~ ., data = train, neurons = BRNN_neurons))
 
       }
 
@@ -135,7 +135,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     } else if(crownHeight_model == "brnn") {
 
-      mod1 <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons)
+      capture.output(mod1 <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons))
 
     }
 
@@ -219,7 +219,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
       } else if(crownHeight_model == "brnn") {
 
-        ch_model <- brnn(crownHeight ~ ., data = train, neurons = BRNN_neurons)
+        capture.output(ch_model <- brnn(crownHeight ~ ., data = train, neurons = BRNN_neurons))
 
       }
 
@@ -241,7 +241,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     } else if(crownHeight_model == "brnn") {
 
-      mod1 <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons)
+      capture.output(mod1 <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons))
 
     }
 
