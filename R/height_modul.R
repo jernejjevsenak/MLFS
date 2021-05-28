@@ -37,7 +37,7 @@ height_prediction <- function(df_fit,  df_predict,
   ###################
 
   # Remove trees withour BA
-  no_BA <- filter(df_predict, is.na(BA))
+  # no_BA <- filter(df_predict, is.na(BA))
 
   ##################### Loop for all traiff groups ########################
   # We define here strategy: if there are enough measurements, we calculate heights for species
@@ -71,7 +71,7 @@ height_prediction <- function(df_fit,  df_predict,
 
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
-    dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
+    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
 
     if (height_model == "brnn"){
 
@@ -161,13 +161,23 @@ height_prediction <- function(df_fit,  df_predict,
 
     if (height_model == "brnn"){
 
-      dv_temporal_predict$height <- predict(mod1, newdata = dv_temporal_predict)
-
       # in predict.brnn na.pass is not working, so I do workaround here
+
+      # 1 predictions for BA
+      dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
+      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
+      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
+      dv_temporal_predict_noNA$height <- predict(mod1, newdata =dv_temporal_predict_noNA)
+      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+      dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
+      dv_temporal_predict$key_temp <- NULL
+
+      # 2 predictions for p_BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
       dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_BA))
       dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_BA))
-      dv_temporal_predict_noNA$p_height <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
+      dv_temporal_predict_noNA$p_height <- predict(mod1,
+                                                   newdata = rename(dv_temporal_predict_noNA,
                                                                           "BA_temp" = "BA",
                                                                           "BA" = "p_BA"))
 
@@ -178,15 +188,8 @@ height_prediction <- function(df_fit,  df_predict,
     } else {
 
       dv_temporal_predict$height <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level)
-
-      if ("p_BA" %in% colnames(dv_temporal_predict)){
-        dv_temporal_predict$p_height <- predict(mod1, newdata = rename(dv_temporal_predict,
-                                                                       "d" = "p_BA", "plot" = "plotID"), level = height_pred_level,
-                                                na.action = na.pass)
-    }
-
-
-
+      dv_temporal_predict$p_height <- predict(mod1, newdata = rename(dv_temporal_predict,
+                                                                       "d" = "p_BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
     }
 
     list_predictions[[p]] <- dv_temporal_predict
@@ -211,11 +214,12 @@ height_prediction <- function(df_fit,  df_predict,
 
     ###################### select dv #############################
     dv_temporal_fit <- subset(df_fit, subset = df_fit$speciesGroup %in% M)
+
     # BA can not be missing!
     dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
-    dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
+    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
 
 
     if (height_model == "brnn"){
@@ -307,15 +311,25 @@ height_prediction <- function(df_fit,  df_predict,
 
     if (height_model == "brnn"){
 
-      dv_temporal_predict$height <- predict(mod1, newdata = dv_temporal_predict)
-
       # in predict.brnn na.pass is not working, so I do workaround here
+
+      # 1 predictions for BA
+      dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
+      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
+      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
+      dv_temporal_predict_noNA$height <- predict(mod1, newdata =dv_temporal_predict_noNA)
+      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+      dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
+      dv_temporal_predict$key_temp <- NULL
+
+      # 2 predictions for p_BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
       dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_BA))
       dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_BA))
-      dv_temporal_predict_noNA$p_height <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
-                                                                          "BA_temp" = "BA",
-                                                                          "BA" = "p_BA"))
+      dv_temporal_predict_noNA$p_height <- predict(mod1,
+                                                   newdata = rename(dv_temporal_predict_noNA,
+                                                                    "BA_temp" = "BA",
+                                                                    "BA" = "p_BA"))
 
       dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
       dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
@@ -324,16 +338,9 @@ height_prediction <- function(df_fit,  df_predict,
     } else {
 
       dv_temporal_predict$height <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level)
-
-      if ("p_BA" %in% colnames(dv_temporal_predict)){
-        dv_temporal_predict$p_height <- predict(mod1, newdata = rename(dv_temporal_predict,
-                                                                       "d" = "p_BA", "plot" = "plotID"), level = height_pred_level,
-                                                na.action = na.pass)
+      dv_temporal_predict$p_height <- predict(mod1, newdata = rename(dv_temporal_predict,
+                                                                       "d" = "p_BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
       }
-
-
-
-    }
 
     list_predictions[[p]] <- dv_temporal_predict
     p = p + 1
@@ -360,14 +367,12 @@ height_prediction <- function(df_fit,  df_predict,
 
   }
 
-
-
   # Now add height data to our data (merge)
   data_height_predictions <- rbind(
     DF_predictions_sGroups,
     DF_predictions_species)
 
-  data_height_predictions <- rbind(data_height_predictions, no_BA)
+  # data_height_predictions <- rbind(data_height_predictions, no_BA)
 
   # correction: Negative height predictions are set to 1 meter (could also be the minimum measured)
   data_height_predictions <- mutate(data_height_predictions, height = ifelse(height < 0, 1, height))

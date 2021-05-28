@@ -3,26 +3,58 @@
 #' Harvesting model for the MLFS
 #' @keywords internal
 
-simulate_harvesting <- function(df, harvesting_sum, forest_area_ha,
+simulate_harvesting <- function(df, harvesting_sum,
                                 harvesting_type = "random",
-                                final_cut_weight = 1, thinning_small_weight = 10){
+                                final_cut_weight = 1,
+                                thinning_small_weight = 10,
+
+                                harvest_sum_level = 1,
+                                plot_upscale_type,
+                                plot_upscale_factor,
+                                forest_area_ha
+
+                                ){
 
 
-# Define global variables
-volume <- NULL
-weight <- NULL
-volume_ha <- NULL
-col_sum <- NULL
-code <- NULL
-plotID <- NULL
-treeID <- NULL
+  # Define global variables
+  volume <- NULL
+  weight <- NULL
+  volume_ha <- NULL
+  col_sum <- NULL
+  code <- NULL
+  plotID <- NULL
+  treeID <- NULL
 
   a <- df
 
-  n_plots <- length(unique(a$plotID))
-  plot_represents <- forest_area_ha/n_plots
+if (harvest_sum_level == 1){  # regional (national level)
 
-  a <- mutate(a, volume_ha = volume * weight * plot_represents)
+  if (plot_upscale_type == "factor"){
+
+    a <- mutate(a, volume_ha = volume * weight * plot_upscale_factor)
+
+  } else if (plot_upscale_type == "area") {
+
+    n_plots <- length(unique(a$plotID))
+    plot_represents <- forest_area_ha/n_plots
+
+    a <- mutate(a, volume_ha = volume * weight * plot_represents)
+
+  } else {
+
+    stop("plot_upscale_type should be 'area' or 'factor'")
+
+    }
+
+  } else if (harvest_sum_level == 0){ # plot level
+
+  a <- mutate(a, volume_ha = volume * weight)
+
+  } else {
+
+    stop("harvest_sum_level should be 0 or 1")
+
+  }
 
   # 1 random harvesting
   if (harvesting_type == "random"){
@@ -67,6 +99,13 @@ treeID <- NULL
 
   a <- mutate(a, col_sum = cumsum(replace_na(volume_ha, 0)),
               code = ifelse(col_sum < harvesting_sum, 1, code))
+
+
+
+
+
+
+
 
   df <- select(a, colnames(df))
   df <- arrange(df, plotID, treeID)

@@ -7,10 +7,13 @@
 simulate_harvesting(
   df,
   harvesting_sum,
-  forest_area_ha,
   harvesting_type = "random",
   final_cut_weight = 1,
-  thinning_small_weight = 10
+  thinning_small_weight = 10,
+  harvest_sum_level = 1,
+  plot_upscale_type,
+  plot_upscale_factor,
+  forest_area_ha
 )
 }
 \description{

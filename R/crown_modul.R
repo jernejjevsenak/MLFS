@@ -38,7 +38,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
   ###################
 
   # Remove trees without BA
-  no_BA <- filter(df_predict, is.na(BA))
+  # no_BA <- filter(df_predict, is.na(BA))
 
   ##################### Loop for all traiff groups ########################
   # We define here strategy: if there are enough measurements, we calculate crownHeights for species
@@ -73,7 +73,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
 
-    dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA)) # Ta step sem dal ven, ker ni potreben
+    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA)) # Ta step sem dal ven, ker ni potreben
 
     temp_df <- select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
 
@@ -139,9 +139,17 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     }
 
-    dv_temporal_predict$crownHeight <- predict(mod1, dv_temporal_predict)
+    # predict crownHeight for BA
+    dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
+    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
+    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
 
-    # in predict.brnn na.pass is not working, so I do workaround here
+    dv_temporal_predict_noNA$crownHeight <- predict(mod1, newdata = dv_temporal_predict_noNA)
+    dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+    dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
+    dv_temporal_predict$key_temp <- NULL
+
+    # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
@@ -180,7 +188,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
-    dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
+    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
 
     temp_df <- select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
 
@@ -245,9 +253,16 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     }
 
-    dv_temporal_predict$crownHeight <- predict(mod1, dv_temporal_predict)
+    # predict crownHeight for BA
+    dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
+    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
+    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
+    dv_temporal_predict_noNA$crownHeight <- predict(mod1, newdata = dv_temporal_predict_noNA)
+    dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+    dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
+    dv_temporal_predict$key_temp <- NULL
 
-    # in predict.brnn na.pass is not working, so I do workaround here
+    # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
@@ -289,7 +304,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     DF_predictions_sGroups,
     DF_predictions_species)
 
-  data_crownHeight_predictions <- rbind(data_crownHeight_predictions, no_BA)
+  # data_crownHeight_predictions <- rbind(data_crownHeight_predictions, no_BA)
 
   # correction: Negative crownHeight predictions are set to 1 meter (could also be the minimum measured)
   data_crownHeight_predictions <- mutate(data_crownHeight_predictions, crownHeight = ifelse(crownHeight < 0, 1, crownHeight))

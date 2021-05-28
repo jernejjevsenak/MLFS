@@ -60,7 +60,7 @@ V_general = function(df, data_volF_param = data_volF_param){
                     p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
                     H = height * 10, # m -> dm
                     p_H = p_height * 10,
-
+                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,  # dm3 -> m3
                     p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D+g)/1000)   # dm3 -> m3
 
 

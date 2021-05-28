@@ -17,6 +17,16 @@
 #' calculation: 'tariffs', 'volume_functions', 'form_factors' or
 #' 'slo_2p_volume_functions'
 #' @param sim_harvesting logical, should harvesting be simulated?
+#' @param harvest_sum_level integer with value 0 or 1 defining the level of
+#' specified harvesting sum: 0 for plot level and 1 for regional level.
+#' @param plot_upscale_type character defining the upscale method of plot level
+#' area. It can be 'area' or 'upscale factor'. If 'area', provide the forest
+#' area represented by all plots in hectars (forest_area_ha argument). If
+#' 'factor', provide the fixed factor to upscale the area of all plots. Please
+#' note: forest_area_ha/plot_upscale_factor = number of unique plots. This
+#' argument is important when harvesting sum is defined on regional level.
+#' @param plot_upscale_factor numeric value to be used to upscale area of each
+#' plot
 #' @param harvesting_sum a value, or a vector of values defining the harvesting
 #' sums through the simulation stage. If a single value, then it is used in all
 #' simulation steps. If a vector of values, the first value is used in the first
@@ -90,7 +100,13 @@ MLFS <- function(data_NFI, data_site,
                  volume_calculation = "volume_functions",
                  merchantable_whole_tree = "merchantable",
                  sim_harvesting = TRUE, sim_mortality = TRUE,
-                 harvesting_sum, forest_area_ha,
+                 harvesting_sum,
+
+                 forest_area_ha,
+                 harvest_sum_level = 1,
+                 plot_upscale_type,
+                 plot_upscale_factor,
+
                  mortality_share = NA,
                  mortality_model = "rf",
                  ingrowth_model = "glm",
@@ -142,8 +158,18 @@ MLFS <- function(data_NFI, data_site,
   sim_step_years <- sort(unique(as.numeric(data_NFI$year)))
   sim_step_years <- sim_step_years[length(sim_step_years)] - sim_step_years[length(sim_step_years)-1]
 
+  # check the first column
+  if (colnames(data_site)[1] != "plotID"){
+
+    stop(paste0("The first column of data_site should be 'plotID', but instead it is ", colnames(data_site)[1]))
+
+  }
+
   # save site variable names and use them in formulas
   site_vars <- colnames(data_site)[-1] # plotID should be removed
+
+
+
 
   # merge NFI and site descriptors
   data <- merge(data_NFI, data_site, by = "plotID")
@@ -152,7 +178,6 @@ MLFS <- function(data_NFI, data_site,
   data <- dplyr::mutate(data,
                         BA = ((DBH/2)^2 * pi)/10000,
                         DBH = NULL
-                        #weight = ifelse(BA >= 0.07068583, 16.67, 50) # weight is specified before the function run
                         )
 
   # kode iz NFI so: 0 (normal), 1 (harvested),  2 (dead), 3 (ingrowth), 15 (ingrowth)?
@@ -258,6 +283,8 @@ MLFS <- function(data_NFI, data_site,
   # Before you can apply mortality, you should have predicted height and crown height!
 
   # calculate volume
+
+  filter(initial_df, code == 1)
 
   if (volume_calculation == "form_factors"){
 
@@ -398,6 +425,13 @@ MLFS <- function(data_NFI, data_site,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
+
+
+                                        harvest_sum_level = harvest_sum_level,
+                                        plot_upscale_type = plot_upscale_type,
+                                        plot_upscale_factor = plot_upscale_factor,
+
+
                                         final_cut_weight = final_cut_weight,
                                         thinning_small_weight = thinning_small_weight
                                         )

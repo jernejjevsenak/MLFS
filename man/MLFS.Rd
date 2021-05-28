@@ -18,6 +18,9 @@ MLFS(
   sim_mortality = TRUE,
   harvesting_sum,
   forest_area_ha,
+  harvest_sum_level = 1,
+  plot_upscale_type,
+  plot_upscale_factor,
   mortality_share = NA,
   mortality_model = "rf",
   ingrowth_model = "glm",
@@ -81,6 +84,19 @@ step, the second in the second step, etc.}
 
 \item{forest_area_ha}{the total area of all forest which are subject of the
 simulation.}
+
+\item{harvest_sum_level}{integer with value 0 or 1 defining the level of
+specified harvesting sum: 0 for plot level and 1 for regional level.}
+
+\item{plot_upscale_type}{character defining the upscale method of plot level
+area. It can be 'area' or 'upscale factor'. If 'area', provide the forest
+area represented by all plots in hectars (forest_area_ha argument). If
+'factor', provide the fixed factor to upscale the area of all plots. Please
+note: forest_area_ha/plot_upscale_factor = number of unique plots. This
+argument is important when harvesting sum is defined on regional level.}
+
+\item{plot_upscale_factor}{numeric value to be used to upscale area of each
+plot}
 
 \item{mortality_share}{a value, or a vector of values defining the proportion
 of the volume which is to be the subject of mortality. If a single value,
