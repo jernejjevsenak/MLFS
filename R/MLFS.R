@@ -169,8 +169,6 @@ MLFS <- function(data_NFI, data_site,
   site_vars <- colnames(data_site)[-1] # plotID should be removed
 
 
-
-
   # merge NFI and site descriptors
   data <- merge(data_NFI, data_site, by = "plotID")
 
@@ -214,8 +212,8 @@ MLFS <- function(data_NFI, data_site,
   data_BAI <- dplyr::filter(data, !is.na(BAI))
 
   # 4) mortality
-  data$p_height <- NA
-  data$p_crownHeight <- NA
+  #data$p_height <- NA
+  #data$p_crownHeight <- NA
   data_mortality <- data
 
   h_predictions <- height_prediction(df_fit = data_mortality,
@@ -565,9 +563,15 @@ MLFS <- function(data_NFI, data_site,
 
   }
 
+  final_calculations <- dplyr::select(do.call(rbind, list_results),
+         "plotID", "treeID", "species", "speciesGroup", "year", "code",
+         "weight", "height", "p_height", "crownHeight", "p_crownHeight", "BA",
+         "p_BA", "BAI", "volume", "p_volume", "stand_BA", "stand_n", "BAL",
+         site_vars)
+
   final_ouputs <- list(
 
-    sim_results = do.call(rbind, list_results),
+    sim_results = final_calculations,
     height_eval = h_predictions$data_height_eval,
     crownHeight_eval = Crown_h_predictions$eval_crownHeight,
     mortality_eval = eval_mortality_output,

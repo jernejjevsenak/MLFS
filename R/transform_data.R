@@ -15,7 +15,8 @@ transform_data <- function(df, include_climate, df_climate, select_months_climat
   month<- NULL
   p_sum<- NULL
   t_avg<- NULL
-
+  height <- NULL
+  crownHeight <- NULL
 
   # Next step: create DF for yield and predict heights and calculate volume
   unique_years <- sort(unique(df$year), decreasing = T)
@@ -30,8 +31,8 @@ transform_data <- function(df, include_climate, df_climate, select_months_climat
 
     df_temp <- dplyr::filter(df, year == unique_years[i])
     df_temp_year_before <- dplyr::filter(df, year == unique_years[i+1])
-    df_temp_year_before <- select(df_temp_year_before, plotID, treeID, BA)
-    colnames(df_temp_year_before)[3] <- "p_BA"
+    df_temp_year_before <- select(df_temp_year_before, plotID, treeID, BA, height, crownHeight)
+    colnames(df_temp_year_before)[3:5] <- c("p_BA", "p_height", "p_crownHeight")
     df_temp <- merge(df_temp, df_temp_year_before, by = c("plotID", "treeID"), all.x = TRUE)
     df_temp <- mutate(df_temp, BAI = BA - p_BA)
 
@@ -44,7 +45,6 @@ transform_data <- function(df, include_climate, df_climate, select_months_climat
         group_by(plotID) %>% summarise(p_sum = sum(p_sum), t_avg = mean(t_avg))
 
       df_temp <- merge(df_temp, climate_fit, by = "plotID")
-
 
     } else {
 

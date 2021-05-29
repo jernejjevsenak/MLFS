@@ -23,6 +23,7 @@ BAI_prediction <- function(df_fit, df_predict,
   treeID<- NULL
   speciesGroup<- NULL
   BAI_pred<- NULL
+  height <- NULL
 
 #####################################
 # 2 Predict BAI for next NFI period #

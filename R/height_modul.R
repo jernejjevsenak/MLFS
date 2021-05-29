@@ -85,7 +85,7 @@ height_prediction <- function(df_fit,  df_predict,
 
     } else {
 
-      mod1 <- fithd(dv_temporal_fit$BA,
+      mod1 <- lmfor::fithd(dv_temporal_fit$BA,
                     dv_temporal_fit$height,
                     plot = dv_temporal_fit$plotID,
                     modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
@@ -145,7 +145,7 @@ height_prediction <- function(df_fit,  df_predict,
 
       eval_step <- dv_temporal_fit
 
-      eval_step$h_pred <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level)
+      eval_step$h_pred <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 
       eval_list[[p]] <- eval_step
 
@@ -252,7 +252,7 @@ height_prediction <- function(df_fit,  df_predict,
 
     } else {
 
-      mod1 <- fithd(dv_temporal_fit$BA,
+      mod1 <- lmfor::fithd(dv_temporal_fit$BA,
                     dv_temporal_fit$height,
                     plot = dv_temporal_fit$plotID,
                     modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
@@ -313,7 +313,7 @@ height_prediction <- function(df_fit,  df_predict,
 
         eval_step <- dv_temporal_fit
 
-        eval_step$h_pred <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level)
+        eval_step$h_pred <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 
         eval_list[[p]] <- eval_step
 
@@ -365,7 +365,7 @@ height_prediction <- function(df_fit,  df_predict,
 
     } else {
 
-      dv_temporal_predict$height_new <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level)
+      dv_temporal_predict$height_new <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
       dv_temporal_predict$p_height_new <- predict(mod1, newdata = rename(dv_temporal_predict,
                                                                        "d" = "p_BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 

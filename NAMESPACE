@@ -12,6 +12,7 @@ export(volume_whole_tree)
 export(volume_merchantable)
 export(vol_tariffs)
 
+import("lmfor")
 importFrom("stats", "D", "as.formula", "glm", "lm",
                "na.pass", "predict", "runif")
 importFrom("utils", "capture.output", "setTxtProgressBar", "txtProgressBar")
@@ -19,7 +20,6 @@ importFrom("magrittr", "%>%")
 importFrom("randomForest", "randomForest")
 importFrom("dplyr", "summarise", "group_by", "filter", "select", "mutate",
            "arrange", "rename", "summarise_all", "distinct", "row_number")
-importFrom("lmfor", "fithd")
 importFrom("tidyselect", "all_of")
 importFrom("tidyr", "replace_na")
 importFrom("naivebayes", "naive_bayes")
