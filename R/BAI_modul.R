@@ -28,13 +28,14 @@ BAI_prediction <- function(df_fit, df_predict,
 # 2 Predict BAI for next NFI period #
 #####################################
 
-dead_trees <-filter(df_predict, code %in%  c(1,2)) %>% mutate(p_BA = BA,
-                                                      p_volume = volume,
-                                                      BA = NA,
-                                                      BAI = NA,
-                                                      height = NA,
-                                                      crownHeight = NA
-                                                      )
+dead_trees <-filter(df_predict, code %in%  c(1,2)) %>%
+    mutate(p_BA = BA,
+           p_height = height,
+           p_volume = volume,
+           BA = NA,
+           BAI = NA,
+           height = NA,
+           crownHeight = NA)
 
 if (include_climate == TRUE){
 

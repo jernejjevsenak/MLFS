@@ -261,6 +261,8 @@ MLFS <- function(data_NFI, data_site,
 
   initial_df <- data
 
+
+
   # 1 Calculate heights
   initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                   species_n_threshold = species_n_threshold,
@@ -283,13 +285,10 @@ MLFS <- function(data_NFI, data_site,
   # Before you can apply mortality, you should have predicted height and crown height!
 
   # calculate volume
-
-  filter(initial_df, code == 1)
-
   if (volume_calculation == "form_factors"){
 
     initial_df$volume <- initial_df$height * initial_df$BA * initial_df$form
-    initial_df$p_volume <- initial_df$height * initial_df$p_BA * initial_df$form
+    initial_df$p_volume <- initial_df$p_height * initial_df$p_BA * initial_df$form
 
     # sum(data$p_volume > data$volume, na.rm = T)
 

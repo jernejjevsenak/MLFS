@@ -93,19 +93,12 @@ if (harvest_sum_level == 1){  # regional (national level)
 
   } else {
 
-    stop(paste0("harvesting_type should be on of 'random', 'final_cut' or 'thinning', but it is ", harvesting_type ))
+    stop(paste0("harvesting_type should be one of 'random', 'final_cut' or 'thinning', but instead it is ", harvesting_type ))
 
   }
 
   a <- mutate(a, col_sum = cumsum(replace_na(volume_ha, 0)),
               code = ifelse(col_sum < harvesting_sum, 1, code))
-
-
-
-
-
-
-
 
   df <- select(a, colnames(df))
   df <- arrange(df, plotID, treeID)

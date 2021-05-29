@@ -35,11 +35,12 @@ V_general = function(df, data_volF_param = data_volF_param){
   df_PCAB <- mutate(df_PCAB,
                D = sqrt(4*BA/pi) * 100/10, #cm -> dm
                p_D = sqrt(4*p_BA/pi) * 100/10, #cm -> dm
+
                H = height * 10, # m -> dm
                p_H = p_height * 10,
+
                volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D) / 1000,   # dm3 -> m3
-               volume =  (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,   # dm3 -> m3
-               p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*D) / 1000)   # dm3 -> m3
+               p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D) / 1000)   # dm3 -> m3
 
   #####################
   # 2 Volume for ABAL #
@@ -58,8 +59,10 @@ V_general = function(df, data_volF_param = data_volF_param){
   df_ABAL <- mutate(df_ABAL,
                     D = sqrt(4*BA/pi) * 100/10, # cm -> dm
                     p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
+
                     H = height * 10, # m -> dm
-                    p_H = p_height * 10,
+                    p_H = p_height * 10, # m -> dm
+
                     volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,  # dm3 -> m3
                     p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D+g)/1000)   # dm3 -> m3
 
@@ -81,8 +84,10 @@ V_general = function(df, data_volF_param = data_volF_param){
   df_FASY <- mutate(df_FASY,
                     D = sqrt(4*BA/pi) * 100/10, # cm -> dm
                     p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
+
                     H = height * 10, # m -> dm
                     p_H = p_height * 10,
+
                     volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,   # dm3 -> m3
                     p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D+g)/1000)   # dm3 -> m3
 
@@ -102,12 +107,15 @@ V_general = function(df, data_volF_param = data_volF_param){
   g = param_PISY$g
 
   df_PISY <- mutate(df_PISY,
+
                     D = sqrt(4*BA/pi) * 100/10, # cm -> dm
                     p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
+
                     H = height * 10, # m -> dm
                     p_H = p_height * 10,
-                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H)/1000,   # dm3 -> m3
-                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H)/1000)   # dm3 -> m3
+
+                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*H)/1000,   # dm3 -> m3
+                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_H)/1000)   # dm3 -> m3
 
 
   #####################
@@ -127,8 +135,10 @@ V_general = function(df, data_volF_param = data_volF_param){
   df_QUSP <- mutate(df_QUSP,
                     D = sqrt(4*BA/pi) * 100/10, #cm -> dm
                     p_D = sqrt(4*p_BA/pi) * 100/10, #cm -> dm
+
                     H = height * 10, # m -> dm
                     p_H = p_height * 10,
+
                     volume = (pi/4)*(a*D^2*H+b*D^2+c*D*H+d*H+e*D+f) / 1000,   # dm3 -> m3
                     p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2+c*p_D*p_H+d*p_H+e*p_D+f) / 1000)   # dm3 -> m3
 
@@ -152,10 +162,12 @@ V_general = function(df, data_volF_param = data_volF_param){
   df_REST <- mutate(df_REST,
                     D = sqrt(4*BA/pi) * 100/10, #cm -> dm
                     p_D = sqrt(4*p_BA/pi) * 100/10, #cm -> dm
+
                     H = height * 10, # m -> dm
                     p_H = p_height * 10,
+
                     volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D) / 1000,   # dm3 -> m3
-                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*D) / 1000)   # dm3 -> m3
+                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D) / 1000)   # dm3 -> m3
 
   ########
   # Join #
