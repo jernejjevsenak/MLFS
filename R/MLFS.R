@@ -389,8 +389,6 @@ MLFS <- function(data_NFI, data_site,
 
   sim = 2
 
-
-
   for (sim in 2:sim_steps){
 
     mortality_outputs <- predict_mortality(df_fit = data_mortality,
@@ -420,16 +418,15 @@ MLFS <- function(data_NFI, data_site,
 
     # Simulate harvesting
     if (sim_harvesting == TRUE){
+
       initial_df <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
 
-
                                         harvest_sum_level = harvest_sum_level,
                                         plot_upscale_type = plot_upscale_type,
                                         plot_upscale_factor = plot_upscale_factor,
-
 
                                         final_cut_weight = final_cut_weight,
                                         thinning_small_weight = thinning_small_weight
@@ -458,7 +455,6 @@ MLFS <- function(data_NFI, data_site,
       set_eval_BAI <- FALSE
 
     }
-
 
     # 3 Calculate BAL
     initial_df <- calculate_BAL(initial_df)

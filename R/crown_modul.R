@@ -142,24 +142,40 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     # predict crownHeight for BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
 
-    dv_temporal_predict_noNA$crownHeight <- predict(mod1, newdata = dv_temporal_predict_noNA)
-    dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
+    dv_temporal_predict_yesNA$crownHeight_new <- NA
+
+    dv_temporal_predict_noNA$crownHeight_new <- predict(mod1, newdata = dv_temporal_predict_noNA)
+
+
+    dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+
+    dv_temporal_predict$crownHeight <- ifelse(is.na(dv_temporal_predict$crownHeight), dv_temporal_predict$crownHeight_new, dv_temporal_predict$crownHeight)
+
     dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
     dv_temporal_predict$key_temp <- NULL
+    dv_temporal_predict$crownHeight_new <- NULL
+
 
     # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
+
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
-    dv_temporal_predict_noNA$p_crownHeight <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
+    dv_temporal_predict_yesNA$p_crownHeight_new <- NA
+    dv_temporal_predict_noNA$p_crownHeight_new <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
                                                                              "height_X" = "height",
                                                                              "height" = "p_height"))
 
     dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+
+    dv_temporal_predict$p_crownHeight <- ifelse(is.na(dv_temporal_predict$p_crownHeight), dv_temporal_predict$p_crownHeight_new, dv_temporal_predict$p_crownHeight)
+
     dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
     dv_temporal_predict$key_temp <- NULL
+    dv_temporal_predict$crownHeight_new <- NULL
+    dv_temporal_predict$p_crownHeight_new <- NULL
 
     list_predictions[[p]] <- dv_temporal_predict
     p = p + 1
@@ -255,24 +271,35 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     # predict crownHeight for BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
+
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
-    dv_temporal_predict_noNA$crownHeight <- predict(mod1, newdata = dv_temporal_predict_noNA)
+    dv_temporal_predict_yesNA$crownHeight_new <- NA
+
+    dv_temporal_predict_noNA$crownHeight_new <- predict(mod1, newdata = dv_temporal_predict_noNA)
     dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+    dv_temporal_predict$crownHeight <- ifelse(is.na(dv_temporal_predict$crownHeight), dv_temporal_predict$crownHeight_new, dv_temporal_predict$crownHeight)
     dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
     dv_temporal_predict$key_temp <- NULL
+    dv_temporal_predict$crownHeight_new <- NULL
 
     # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
-    dv_temporal_predict_noNA$p_crownHeight <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
-                                                                             "height_X" = "height",
-                                                                             "height" = "p_height"))
 
-    dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
+    dv_temporal_predict_yesNA$p_crownHeight_new <- NA
+
+    dv_temporal_predict_noNA$p_crownHeight_new <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
+                                                                                 "height_X" = "height",
+                                                                                 "height" = "p_height"))
+
+    dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+    dv_temporal_predict$p_crownHeight <- ifelse(is.na(dv_temporal_predict$p_crownHeight), dv_temporal_predict$p_crownHeight_new, dv_temporal_predict$p_crownHeight)
     dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
     dv_temporal_predict$key_temp <- NULL
+    dv_temporal_predict$crownHeight_new <- NULL
+    dv_temporal_predict$p_crownHeight_new <- NULL
 
     list_predictions[[p]] <- dv_temporal_predict
     p = p + 1
