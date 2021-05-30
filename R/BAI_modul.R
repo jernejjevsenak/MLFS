@@ -24,6 +24,7 @@ BAI_prediction <- function(df_fit, df_predict,
   speciesGroup<- NULL
   BAI_pred<- NULL
   height <- NULL
+  crownHeight <- NULL
 
 #####################################
 # 2 Predict BAI for next NFI period #
@@ -51,7 +52,7 @@ df_predict <-filter(df_predict, !(code %in% c(1,2)))
 df_fit <-  dplyr::filter(df_fit, !is.na(BAI))
 BAI_data <-  table(df_fit$species)
 
-# Here we define instances that will be prediced using group variable
+# Here we define instances that will be predicted using group variable
 data_below_threshold <- droplevels(df_fit[df_fit$species %in% names(BAI_data)[BAI_data < species_n_threshold],,drop=FALSE])
 uniq_tSk <- unique(data_below_threshold$speciesGroup)
 
@@ -71,7 +72,7 @@ m_holder = 1
 
 for (M in unique_dv){
 
-  ###################### izbira dv ########################################
+  # select species
   dv_temporal_fit <- subset(df_fit, subset = df_fit$species %in% M)
 
   ####################
@@ -134,16 +135,15 @@ for (M in unique_dv){
 
   }
 
-  # dv_temporal_fit$BAI_predicted <- predict(rf_mod)
-  # list_evaluation[[p]] <- dv_temporal_fit
-
-  # Do the same for intial data
+  # Do the same for initial data
   dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
   dv_temporal_predict$BAI_new <- predict(rf_mod, dv_temporal_predict)
 
   dv_temporal_predict <- mutate(dv_temporal_predict,
                                        p_BA = BA,
                                        p_volume = volume,
+                                       p_height = height,
+                                       p_crownHeight = crownHeight,
                                        BA = BA + BAI_new, year = year,
                                        height = NA, crownHeight = NA,
                                        stand_BA = NA, stand_n = NA, BAL = NA, BAI = BAI_new,
@@ -264,19 +264,12 @@ data_eval_BAI <- select(data_eval_BAI, plotID, treeID, year, speciesGroup, code,
 
 }
 
-
-
 DF_predictions_sGroups <- do.call(rbind, list_predictions)
 DF_predictions_sGroups <- filter(DF_predictions_sGroups, !(species %in% unique_dv))
 
 # rbind predictions
-
-
 dead_trees <- select(dead_trees, colnames(DF_predictions_species))
-
 DF_predictions <- rbind(dead_trees, DF_predictions_species, DF_predictions_sGroups)
-
-##########################################
 
 final_output_list <- list(
 

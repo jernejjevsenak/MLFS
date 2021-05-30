@@ -30,23 +30,12 @@ crownHeight_prediction <- function(df_fit,  df_predict,
   df_fit <- mutate(df_fit, key = paste0(plotID, "_", treeID, "_", year))
   df_predict <- mutate(df_predict, key = paste0(plotID, "_", treeID, "_", year))
 
-  # df <- rbind(df_fit, df_predict)
-  # df <- df[!duplicated(df$key), ]
-
-  ###################
-  # crownHeight prediction
-  ###################
-
-  # Remove trees without BA
-  # no_BA <- filter(df_predict, is.na(BA))
-
-  ##################### Loop for all traiff groups ########################
   # We define here strategy: if there are enough measurements, we calculate crownHeights for species
   # If not, we use grouping ID
   crownHeight_data <-  dplyr::filter(df_fit, !is.na(crownHeight))
   crownHeight_data <-  table(crownHeight_data$species)
 
-  # Here we define instances that will be prediced using group variable
+  # Here we define instances that will be predicted using group variable
   data_below_threshold <- droplevels(df_fit[df_fit$species %in% names(crownHeight_data)[crownHeight_data < species_n_threshold],,drop=FALSE])
   uniq_tSk <- unique(data_below_threshold$speciesGroup)
 
@@ -65,15 +54,13 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
   for (M in unique_dv){
 
-    ###################### izbira dv ########################################
+    # select species
     dv_temporal_fit <- subset(df_fit, subset = df_fit$species %in% M)
 
     # BA can not be missing!
     dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
-
-    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA)) # Ta step sem dal ven, ker ni potreben
 
     temp_df <- select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
 
@@ -148,7 +135,6 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     dv_temporal_predict_noNA$crownHeight_new <- predict(mod1, newdata = dv_temporal_predict_noNA)
 
-
     dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
 
     dv_temporal_predict$crownHeight <- ifelse(is.na(dv_temporal_predict$crownHeight), dv_temporal_predict$crownHeight_new, dv_temporal_predict$crownHeight)
@@ -157,18 +143,24 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     dv_temporal_predict$key_temp <- NULL
     dv_temporal_predict$crownHeight_new <- NULL
 
-
     # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
-
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
-    dv_temporal_predict_yesNA$p_crownHeight_new <- NA
+
+    if (nrow(dv_temporal_predict_yesNA) > 0){dv_temporal_predict_yesNA$p_crownHeight_new <- NA}
+
+
+
     dv_temporal_predict_noNA$p_crownHeight_new <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
                                                                              "height_X" = "height",
                                                                              "height" = "p_height"))
 
+    if (nrow(dv_temporal_predict_yesNA) > 0){
     dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+    } else {
+      dv_temporal_predict <- dv_temporal_predict_noNA
+    }
 
     dv_temporal_predict$p_crownHeight <- ifelse(is.na(dv_temporal_predict$p_crownHeight), dv_temporal_predict$p_crownHeight_new, dv_temporal_predict$p_crownHeight)
 
@@ -198,13 +190,13 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
   for (M in uniq_tSk){
 
-    ###################### select dv #############################
+    # select species group
     dv_temporal_fit <- subset(df_fit, subset = df_fit$speciesGroup %in% M)
+
     # BA can not be missing!
     dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
-    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
 
     temp_df <- select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
 
@@ -254,10 +246,10 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     }
     }
+
     ###################
     # prediction part #
     ###################
-
 
     if (crownHeight_model == "lm"){
 
@@ -286,15 +278,22 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
-
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
-    dv_temporal_predict_yesNA$p_crownHeight_new <- NA
+
+    if (nrow(dv_temporal_predict_yesNA) > 0){dv_temporal_predict_yesNA$p_crownHeight_new <- NA}
+
+
 
     dv_temporal_predict_noNA$p_crownHeight_new <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
                                                                                  "height_X" = "height",
                                                                                  "height" = "p_height"))
 
-    dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+    if (nrow(dv_temporal_predict_yesNA) > 0){
+      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dv_temporal_predict_yesNA)
+    } else {
+      dv_temporal_predict <- dv_temporal_predict_noNA
+    }
+
     dv_temporal_predict$p_crownHeight <- ifelse(is.na(dv_temporal_predict$p_crownHeight), dv_temporal_predict$p_crownHeight_new, dv_temporal_predict$p_crownHeight)
     dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
     dv_temporal_predict$key_temp <- NULL
@@ -326,12 +325,9 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
   }
 
-  # Now add crownHeight data to our data (merge)
   data_crownHeight_predictions <- rbind(
     DF_predictions_sGroups,
     DF_predictions_species)
-
-  # data_crownHeight_predictions <- rbind(data_crownHeight_predictions, no_BA)
 
   # correction: Negative crownHeight predictions are set to 1 meter (could also be the minimum measured)
   data_crownHeight_predictions <- mutate(data_crownHeight_predictions, crownHeight = ifelse(crownHeight < 0, 1, crownHeight))

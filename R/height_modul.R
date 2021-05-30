@@ -179,14 +179,23 @@ height_prediction <- function(df_fit,  df_predict,
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
       dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_BA))
       dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_BA))
-      dv_temporal_predict_yesNA$p_height_new <- NA
+
+      if (nrow(dv_temporal_predict_yesNA) > 0){
+        dv_temporal_predict_yesNA$p_height_new <- NA
+      }
+
 
       dv_temporal_predict_noNA$p_height_new <- predict(mod1,
                                                    newdata = rename(dv_temporal_predict_noNA,
                                                                           "BA_temp" = "BA",
                                                                           "BA" = "p_BA"))
 
+      if (nrow(dv_temporal_predict_yesNA) > 0){
       dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+      } else {
+        dv_temporal_predict <- dv_temporal_predict_noNA
+      }
+
       dv_temporal_predict$p_height <- ifelse(is.na(dv_temporal_predict$p_height), dv_temporal_predict$p_height_new, dv_temporal_predict$p_height)
 
       dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)
@@ -347,14 +356,23 @@ height_prediction <- function(df_fit,  df_predict,
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
       dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_BA))
       dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_BA))
-      dv_temporal_predict_yesNA$p_height_new <- NA
+
+      if (nrow(dv_temporal_predict_yesNA) > 0){
+        dv_temporal_predict_yesNA$p_height_new <- NA
+      }
+
 
       dv_temporal_predict_noNA$p_height_new <- predict(mod1,
                                                        newdata = rename(dv_temporal_predict_noNA,
                                                                         "BA_temp" = "BA",
                                                                         "BA" = "p_BA"))
 
-      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+      if (nrow(dv_temporal_predict_yesNA) > 0){
+        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+      } else {
+        dv_temporal_predict <- dv_temporal_predict_noNA
+      }
+
       dv_temporal_predict$p_height <- ifelse(is.na(dv_temporal_predict$p_height), dv_temporal_predict$p_height_new, dv_temporal_predict$p_height)
 
       dv_temporal_predict <- arrange(dv_temporal_predict, key_temp)

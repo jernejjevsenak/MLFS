@@ -7,6 +7,6 @@
 vol_tariffs(df, data_tariffs)
 }
 \description{
-One-parameter volume functions for the MLFS
+One-parameter volume functions (tariffs) for the MLFS
 }
 \keyword{internal}

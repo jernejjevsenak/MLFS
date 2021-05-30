@@ -11,11 +11,14 @@ MLFS(
   data_climate = NULL,
   data_volF_param = NULL,
   form_factors = NULL,
+  form_factors_level = "species_plot",
+  uniform_form_factor = 0.42,
   sim_steps,
   volume_calculation = "volume_functions",
   merchantable_whole_tree = "merchantable",
   sim_harvesting = TRUE,
   sim_mortality = TRUE,
+  sim_ingrowth = TRUE,
   harvesting_sum,
   forest_area_ha,
   harvest_sum_level = 1,
@@ -27,9 +30,9 @@ MLFS(
   rf_mtry = NULL,
   nb_laplace = 0,
   harvesting_type = "final_cut",
-  final_cut_weight = 1,
+  final_cut_weight = 1e+07,
+  thinning_small_weight = 1e+05,
   species_n_threshold = 100,
-  thinning_small_weight = 10,
   height_model = "naslund",
   crownHeight_model = "lm",
   BRNN_neurons = 3,
@@ -63,6 +66,12 @@ function parameters}
 
 \item{form_factors}{optional, data frame with species-specific form factors}
 
+\item{form_factors_level}{character, the level of specified form factors. It
+can be ‘species’, ‘plot’ or ‘species_plot’}
+
+\item{uniform_form_factor}{numeric, uniform form factor to be used for all
+species and plots. Only if form_factors are not provided}
+
 \item{sim_steps}{The number of simulation steps}
 
 \item{volume_calculation}{character string defining the method for volume
@@ -76,6 +85,8 @@ only for volume calculation using the 'slo_2p_volume_functions'.}
 \item{sim_harvesting}{logical, should harvesting be simulated?}
 
 \item{sim_mortality}{logical, should mortality be simulated?}
+
+\item{sim_ingrowth}{logical, should ingrowth be simulated?}
 
 \item{harvesting_sum}{a value, or a vector of values defining the harvesting
 sums through the simulation stage. If a single value, then it is used in all
@@ -116,19 +127,19 @@ split of a random forest model. If NULL, default settings are applied.}
 \item{nb_laplace}{value used for Laplace smoothing (additive smoothing) in
 naive Bayes algorithm. Defaults to 0 (no Laplace smoothing).}
 
-\item{harvesting_type}{character, it could be 'random', 'final cut' or
+\item{harvesting_type}{character, it could be 'random', 'final_cut' or
 'thinning'}
 
 \item{final_cut_weight}{numeric value affecting the probability distribution
 of harvested trees. Greater value increases the share of harvested trees
-having larger DBH. Default is 1.}
-
-\item{species_n_threshold}{a positive integer defining the minimum number of
-observations required to treat a species as an independent group}
+having larger DBH. Default is 10000000.}
 
 \item{thinning_small_weight}{numeric value affecting the probability
 distribution of harvested trees. Greater value increases the share of
-harvested trees having smaller DBH. Default is 1.}
+harvested trees having smaller DBH. Default is 100000.}
+
+\item{species_n_threshold}{a positive integer defining the minimum number of
+observations required to treat a species as an independent group}
 
 \item{height_model}{character string defining the model to be used for height
 prediction. If brnn, then ANN method with Bayesian Regularization is applied.

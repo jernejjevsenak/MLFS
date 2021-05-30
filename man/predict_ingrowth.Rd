@@ -8,7 +8,6 @@ predict_ingrowth(
   df_fit,
   df_predict,
   site_vars = site_vars,
-  form_factors = NULL,
   eval_model_ingrowth = TRUE,
   k = 10,
   blocked_cv = TRUE,

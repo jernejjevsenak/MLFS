@@ -5,8 +5,8 @@
 
 simulate_harvesting <- function(df, harvesting_sum,
                                 harvesting_type = "random",
-                                final_cut_weight = 1,
-                                thinning_small_weight = 10,
+                                final_cut_weight = 10000000,
+                                thinning_small_weight = 100000,
 
                                 harvest_sum_level = 1,
                                 plot_upscale_type,
@@ -24,6 +24,7 @@ simulate_harvesting <- function(df, harvesting_sum,
   code <- NULL
   plotID <- NULL
   treeID <- NULL
+  protected <- NULL
 
   a <- df
 
@@ -60,6 +61,7 @@ if (harvest_sum_level == 1){  # regional (national level)
   if (harvesting_type == "random"){
 
     a <- a[sample(nrow(a)),]
+    a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
   } else if (harvesting_type == "final_cut"){
 
@@ -75,6 +77,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$share_volume)
 
     a <- a[sampled_rows, ]
+    a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
   } else if (harvesting_type == "thinning") {
 
@@ -88,8 +91,8 @@ if (harvest_sum_level == 1){  # regional (national level)
                              a$share_volume * (1/thinning_small_weight))
 
     sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$share_volume)
-
     a <- a[sampled_rows, ]
+    a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
   } else {
 

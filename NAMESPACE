@@ -14,7 +14,7 @@ export(vol_tariffs)
 
 import("lmfor")
 importFrom("stats", "D", "as.formula", "glm", "lm",
-               "na.pass", "predict", "runif")
+               "na.pass", "predict", "runif", "median")
 importFrom("utils", "capture.output", "setTxtProgressBar", "txtProgressBar")
 importFrom("magrittr", "%>%")
 importFrom("randomForest", "randomForest")

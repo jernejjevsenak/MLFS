@@ -1,6 +1,6 @@
 #' vol_tariffs
 #'
-#' One-parameter volume functions for the MLFS
+#' One-parameter volume functions (tariffs) for the MLFS
 #' @keywords internal
 
 vol_tariffs <- function(df, data_tariffs){

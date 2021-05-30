@@ -4,26 +4,27 @@
 #'
 #' @keywords internal
 #'
-predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars, form_factors = NULL,
+predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
                              eval_model_ingrowth = TRUE, k = 10, blocked_cv = TRUE,
                              ingrowth_model = "glm", rf_mtry = NULL){
 
 
-# Define Global variables
-species <- NULL
-speciesGroup <- NULL
-year <- NULL
-plotID <- NULL
-stand_BA <- NULL
-stand_n <- NULL
-BAL <- NULL
-ingrowth_small <- NULL
-ingrowth_big <- NULL
-ingrowth_small_pred <- NULL
-ingrowth_big_pred <- NULL
-ing_small <- NULL
-ing_big <- NULL
-DBH <- NULL
+  # Define Global variables
+  species <- NULL
+  speciesGroup <- NULL
+  year <- NULL
+  plotID <- NULL
+  stand_BA <- NULL
+  stand_n <- NULL
+  BAL <- NULL
+  ingrowth_small <- NULL
+  ingrowth_big <- NULL
+  ingrowth_small_pred <- NULL
+  ingrowth_big_pred <- NULL
+  ing_small <- NULL
+  ing_big <- NULL
+  DBH <- NULL
+  protected <- NULL
 
   ############
   # Ingrowth #
@@ -263,22 +264,14 @@ DBH <- NULL
   new_trees$volume <- NA
   new_trees$p_height <- NA
   new_trees$p_crownHeight <- NA
+  # new_trees$protected <- NA
 
-    new_trees$t_avg <- NA
-    new_trees$p_sum <- NA
+  new_trees$t_avg <- NA
+  new_trees$p_sum <- NA
 
+  protected_df <- df_before %>% group_by(plotID) %>% summarise(protected = median(protected))
 
-
-  # add form factors
-  if (is.null(form_factors)){
-
-    new_trees$form <- 0.42
-
-  } else {
-
-    new_trees <- merge(new_trees, form_factors, by = "species")
-
-  } # You can also add here third option, merge by plot & species
+  new_trees <- merge(new_trees, protected_df, by = "plotID", all.x = TRUE)
 
   new_trees <-  select(new_trees, colnames(df_before))
 
