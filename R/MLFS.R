@@ -236,6 +236,7 @@ MLFS <- function(data_NFI, data_site,
 
   data_mortality <- h_predictions$data_height_predictions
 
+
   Crown_h_predictions <- crownHeight_prediction(df_fit = data_mortality,
                                            df_predict = data_mortality,
                                            site_vars = site_vars,
@@ -268,6 +269,8 @@ MLFS <- function(data_NFI, data_site,
 
   initial_df <- data
 
+
+  summary(initial_df)
   # 1 Calculate heights
   initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                   species_n_threshold = species_n_threshold,
@@ -349,7 +352,7 @@ MLFS <- function(data_NFI, data_site,
   eval_BAI_output <- "the argument set_eval_BAI is set to FALSE"
 
   # If the length of mortality_share is 1, we replicate the value using the sim_steps
-  if (length(mortality_share )== 1){
+  if (length(mortality_share) == 1){
     mortality_share <- rep(mortality_share, sim_steps)
   }
 
