@@ -423,7 +423,7 @@ MLFS <- function(data_NFI, data_site,
     # Simulate harvesting
     if (sim_harvesting == TRUE){
 
-      initial_df1 <- simulate_harvesting(df = initial_df,
+      initial_df <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
