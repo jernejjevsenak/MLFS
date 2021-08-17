@@ -120,7 +120,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     aFC <- arrange(aFC, protected)
 
     aFC <- mutate(aFC, col_sum = cumsum(replace_na(volume_ha, 0)),
-                code = ifelse(col_sum < harvesting_sum * share_final_cut, 1, code))
+                code = ifelse(col_sum < (harvesting_sum * share_final_cut), 1, code))
 
     aFC<- aFC[aFC$code == 1,]
 
@@ -141,7 +141,7 @@ if (harvest_sum_level == 1){  # regional (national level)
 
     sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = aTH$share_volume)
     aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
-                  code = ifelse(col_sum < harvesting_sum * share_thinning, 1, code))
+                  code = ifelse(col_sum < (harvesting_sum * share_thinning), 1, code))
 
     aTH <- aTH[sampled_rows, ]
     aTH <- arrange(aTH, protected) # protected trees are at the bottom, so they won't be harvested
