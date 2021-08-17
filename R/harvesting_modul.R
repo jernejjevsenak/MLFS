@@ -5,6 +5,7 @@
 
 simulate_harvesting <- function(df, harvesting_sum,
                                 harvesting_type = "random",
+                                share_thinning = 0.8,
                                 final_cut_weight = 10000000,
                                 thinning_small_weight = 100000,
 
@@ -94,14 +95,73 @@ if (harvest_sum_level == 1){  # regional (national level)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
+  } else if (harvesting_type == "combined"){
+
+    share_final_cut = 1 - share_thinning
+
+    sum_volume <- sum(a$volume, na.rm = T)
+
+    aFC <- a
+    aTH <- a
+
+    #################
+    # aFC Final_cut #
+    #################
+
+    aFC$share_volume <- aFC$volume / sum_volume
+
+    # more intense
+    aFC$share_volume <- ifelse(aFC$share_volume > mean(aFC$share_volume, na.rm = TRUE),
+                               aFC$share_volume * final_cut_weight,
+                               aFC$share_volume * (1/final_cut_weight))
+
+    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = aFC$share_volume)
+    aFC <- aFC[sampled_rows, ]
+    aFC <- arrange(aFC, protected)
+
+    aFC <- mutate(aFC, col_sum = cumsum(replace_na(volume_ha, 0)),
+                code = ifelse(col_sum < harvesting_sum * share_final_cut, 1, code))
+
+    ################
+    # aTH THINNING #
+    ################
+
+
+    aFC_cut <- aFC[aFC$code == 1, "treeID"]
+
+    #remove trees which were already cut
+    aTH <- aTH[!(aTH$treeID %in% c(aFC_cut)),]
+    aTH$share_volume <- (1 - (aTH$volume / sum_volume))
+
+    # more intense
+    aTH$share_volume <- ifelse(aTH$share_volume > mean(aTH$share_volume, na.rm = TRUE),
+                             aTH$share_volume * thinning_small_weight,
+                             aTH$share_volume * (1/thinning_small_weight))
+
+    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = aTH$share_volume)
+    aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
+                  code = ifelse(col_sum < harvesting_sum * share_thinning, 1, code))
+
+    aTH <- aTH[sampled_rows, ]
+    aTH <- arrange(aTH, protected) # protected trees are at the bottom, so they won't be harvested
+
+    #############
+
+    a <- rbind(aTH, aFC)
+
+
   } else {
 
     stop(paste0("harvesting_type should be one of 'random', 'final_cut' or 'thinning', but instead it is ", harvesting_type ))
 
   }
 
-  a <- mutate(a, col_sum = cumsum(replace_na(volume_ha, 0)),
-              code = ifelse(col_sum < harvesting_sum, 1, code))
+  if (harvesting_type != "combined"){
+
+    a <- mutate(a, col_sum = cumsum(replace_na(volume_ha, 0)),
+                code = ifelse(col_sum < harvesting_sum, 1, code))
+
+  }
 
   df <- select(a, colnames(df))
   df <- arrange(df, plotID, treeID)

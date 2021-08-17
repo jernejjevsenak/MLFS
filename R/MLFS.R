@@ -43,8 +43,13 @@
 #' value is used in the first step, the second in the second step, and so on.
 #' @param forest_area_ha the total area of all forest which are subject of the
 #' simulation.
-#' @param harvesting_type character, it could be 'random', 'final_cut' or
-#' 'thinning'
+#' @param harvesting_type character, it could be 'random', 'final_cut',
+#' 'thinning' or 'combined'. The latter combines 'final_cut' and 'thinning'
+#' options, where the share of each is specified with the argument
+#' 'share_thinning'
+#' @param share_thinning numeric, a number oa a vector of numbers between 0 and
+#' 1 that specifies the share of thinning in comparison to final_cut. Only used
+#' if harvesting_type is 'combined'
 #' @param final_cut_weight numeric value affecting the probability distribution
 #' of harvested trees. Greater value increases the share of harvested trees
 #' having larger DBH. Default is 10000000.
@@ -124,6 +129,7 @@ MLFS <- function(data_NFI, data_site,
                  rf_mtry = NULL,
                  nb_laplace = 0,
                  harvesting_type = "final_cut",
+                 share_thinning = 0.80,
                  final_cut_weight = 10000000,
                  thinning_small_weight = 100000,
 
@@ -270,7 +276,6 @@ MLFS <- function(data_NFI, data_site,
   initial_df <- data
 
 
-  summary(initial_df)
   # 1 Calculate heights
   initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                   species_n_threshold = species_n_threshold,
@@ -431,7 +436,6 @@ MLFS <- function(data_NFI, data_site,
                                         thinning_small_weight = thinning_small_weight
                                         )
     }
-
 
     # Simulate BAI
     BAI_outputs <- BAI_prediction(df_fit = data_BAI,
