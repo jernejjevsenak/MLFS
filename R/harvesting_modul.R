@@ -122,15 +122,16 @@ if (harvest_sum_level == 1){  # regional (national level)
     aFC <- mutate(aFC, col_sum = cumsum(replace_na(volume_ha, 0)),
                 code = ifelse(col_sum < harvesting_sum * share_final_cut, 1, code))
 
+    aFC<- aFC[aFC$code == 1,]
+
     ################
     # aTH THINNING #
     ################
 
-
-    aFC_cut <- aFC[aFC$code == 1, "treeID"]
+    # aFC_cut <- aFC[aFC$code == 1, "treeID"]
 
     #remove trees which were already cut
-    aTH <- aTH[!(aTH$treeID %in% c(aFC_cut)),]
+    aTH <- aTH[!(aTH$treeID %in% c(aFC$treeID)),]
     aTH$share_volume <- (1 - (aTH$volume / sum_volume))
 
     # more intense

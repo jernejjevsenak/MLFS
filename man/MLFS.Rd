@@ -30,6 +30,7 @@ MLFS(
   rf_mtry = NULL,
   nb_laplace = 0,
   harvesting_type = "final_cut",
+  share_thinning = 0.8,
   final_cut_weight = 1e+07,
   thinning_small_weight = 1e+05,
   species_n_threshold = 100,
@@ -127,8 +128,14 @@ split of a random forest model. If NULL, default settings are applied.}
 \item{nb_laplace}{value used for Laplace smoothing (additive smoothing) in
 naive Bayes algorithm. Defaults to 0 (no Laplace smoothing).}
 
-\item{harvesting_type}{character, it could be 'random', 'final_cut' or
-'thinning'}
+\item{harvesting_type}{character, it could be 'random', 'final_cut',
+'thinning' or 'combined'. The latter combines 'final_cut' and 'thinning'
+options, where the share of each is specified with the argument
+'share_thinning'}
+
+\item{share_thinning}{numeric, a number oa a vector of numbers between 0 and
+1 that specifies the share of thinning in comparison to final_cut. Only used
+if harvesting_type is 'combined'}
 
 \item{final_cut_weight}{numeric value affecting the probability distribution
 of harvested trees. Greater value increases the share of harvested trees
