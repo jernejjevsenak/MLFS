@@ -356,6 +356,12 @@ MLFS <- function(data_NFI, data_site,
   eval_ingrowth_output <- "the argument set_eval_ingrowth is set to FALSE"
   eval_BAI_output <- "the argument set_eval_BAI is set to FALSE"
 
+
+  # If the length of share_thinning is 1, we replicate the value using the sim_steps
+  if (length(share_thinning) == 1){
+    share_thinning <- rep(share_thinning, sim_steps)
+  }
+
   # If the length of mortality_share is 1, we replicate the value using the sim_steps
   if (length(mortality_share) == 1){
     mortality_share <- rep(mortality_share, sim_steps)
@@ -386,6 +392,18 @@ MLFS <- function(data_NFI, data_site,
       warning("The last value in harvesting_sum vector is used for undefined simulation years.")
     }
   }
+
+
+  if (length(share_thinning) < sim_steps && length(share_thinning) > 1){
+
+    n_missing <- sim_steps - length(share_thinning)
+    share_thinning <- c(share_thinning, rep(share_thinning[length(share_thinning)], n_missing))
+
+    if (sim_harvesting == TRUE){
+      warning("The last value in share_thinning vector is used for undefined simulation years.")
+    }
+  }
+
 
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
@@ -427,6 +445,7 @@ MLFS <- function(data_NFI, data_site,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
+                                        share_thinning = share_thinning[sim-1],
 
                                         harvest_sum_level = harvest_sum_level,
                                         plot_upscale_type = plot_upscale_type,
