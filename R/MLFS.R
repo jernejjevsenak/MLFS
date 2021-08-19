@@ -138,7 +138,8 @@ MLFS <- function(data_NFI, data_site,
                  crownHeight_model = "lm",
                  BRNN_neurons = 3,
                  height_pred_level = 0, # prediction level for lmfor (0 regional, 1 plot level) - works only if you have all species on all plots
-                 include_climate = FALSE, select_months_climate = c(1:12),
+                 include_climate = FALSE,
+                 select_months_climate = c(1:12),
                  set_eval_mortality = TRUE,
                  set_eval_crownHeight = TRUE,
                  set_eval_height = TRUE,
@@ -577,7 +578,7 @@ MLFS <- function(data_NFI, data_site,
     if (sim_ingrowth == TRUE){
 
     ingrowth_outputs <- predict_ingrowth(df_fit = data_ingrowth, df_predict = initial_df,
-                                   site_vars = site_vars,
+                                   site_vars = site_vars, include_climate = include_climate,
                                    eval_model_ingrowth = set_eval_ingrowth,
                                    k = k, blocked_cv = blocked_cv, ingrowth_model = ingrowth_model
                                    )

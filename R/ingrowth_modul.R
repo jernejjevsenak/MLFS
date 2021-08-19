@@ -5,6 +5,7 @@
 #' @keywords internal
 #'
 predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
+                             include_climate = include_climate,
                              eval_model_ingrowth = TRUE, k = 10, blocked_cv = TRUE,
                              ingrowth_model = "glm", rf_mtry = NULL){
 
@@ -32,9 +33,15 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   df_before <- df_predict
 
+  if (include_climate == TRUE){
+
+    site_vars_A <- c(site_vars, "p_sum", "t_avg")
+
+  }
+
   sp_group_data <- select(df_before, species, speciesGroup) %>% distinct()
 
-  df_predict <- select(df_predict, year, plotID, stand_BA, stand_n, BAL, all_of(site_vars)) %>%
+  df_predict <- select(df_predict, year, plotID, stand_BA, stand_n, BAL, all_of(site_vars_A)) %>%
     group_by(plotID) %>% summarise_all(.funs = mean, na.rm = TRUE)
 
   # Machine Learning Method for Count Data?
@@ -159,7 +166,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   # Rezultati so OK
 
-  new_trees_small <- dplyr::select(df_predict, plotID, year, all_of(site_vars), ing_small) %>%
+  new_trees_small <- dplyr::select(df_predict, plotID, year, all_of(site_vars_A), ing_small) %>%
     filter(ing_small > 0)
 
   list_new_trees_small <- list()
@@ -196,7 +203,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   ##############################################################
   # new trees big
 
-  new_trees_big <- dplyr::select(df_predict, plotID, year, all_of(site_vars), ing_big) %>%
+  new_trees_big <- dplyr::select(df_predict, plotID, year, all_of(site_vars_A), ing_big) %>%
     filter(ing_big > 0)
 
   list_new_trees_big <- list()
@@ -271,10 +278,10 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   new_trees$height_mid<- NA
   new_trees$crownHeight_mid<- NA
   new_trees$volume_mid<- NA
-  # new_trees$protected <- NA
 
-  new_trees$t_avg <- NA
-  new_trees$p_sum <- NA
+  # new_trees$protected <- NA
+  #new_trees$t_avg <- NA
+  #new_trees$p_sum <- NA
 
   new_trees$BAL_mid <- NA
   new_trees$stand_BA_mid <- NA

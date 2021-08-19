@@ -8,6 +8,7 @@ predict_ingrowth(
   df_fit,
   df_predict,
   site_vars = site_vars,
+  include_climate = include_climate,
   eval_model_ingrowth = TRUE,
   k = 10,
   blocked_cv = TRUE,
