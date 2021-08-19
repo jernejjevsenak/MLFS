@@ -18,6 +18,7 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
   treeID <- NULL
   year <- NULL
   BA <- NULL
+  BA_mid <- NULL
   height <- NULL
   height_mid <- NULL
   p_BA <- NULL
