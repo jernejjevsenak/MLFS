@@ -412,6 +412,115 @@ MLFS <- function(data_NFI, data_site,
 
   for (sim in 2:sim_steps){
 
+    # For all trees, simulated BAI for half of the period
+    # This is crucial in terms of correct harvesting and mortality estimates
+
+    # Simulate BAI for halfPeriod
+    initial_df <- BAI_prediction_halfPeriod(df_fit = data_BAI,
+                                  df_predict = initial_df,
+                                  site_vars = site_vars,
+                                  rf_mtry = rf_mtry,
+                                  species_n_threshold = species_n_threshold,
+                                  include_climate = include_climate)
+
+    # Next, we simulate height and crownHeight based on half period attributes
+
+
+    # Calculate tree heights - half Period
+    initial_df <- height_prediction_halfPeriod(df_fit = data_height, df_predict = initial_df,
+                                    species_n_threshold = species_n_threshold,
+                                    height_model = height_model,
+                                    BRNN_neurons = BRNN_neurons,
+                                    height_pred_level = height_pred_level)
+
+
+
+
+
+    # Calculate tree crownHeights half Period
+    initial_df <- crownHeight_prediction_halfPeriod(df_fit = data_crownHeight,
+                                         df_predict = initial_df,
+                                         site_vars = site_vars,
+                                         crownHeight_model = crownHeight_model,
+                                         BRNN_neurons = BRNN_neurons,
+                                         species_n_threshold = species_n_threshold)
+
+    # Calculate Volume
+    if (volume_calculation == "form_factors"){
+
+      initial_df <- vol_form_factors_halfPeriod(df = initial_df, form_factors = form_factors,
+                                     form_factors_level = form_factors_level,
+                                     uniform_form_factor = uniform_form_factor)
+
+    } else if (volume_calculation == "volume_functions"){
+
+      initial_df$volume_mid <- NA
+
+      if (is.null(data_volF_param)){
+
+        stop("data_volF_param is not provided")
+
+      }
+
+      initial_df <- V_general_halfPeriod(df = initial_df, data_volF_param)
+
+    } else if (volume_calculation == "tariffs"){
+
+      if (is.null(data_tariffs)){
+
+        stop("data_tariffs is not supplied!")
+      }
+
+      initial_df$volume_mid <- NA
+
+      initial_df <- vol_tariffs_halfPeriod(df = initial_df, data_tariffs = data_tariffs)
+
+    } else if(volume_calculation == "slo_2p_volume_functions"){
+
+      initial_df$volume_mid <- NA
+
+      if (merchantable_whole_tree == "merchantable"){
+        initial_df <- volume_merchantable_halfPeriod(df = initial_df)
+      } else if (merchantable_whole_tree == "whole_tree"){
+        initial_df <- volume_whole_tree_halfPeriod(df = initial_df)
+      }
+
+    } else {
+
+      stop("Please define volume calculations: form_factors, volume_functions or tariffs")
+
+    }
+
+
+    # Ingrowth is now added, BAL and stand variables have changed. We therefore
+    # update all variables
+    initial_df <- calculate_BAL_halfPeriod(df = initial_df)
+    initial_df <- calculate_standVars_halfPeriod(df = initial_df)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # Simulate mortality
     mortality_outputs <- predict_mortality(df_fit = data_mortality,
                                            df_predict = initial_df,

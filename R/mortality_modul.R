@@ -51,7 +51,13 @@ p_mortality <- NULL
   }
 
   df_predict <- filter(df_predict, code %in% c(0,3,15))
-  df_fit <- mutate(df_fit, mortality = ifelse(code == 2, 1, 0))
+  df_fit <- mutate(df_fit, mortality = ifelse(code == 2, 1, 0),
+                   BA_mid = BA,
+                   BAL_mid = BAL,
+                   height_mid = height,
+                   crownHeight_mid = crownHeight,
+                   stand_BA_mid = stand_BA,
+                   stand_n_mid = stand_n)
 
   # YOU CAN MANUALLY SET THE MORTALITY SHARE
   if (is.na(mortality_share)){
@@ -61,7 +67,7 @@ p_mortality <- NULL
 
   }
 
-  formula <- as.formula(paste0("mortality ~ BA + height + crownHeight + BAL + stand_BA + stand_n +",
+  formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid +",
                                paste(site_vars, collapse = "+")))
 
   ##############

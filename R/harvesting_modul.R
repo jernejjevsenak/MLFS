@@ -19,6 +19,7 @@ simulate_harvesting <- function(df, harvesting_sum,
 
   # Define global variables
   volume <- NULL
+  volume_mid <- NULL
   weight <- NULL
   volume_ha <- NULL
   col_sum <- NULL
@@ -33,14 +34,14 @@ if (harvest_sum_level == 1){  # regional (national level)
 
   if (plot_upscale_type == "factor"){
 
-    a <- mutate(a, volume_ha = volume * weight * plot_upscale_factor)
+    a <- mutate(a, volume_ha = volume_mid * weight_mid * plot_upscale_factor)
 
   } else if (plot_upscale_type == "area") {
 
     n_plots <- length(unique(a$plotID))
     plot_represents <- forest_area_ha/n_plots
 
-    a <- mutate(a, volume_ha = volume * weight * plot_represents)
+    a <- mutate(a, volume_ha = volume_mid * weight_mid * plot_represents)
 
   } else {
 
@@ -50,7 +51,7 @@ if (harvest_sum_level == 1){  # regional (national level)
 
   } else if (harvest_sum_level == 0){ # plot level
 
-  a <- mutate(a, volume_ha = volume * weight)
+  a <- mutate(a, volume_ha = volume_mid * weight_mid)
 
   } else {
 
@@ -67,8 +68,8 @@ if (harvest_sum_level == 1){  # regional (national level)
   } else if (harvesting_type == "final_cut"){
 
     # 1 final cut
-    sum_volume <- sum(a$volume, na.rm = T)
-    a$share_volume <- a$volume / sum_volume
+    sum_volume <- sum(a$volume_mid, na.rm = T)
+    a$share_volume <- a$volume_mid / sum_volume
 
     # more intense
     a$share_volume <- ifelse(a$share_volume > mean(a$share_volume, na.rm = TRUE),
@@ -83,8 +84,8 @@ if (harvest_sum_level == 1){  # regional (national level)
   } else if (harvesting_type == "thinning") {
 
     # 3 thinning which prefers smaller trees
-    sum_volume <- sum(a$volume, na.rm = T)
-    a$share_volume <- (1 - (a$volume / sum_volume))
+    sum_volume <- sum(a$volume_mid, na.rm = T)
+    a$share_volume <- (1 - (a$volume_mid / sum_volume))
 
     # more intense
     a$share_volume <- ifelse(a$share_volume > mean(a$share_volume, na.rm = TRUE),
@@ -99,7 +100,7 @@ if (harvest_sum_level == 1){  # regional (national level)
 
     share_final_cut = 1 - share_thinning
 
-    sum_volume <- sum(a$volume, na.rm = T)
+    sum_volume <- sum(a$volume_mid, na.rm = T)
 
     aFC <- a
     aTH <- a
@@ -108,7 +109,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     # aFC Final_cut #
     #################
 
-    aFC$share_volume <- aFC$volume / sum_volume
+    aFC$share_volume <- aFC$volume_mid / sum_volume
 
     # more intense
     aFC$share_volume <- ifelse(aFC$share_volume > mean(aFC$share_volume, na.rm = TRUE),
@@ -132,7 +133,7 @@ if (harvest_sum_level == 1){  # regional (national level)
 
     #remove trees which were already cut
     aTH <- aTH[!(aTH$treeID %in% c(aFC$treeID)),]
-    aTH$share_volume <- (1 - (aTH$volume / sum_volume))
+    aTH$share_volume <- (1 - (aTH$volume_mid / sum_volume))
 
     # more intense
     aTH$share_volume <- ifelse(aTH$share_volume > mean(aTH$share_volume, na.rm = TRUE),
