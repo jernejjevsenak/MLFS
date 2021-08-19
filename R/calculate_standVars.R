@@ -20,8 +20,8 @@ calculate_standVars <- function(df){
 
   data_stand <- group_by(df, year, plotID) %>%
 
-    # dead/harvested/and ingrowth trees have reduced effect on stand variables
-    mutate(weight = ifelse(code %in% c(1,2,3,15), weight /2, weight)) %>%
+    # harvested trees have reduced effect on stand variables
+    mutate(weight = ifelse(code %in% c(1), weight /2, weight)) %>%
 
     summarise(stand_BA = sum(BA*weight, na.rm = TRUE),
               stand_n = sum(weight, na.rm = T)

@@ -348,8 +348,6 @@ MLFS <- function(data_NFI, data_site,
   }
 
 
-
-
   # For all trees, simulated BAI for half of the period
   # This is crucial in terms of correct harvesting and mortality estimates
 
@@ -370,10 +368,6 @@ MLFS <- function(data_NFI, data_site,
                                              height_model = height_model,
                                              BRNN_neurons = BRNN_neurons,
                                              height_pred_level = height_pred_level)
-
-
-
-
 
   # Calculate tree crownHeights half Period
   initial_df <- crownHeight_prediction_halfPeriod(df_fit = data_crownHeight,
@@ -498,8 +492,6 @@ MLFS <- function(data_NFI, data_site,
   sim_steps <- sim_steps + 1
 
   sim = 2 # at some point, delete this
-
-
 
   for (sim in 2:sim_steps){
 

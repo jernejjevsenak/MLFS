@@ -23,8 +23,8 @@ calculate_BAL <- function(df){
 
   df$BAL <- NULL
 
-  # ingrowth / harvested and dead trees get reduced weight
-  temp <- mutate(df, weight = ifelse(code %in% c(1,2,3,15), weight /2, weight),
+  # harvested trees get reduced weight
+  temp <- mutate(df, weight = ifelse(code %in% c(1), weight /2, weight),
                      BA_ha = BA * weight)
 
   temp <- select(temp, year, plotID, treeID, BA_ha)

@@ -23,7 +23,7 @@ calculate_standVars_halfPeriod <- function(df){
   data_stand <- group_by(df, year, plotID) %>%
 
     # dead/harvested/and ingrowth trees have reduced effect on stand variables
-    mutate(weight = ifelse(code %in% c(1,2,3,15), weight /2, weight)) %>%
+    mutate(weight_mid = ifelse(code %in% c(1), weight_mid /2, weight_mid)) %>%
 
     summarise(stand_BA_mid = sum(BA_mid*weight_mid, na.rm = TRUE),
               stand_n_mid = sum(weight_mid, na.rm = T)

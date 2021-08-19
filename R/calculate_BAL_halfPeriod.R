@@ -28,8 +28,10 @@ calculate_BAL_halfPeriod <- function(df){
 
   df$BAL_mid <- NULL
 
-  # ingrowth / harvested and dead trees get reduced weight
-  temp <- mutate(df, BA_ha_mid = BA_mid * weight_mid)
+  # harvested trees get reduced weight
+  temp <- mutate(df,
+                 weight_mid = ifelse(code %in% c(1), weight_mid /2, weight_mid),
+                 BA_ha_mid = BA_mid * weight_mid)
 
   temp <- select(temp, year, plotID, treeID, BA_ha_mid)
 

@@ -43,6 +43,22 @@ crownHeight_prediction <- function(df_fit,  df_predict,
   data_above_threshold <- droplevels(df_fit[df_fit$species %in% names(crownHeight_data)[crownHeight_data >= species_n_threshold],,drop=FALSE])
   unique_dv <- unique(data_above_threshold$species)
 
+  # check if there is any unique_speciesGroup missing
+  if (any(!(unique(df_predict$speciesGroup)%in% uniq_tSk))){
+
+    missing_spG <-  unique(df_predict$speciesGroup)[!(unique(df_predict$speciesGroup)%in% uniq_tSk)]
+    unique_species_missing_spG <- unique(df_predict[df_predict$speciesGroup==missing_spG,"species"])
+
+    # are these already in unique_dv?
+    if (any(!(missing_spG %in% unique_dv))){
+
+      # If not, append it
+      uniq_tSk <- c(missing_spG, uniq_tSk)
+
+    }
+
+  }
+
   ######################################################################
   ######################################################################
 
