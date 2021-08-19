@@ -26,6 +26,12 @@ species <- NULL
 mortality <- NULL
 mortality_pred <- NULL
 p_mortality <- NULL
+BA <- NULL
+BAL <- NULL
+height <- NULL
+crownHeight <- NULL
+stand_BA <- NULL
+stand_n <- NULL
 
   if (sim_mortality == TRUE){
 

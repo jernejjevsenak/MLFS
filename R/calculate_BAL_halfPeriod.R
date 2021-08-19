@@ -13,12 +13,17 @@ calculate_BAL_halfPeriod <- function(df){
   plotID <- NULL
   code <- NULL
   weight <- NULL
+  weight_mid <- NULL
   BA <- NULL
+  BA_mid <- NULL
   treeID <- NULL
   BA_ha <- NULL
+  BA_ha_mid <- NULL
   count <- NULL
   BAL <- NULL
+  BAL_mid <- NULL
 
+  df$BAL_mid <- NA
   initial_colnames <- colnames(df)
 
   df$BAL_mid <- NULL

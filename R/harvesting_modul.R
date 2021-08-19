@@ -21,6 +21,7 @@ simulate_harvesting <- function(df, harvesting_sum,
   volume <- NULL
   volume_mid <- NULL
   weight <- NULL
+  weight_mid <- NULL
   volume_ha <- NULL
   col_sum <- NULL
   code <- NULL

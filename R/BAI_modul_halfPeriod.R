@@ -10,7 +10,8 @@ BAI_prediction_halfPeriod <- function(df_fit, df_predict,
 
   # Define global variables
   code <- NULL
-  BA<- NULL
+  BA <- NULL
+  BA_mid <- NULL
   volume<- NULL
   BAI<- NULL
   BAI_new<- NULL
@@ -41,6 +42,8 @@ if (include_climate == TRUE){
   site_vars <- c(site_vars, "p_sum", "t_avg")
 
 }
+
+  summary(initial_df)
 
 formula <- as.formula(paste0("BAI ~ BA + BAL + stand_BA + stand_n + species +", paste(site_vars, collapse = "+")))
 

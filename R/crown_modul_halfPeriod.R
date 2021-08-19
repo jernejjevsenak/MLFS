@@ -16,7 +16,9 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
   year <- NULL
   BA <- NULL
   crownHeight <- NULL
+  crownHeight_mid <- NULL
   height <- NULL
+  height_mid <- NULL
   p_height <- NULL
   key_temp <- NULL
   key <- NULL

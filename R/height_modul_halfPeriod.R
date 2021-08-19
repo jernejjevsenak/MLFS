@@ -19,6 +19,7 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
   year <- NULL
   BA <- NULL
   height <- NULL
+  height_mid <- NULL
   p_BA <- NULL
   key_temp <- NULL
   key <- NULL
@@ -35,7 +36,7 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
   ###################
 
   # Remove trees withour BA
-  # no_BA <- filter(df_predict, is.na(BA))
+  # no_BA <- filter(df_predict, is.na(BA_mid))
 
   ##################### Loop for all traiff groups ########################
   # We define here strategy: if there are enough measurements, we calculate heights for species
@@ -120,8 +121,8 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
       # 1 predictions for BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
 
-      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
-      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
+      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA_mid))
+      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA_mid))
       dv_temporal_predict_noNA$height_mid <- predict(mod1, newdata =dv_temporal_predict_noNA)
 
 
@@ -177,7 +178,7 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
     dv_temporal_fit <- rename(dv_temporal_fit, "BA_mid" = "BA")
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
-    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
+    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA_mid))
 
 
     if (height_model == "brnn"){
@@ -213,8 +214,8 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
       # 1 predictions for BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
 
-      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
-      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
+      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA_mid))
+      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA_mid))
       dv_temporal_predict_noNA$height_mid <- predict(mod1, newdata =dv_temporal_predict_noNA)
 
 

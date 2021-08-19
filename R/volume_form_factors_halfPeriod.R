@@ -6,6 +6,8 @@
 vol_form_factors_halfPeriod <- function(df, form_factors = NULL, form_factors_level = "species",
                              uniform_form_factor = 0.42){
 
+  volume_mid <- NULL
+
   initial_colnames <- colnames(df)
 
   # specify form factors

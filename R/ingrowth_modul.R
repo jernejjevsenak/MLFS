@@ -264,10 +264,21 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   new_trees$volume <- NA
   new_trees$p_height <- NA
   new_trees$p_crownHeight <- NA
+
+  new_trees$BA_mid<- NA
+  new_trees$BAI_mid<- NA
+  new_trees$weight_mid<- NA
+  new_trees$height_mid<- NA
+  new_trees$crownHeight_mid<- NA
+  new_trees$volume_mid<- NA
   # new_trees$protected <- NA
 
   new_trees$t_avg <- NA
   new_trees$p_sum <- NA
+
+  new_trees$BAL_mid <- NA
+  new_trees$stand_BA_mid <- NA
+  new_trees$stand_n_mid <- NA
 
   protected_df <- df_before %>% group_by(plotID) %>% summarise(protected = median(protected))
 

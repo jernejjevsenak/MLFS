@@ -8,9 +8,15 @@ export(height_prediction)
 export(predict_ingrowth)
 export(predict_mortality)
 export(transform_data)
-export(volume_whole_tree)
-export(volume_merchantable)
-export(vol_tariffs)
+
+export(BAI_prediction_halfPeriod)
+export(calculate_BAL_halfPeriod)
+export(calculate_standVars)
+export(crownHeight_prediction_halfPeriod)
+export(height_prediction_halfPeriod)
+export(volume_whole_tree_halfPeriod)
+export(volume_merchantable_halfPeriod)
+export(vol_tariffs_halfPeriod)
 
 import("lmfor")
 importFrom("stats", "D", "as.formula", "glm", "lm",

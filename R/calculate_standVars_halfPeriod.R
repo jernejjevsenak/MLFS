@@ -13,7 +13,9 @@ calculate_standVars_halfPeriod <- function(df){
   plotID <- NULL
   code <- NULL
   weight <- NULL
+  weight_mid <- NULL
   BA <- NULL
+  BA_mid <- NULL
 
   df$stand_BA_mid <- NULL
   df$stand_n_mid <- NULL
