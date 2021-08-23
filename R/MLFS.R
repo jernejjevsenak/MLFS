@@ -771,11 +771,11 @@ MLFS <- function(data_NFI, data_site,
   }
 
   # Select columns for the output
-  final_calculations <- dplyr::select(do.call(rbind, list_results),
+  final_calculations <- dplyr::select(do.call(bind_rows, list_results),
          "plotID", "treeID", "species", "speciesGroup", "year", "code",
          "weight", "height", "p_height", "height_mid","crownHeight", "p_crownHeight",
-         "crownHeight_mid", "BA", "p_BA", "BA_mid", "BAI",
-         "volume", "p_volume", "volume_mid","stand_BA", "stand_n", "BAL",
+         "crownHeight_mid", "BA", "p_BA", "BAI",
+         "volume", "p_volume", "p_volume_mid","stand_BA", "stand_n", "BAL",
          site_vars)
 
   final_ouputs <- list(

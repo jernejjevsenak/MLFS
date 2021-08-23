@@ -17,6 +17,7 @@ BAI_prediction <- function(df_fit, df_predict,
   volume<- NULL
   BAI<- NULL
   BAI_new<- NULL
+  volume_mid<- NULL
   year<- NULL
   species<- NULL
   plotID<- NULL
