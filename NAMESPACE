@@ -25,7 +25,8 @@ importFrom("utils", "capture.output", "setTxtProgressBar", "txtProgressBar")
 importFrom("magrittr", "%>%")
 importFrom("randomForest", "randomForest")
 importFrom("dplyr", "summarise", "group_by", "filter", "select", "mutate",
-           "arrange", "rename", "summarise_all", "distinct", "row_number")
+           "arrange", "rename", "summarise_all", "distinct", "row_number",
+           "bind_rows")
 importFrom("tidyselect", "all_of")
 importFrom("tidyr", "replace_na")
 importFrom("naivebayes", "naive_bayes")
