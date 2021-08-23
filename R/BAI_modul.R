@@ -33,7 +33,11 @@ BAI_prediction <- function(df_fit, df_predict,
 dead_trees <-filter(df_predict, code %in%  c(1,2)) %>%
     mutate(p_BA = BA,
            p_height = height,
+           p_crownHeight = crownHeight,
            p_volume = volume,
+
+           p_volume_mid = volume_mid,
+
            BA = NA,
            BAI = NA,
            height = NA,
@@ -161,6 +165,9 @@ for (M in unique_dv){
                                        p_volume = volume,
                                        p_height = height,
                                        p_crownHeight = crownHeight,
+
+                                       p_volume_mid = volume_mid,
+
                                        BA = BA + BAI_new, year = year,
                                        height = NA, crownHeight = NA,
                                        stand_BA = NA, stand_n = NA, BAL = NA, BAI = BAI_new,

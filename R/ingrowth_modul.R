@@ -37,6 +37,10 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
     site_vars_A <- c(site_vars, "p_sum", "t_avg")
 
+  } else {
+
+    site_vars_A <- site_vars
+
   }
 
   sp_group_data <- select(df_before, species, speciesGroup) %>% distinct()
@@ -268,6 +272,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   new_trees$BAI <- NA
   new_trees$p_BA <- NA
   new_trees$p_volume <- NA
+  new_trees$p_volume_mid <- NA
   new_trees$volume <- NA
   new_trees$p_height <- NA
   new_trees$p_crownHeight <- NA
@@ -280,8 +285,14 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   new_trees$volume_mid<- NA
 
   # new_trees$protected <- NA
-  #new_trees$t_avg <- NA
-  #new_trees$p_sum <- NA
+
+  if (include_climate == FALSE){
+    new_trees$t_avg <- NA
+    new_trees$p_sum <- NA
+
+  }
+
+
 
   new_trees$BAL_mid <- NA
   new_trees$stand_BA_mid <- NA

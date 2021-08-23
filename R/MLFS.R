@@ -359,6 +359,8 @@ MLFS <- function(data_NFI, data_site,
                                           species_n_threshold = species_n_threshold,
                                           include_climate = include_climate)
 
+
+
   # Next, we simulate height and crownHeight based on half period attributes
 
 
@@ -422,6 +424,7 @@ MLFS <- function(data_NFI, data_site,
     stop("Please define volume calculations: form_factors, volume_functions or tariffs")
 
   }
+
 
 
   # Ingrowth is now added, BAL and stand variables have changed. We therefore
@@ -491,9 +494,15 @@ MLFS <- function(data_NFI, data_site,
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
 
+  initial_df$p_volume_mid <- NA
+
   sim = 2 # at some point, delete this
 
   for (sim in 2:sim_steps){
+
+
+
+
 
     # Simulate mortality
     mortality_outputs <- predict_mortality(df_fit = data_mortality,
@@ -539,6 +548,9 @@ MLFS <- function(data_NFI, data_site,
                                         )
     }
 
+
+
+
     # Simulate BAI
     BAI_outputs <- BAI_prediction(df_fit = data_BAI,
                                  df_predict = initial_df,
@@ -548,6 +560,7 @@ MLFS <- function(data_NFI, data_site,
                                  include_climate = include_climate,
                                  eval_model_BAI = set_eval_BAI,
                                  k = k, blocked_cv = blocked_cv)
+
     # You might lose trees without BAI measurements! Be aware. Include warning!
 
     initial_df <- BAI_outputs$predicted_BAI
@@ -584,6 +597,11 @@ MLFS <- function(data_NFI, data_site,
       set_eval_ingrowth <- FALSE
 
     }
+
+
+    filter(initial_df, code == 1)
+
+
 
     # Ingrowth is now added, BAL and stand variables have changed. We therefore
     # update all variables
