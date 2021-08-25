@@ -26,6 +26,11 @@ BAI_prediction <- function(df_fit, df_predict,
   BAI_pred<- NULL
   height <- NULL
   crownHeight <- NULL
+  BA_mid <- NULL
+  crownHeight_mid <- NULL
+  height_mid <- NULL
+  weight <- NULL
+  weight_mid <- NULL
 
 #####################################
 # 2 Predict BAI for next NFI period #

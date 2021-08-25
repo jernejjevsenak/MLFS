@@ -776,7 +776,7 @@ MLFS <- function(data_NFI, data_site,
          "crownHeight", "p_crownHeight", "crownHeight_mid", "p_crownHeight_mid",
          "BA", "p_BA", "BA_mid", "p_BA_mid",
          "volume", "p_volume", "volume_mid", "p_volume_mid",
-         "BAI","BAI_mid"
+         "BAI","BAI_mid",
          "stand_BA", "stand_n", "BAL",
          site_vars)
 

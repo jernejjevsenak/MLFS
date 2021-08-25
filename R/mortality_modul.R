@@ -67,6 +67,7 @@ stand_n <- NULL
 
   # YOU CAN MANUALLY SET THE MORTALITY SHARE
   if (is.na(mortality_share)){
+
     mortality_share <- sum(df_fit$code == 2)/nrow(df_fit)
 
     print(paste0("Estimated moratlity share is ", round(mortality_share, 2)))
@@ -185,14 +186,20 @@ stand_n <- NULL
 
   df_predict <- arrange(df_predict, -p_mortality)
 
-  cut_th <- round(nrow(df_predict) * mortality_share)
+  # cut_th <- round(nrow(df_predict) * mortality_share)
+  df_predict$vol_ha <- df_predict$volume * df_predict$weight
+  volume_total <- sum(df_predict$vol_ha)
 
-  df_predict[c(1:cut_th), "code"] <- 2
+  df_predict <- mutate(df_predict, col_sum = cumsum(replace_na(vol_ha, 0)),
+                code = ifelse(col_sum < (volume_total * mortality_share), 2, 0))
 
-  df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
-  df_predict[c((cut_th+1):nrow(df_predict)), "code"] <- 0
+  # df_predict[c(1:cut_th), "code"] <- 2
+  # df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
+  # df_predict[c((cut_th+1):nrow(df_predict)), "code"] <- 0
 
   df_predict$p_mortality <- NULL
+  df_predict$col_sum <- NULL
+  df_predict$vol_ha <- NULL
 
   } else if (sim_mortality == FALSE){
 
@@ -204,8 +211,7 @@ stand_n <- NULL
 
     model_mortality <- paste0("sim_mortality is set to FALSE.",
                                 "Mortality is not simulated. model_mortality is not available.")
-
-  }
+    }
 
   final_output_list <- list(
 
