@@ -191,7 +191,7 @@ if (sim_mortality == TRUE){
   # cut_th <- round(nrow(df_predict) * mortality_share)
   df_predict$vol_ha_mid <- df_predict$volume_mid * df_predict$weight_mid
 
-  volume_total <- sum(df_predict$vol_ha_mid)
+  volume_total <- sum(df_predict$vol_ha_mid, na.rm = TRUE)
 
   df_predict <- mutate(df_predict, col_sum = cumsum(replace_na(vol_ha_mid, 0)),
                 code = ifelse(col_sum < (volume_total * mortality_share), 2, 0))
