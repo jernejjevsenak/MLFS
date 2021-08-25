@@ -33,7 +33,7 @@ crownHeight <- NULL
 stand_BA <- NULL
 stand_n <- NULL
 col_sum <- NULL
-vol_ha <- NULL
+vol_ha_mid <- NULL
 
 if (sim_mortality == TRUE){
 
@@ -189,19 +189,21 @@ if (sim_mortality == TRUE){
   df_predict <- arrange(df_predict, -p_mortality)
 
   # cut_th <- round(nrow(df_predict) * mortality_share)
-  df_predict$vol_ha <- df_predict$volume * df_predict$weight
-  volume_total <- sum(df_predict$vol_ha)
+  df_predict$vol_ha_mid <- df_predict$volume_mid * df_predict$weight_mid
 
-  df_predict <- mutate(df_predict, col_sum = cumsum(replace_na(vol_ha, 0)),
+  volume_total <- sum(df_predict$vol_ha_mid)
+
+  df_predict <- mutate(df_predict, col_sum = cumsum(replace_na(vol_ha_mid, 0)),
                 code = ifelse(col_sum < (volume_total * mortality_share), 2, 0))
 
   # df_predict[c(1:cut_th), "code"] <- 2
-  # df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
+
+  df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
   # df_predict[c((cut_th+1):nrow(df_predict)), "code"] <- 0
 
   df_predict$p_mortality <- NULL
   df_predict$col_sum <- NULL
-  df_predict$vol_ha <- NULL
+  df_predict$vol_ha_mid <- NULL
 
   } else if (sim_mortality == FALSE){
 

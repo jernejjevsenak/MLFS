@@ -596,11 +596,6 @@ MLFS <- function(data_NFI, data_site,
 
     }
 
-
-    filter(initial_df, code == 1)
-
-
-
     # Ingrowth is now added, BAL and stand variables have changed. We therefore
     # update all variables
     initial_df <- calculate_BAL(initial_df)
