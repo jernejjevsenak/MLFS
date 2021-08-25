@@ -32,8 +32,10 @@ height <- NULL
 crownHeight <- NULL
 stand_BA <- NULL
 stand_n <- NULL
+col_sum <- NULL
+vol_ha <- NULL
 
-  if (sim_mortality == TRUE){
+if (sim_mortality == TRUE){
 
   if (include_climate == TRUE){
 
