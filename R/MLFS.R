@@ -161,6 +161,7 @@ MLFS <- function(data_NFI, data_site,
   BAL <- NULL
   ingrowth_small <- NULL
   ingrowth_big <- NULL
+  n <- NULL
 
   # NFI codes
   ## 0 (normal)
