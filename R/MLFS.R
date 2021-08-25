@@ -758,8 +758,6 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- calculate_standVars_halfPeriod(df = initial_df)
 
     # Save results
-    print(group_by(initial_df, year, code) %>% summarise(n()))
-
     list_results[[sim]] <- initial_df
 
     setTxtProgressBar(pb,sim) # progress bar
