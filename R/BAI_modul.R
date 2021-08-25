@@ -33,13 +33,26 @@ BAI_prediction <- function(df_fit, df_predict,
 
 dead_trees <-filter(df_predict, code %in%  c(1,2)) %>%
     mutate(p_BA = BA,
+           p_weight = weight,
            p_height = height,
            p_crownHeight = crownHeight,
            p_volume = volume,
 
            p_volume_mid = volume_mid,
+           p_BA_mid = BA_mid,
+           p_weight_mid = weight_mid,
+           p_height_mid = height_mid,
+           p_crownHeight_mid = crownHeight_mid,
+
+           volume_mid = NA,
+           BA_mid = NA,
+           BAI_mid = NA,
+           weight_mid = NA,
+           height_mid = NA,
+           crownHeight_mid = NA,
 
            BA = NA,
+           weight = NA,
            BAI = NA,
            height = NA,
            crownHeight = NA)
@@ -165,12 +178,26 @@ for (M in unique_dv){
                                        p_BA = BA,
                                        p_volume = volume,
                                        p_height = height,
+                                       p_weight = weight,
                                        p_crownHeight = crownHeight,
 
                                        p_volume_mid = volume_mid,
+                                       p_BA_mid = BA_mid,
+                                       p_weight_mid = weight_mid,
+                                       p_height_mid = height_mid,
+                                       p_crownHeight_mid = crownHeight_mid,
+
+                                       volume_mid = NA,
+                                       BA_mid = NA,
+                                       BAI_mid = NA,
+                                       weight_mid = NA,
+                                       height_mid = NA,
+                                       crownHeight_mid = NA,
+
 
                                        BA = BA + BAI_new, year = year,
-                                       height = NA, crownHeight = NA,
+                                       height = NA,
+                                       crownHeight = NA,
                                        stand_BA = NA, stand_n = NA, BAL = NA, BAI = BAI_new,
                                        BAI_new = NULL, BA_new = NULL,
                                        weight = ifelse(BA > 0.07068583, 16.67, 50))
@@ -262,11 +289,29 @@ for (M in uniq_tSk){
   dv_temporal_predict$BAI_new <- predict(rf_mod, dv_temporal_predict)
 
   dv_temporal_predict <- mutate(dv_temporal_predict,
-                                p_BA = BA, p_volume = volume, BA = BA + BAI_new, year = year,
-                            height = NA, crownHeight = NA,
-                            stand_BA = NA, stand_n = NA, BAL = NA, BAI = BAI_new,
-                            BAI_new = NULL, BA_new = NULL,
-                            weight = ifelse(BA > 0.07068583, 16.67, 50))
+                                p_BA = BA,
+                                p_weight = weight,
+                                p_volume = volume,
+                                BA = BA + BAI_new,
+                                year = year,
+
+                                p_volume_mid = volume_mid,
+                                p_BA_mid = BA_mid,
+                                p_weight_mid = weight_mid,
+                                p_height_mid = height_mid,
+                                p_crownHeight_mid = crownHeight_mid,
+
+                                volume_mid = NA,
+                                BA_mid = NA,
+                                BAI_mid = NA,
+                                weight_mid = NA,
+                                height_mid = NA,
+                                crownHeight_mid = NA,
+
+                                height = NA, crownHeight = NA,
+                                stand_BA = NA, stand_n = NA, BAL = NA, BAI = BAI_new,
+                                BAI_new = NULL, BA_new = NULL,
+                                weight = ifelse(BA > 0.07068583, 16.67, 50))
 
   list_predictions[[p]] <- dv_temporal_predict
   p = p + 1

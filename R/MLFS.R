@@ -359,8 +359,6 @@ MLFS <- function(data_NFI, data_site,
                                           species_n_threshold = species_n_threshold,
                                           include_climate = include_climate)
 
-
-
   # Next, we simulate height and crownHeight based on half period attributes
 
 
@@ -434,6 +432,12 @@ MLFS <- function(data_NFI, data_site,
 
   list_results <- list()
 
+  initial_df$p_BA_mid <- NA
+  initial_df$p_weight_mid <- NA
+  initial_df$p_height_mid <- NA
+  initial_df$p_crownHeight_mid <- NA
+  initial_df$p_volume_mid <- NA
+
   # Simulation starts and we save initial_df (without dead and harvested trees)
   list_results[[1]] <- initial_df
 
@@ -494,15 +498,9 @@ MLFS <- function(data_NFI, data_site,
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
 
-  initial_df$p_volume_mid <- NA
-
   sim = 2 # at some point, delete this
 
   for (sim in 2:sim_steps){
-
-
-
-
 
     # Simulate mortality
     mortality_outputs <- predict_mortality(df_fit = data_mortality,
@@ -773,9 +771,13 @@ MLFS <- function(data_NFI, data_site,
   # Select columns for the output
   final_calculations <- dplyr::select(do.call(bind_rows, list_results),
          "plotID", "treeID", "species", "speciesGroup", "year", "code",
-         "weight", "height", "p_height", "height_mid","crownHeight", "p_crownHeight",
-         "crownHeight_mid", "BA", "p_BA", "BAI",
-         "volume", "p_volume", "p_volume_mid","stand_BA", "stand_n", "BAL",
+         "weight", "p_weight", "weight_mid", "p_weight_mid",
+         "height", "p_height", "height_mid","p_height_mid",
+         "crownHeight", "p_crownHeight", "crownHeight_mid", "p_crownHeight_mid",
+         "BA", "p_BA", "BA_mid", "p_BA_mid",
+         "volume", "p_volume", "volume_mid", "p_volume_mid",
+         "BAI","BAI_mid"
+         "stand_BA", "stand_n", "BAL",
          site_vars)
 
   final_ouputs <- list(

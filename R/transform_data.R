@@ -34,7 +34,9 @@ transform_data <- function(df, include_climate, df_climate, select_months_climat
     df_temp_year_before <- select(df_temp_year_before, plotID, treeID, BA, height, crownHeight)
     colnames(df_temp_year_before)[3:5] <- c("p_BA", "p_height", "p_crownHeight")
     df_temp <- merge(df_temp, df_temp_year_before, by = c("plotID", "treeID"), all.x = TRUE)
-    df_temp <- mutate(df_temp, BAI = BA - p_BA)
+    df_temp <- mutate(df_temp, BAI = BA - p_BA,
+                      weight = ifelse(BA > 0.07068583, 16.67, 50),
+                      p_weight = ifelse(p_BA > 0.07068583, 16.67, 50))
 
     if (include_climate == TRUE){
 

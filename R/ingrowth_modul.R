@@ -271,11 +271,18 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   new_trees$crownHeight <- NA
   new_trees$BAI <- NA
   new_trees$p_BA <- NA
+  new_trees$p_weight <- NA
   new_trees$p_volume <- NA
   new_trees$p_volume_mid <- NA
   new_trees$volume <- NA
   new_trees$p_height <- NA
   new_trees$p_crownHeight <- NA
+  new_trees$p_height <- NA
+
+  new_trees$p_BA_mid <- NA
+  new_trees$p_weight_mid <- NA
+  new_trees$p_height_mid <- NA
+  new_trees$p_crownHeight_mid <- NA
 
   new_trees$BA_mid<- NA
   new_trees$BAI_mid<- NA
