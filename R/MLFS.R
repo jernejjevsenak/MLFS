@@ -277,7 +277,6 @@ MLFS <- function(data_NFI, data_site,
 
   initial_df <- data
 
-
   # 1 Calculate heights
   initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                   species_n_threshold = species_n_threshold,
@@ -521,6 +520,9 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df <- mortality_outputs$predicted_mortality
 
+
+
+
     if (set_eval_mortality == TRUE){
 
       eval_mortality_output <- mortality_outputs$eval_mortality
@@ -546,12 +548,7 @@ MLFS <- function(data_NFI, data_site,
                                         thinning_small_weight = thinning_small_weight
                                         )
 
-      print(group_by(initial_df, year, code) %>% summarise(n()))
-
     }
-
-
-
 
     # Simulate BAI
     BAI_outputs <- BAI_prediction(df_fit = data_BAI,
@@ -762,6 +759,7 @@ MLFS <- function(data_NFI, data_site,
 
     # Save results
     print(group_by(initial_df, year, code) %>% summarise(n()))
+
     list_results[[sim]] <- initial_df
 
     setTxtProgressBar(pb,sim) # progress bar

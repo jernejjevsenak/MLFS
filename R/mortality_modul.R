@@ -35,6 +35,15 @@ stand_n <- NULL
 col_sum <- NULL
 vol_ha_mid <- NULL
 
+
+print(sim_mortality)
+print(mortality_share)
+
+
+
+
+
+
 if (sim_mortality == TRUE){
 
   if (include_climate == TRUE){
@@ -193,8 +202,16 @@ if (sim_mortality == TRUE){
 
   volume_total <- sum(df_predict$vol_ha_mid, na.rm = TRUE)
 
-  df_predict <- mutate(df_predict, col_sum = cumsum(replace_na(vol_ha_mid, 0)),
-                code = ifelse(col_sum < (volume_total * mortality_share), 2, 0))
+  print(volume_total)
+
+  write.csv(df_predict, "df_predict_before.csv")
+
+  df_predict <- mutate(df_predict,
+                       col_sum = cumsum(replace_na(vol_ha_mid, 0)),
+                       code = ifelse(col_sum < (volume_total * mortality_share), 2, 0))
+
+  write.csv(df_predict, "df_predict_after.csv")
+
 
   # df_predict[c(1:cut_th), "code"] <- 2
 
@@ -216,6 +233,8 @@ if (sim_mortality == TRUE){
     model_mortality <- paste0("sim_mortality is set to FALSE.",
                                 "Mortality is not simulated. model_mortality is not available.")
     }
+
+  df_predict <- arrange(df_predict, plotID, treeID)
 
   final_output_list <- list(
 

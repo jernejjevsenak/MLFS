@@ -29,7 +29,14 @@ simulate_harvesting <- function(df, harvesting_sum,
   treeID <- NULL
   protected <- NULL
 
-  a <- df
+
+  b <- df[df$code == 2,]
+  a <- df[df$code != 2,]
+
+
+
+  group_by(df, code) %>% summarise(n())
+
 
 if (harvest_sum_level == 1){  # regional (national level)
 
@@ -166,7 +173,10 @@ if (harvest_sum_level == 1){  # regional (national level)
 
   }
 
-  df <- select(a, colnames(df))
+  a <- select(a, colnames(df))
+
+  df <- rbind(b, a)
+
   df <- arrange(df, plotID, treeID)
 
   return(df)
