@@ -52,10 +52,10 @@
 #' if harvesting_type is 'combined'
 #' @param final_cut_weight numeric value affecting the probability distribution
 #' of harvested trees. Greater value increases the share of harvested trees
-#' having larger DBH. Default is 10000000.
+#' having larger DBH. Default is 10.
 #' @param thinning_small_weight numeric value affecting the probability
 #' distribution of harvested trees. Greater value increases the share of
-#' harvested trees having smaller DBH. Default is 100000.
+#' harvested trees having smaller DBH. Default is 1.
 #' @param k the number of folds to be used in the k fold cross-validation
 #' @param blocked_cv logical, should the blocked cross-validation be used
 #' @param species_n_threshold a positive integer defining the minimum number of
@@ -130,8 +130,8 @@ MLFS <- function(data_NFI, data_site,
                  nb_laplace = 0,
                  harvesting_type = "final_cut",
                  share_thinning = 0.80,
-                 final_cut_weight = 10000000,
-                 thinning_small_weight = 100000,
+                 final_cut_weight = 10,
+                 thinning_small_weight = 1,
 
                  species_n_threshold = 100,
                  height_model = "naslund",
@@ -534,7 +534,7 @@ MLFS <- function(data_NFI, data_site,
     # Simulate harvesting
     if (sim_harvesting == TRUE){
 
-      initial_df <- simulate_harvesting(df = initial_df,
+      initial_df1 <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
@@ -547,6 +547,7 @@ MLFS <- function(data_NFI, data_site,
                                         final_cut_weight = final_cut_weight,
                                         thinning_small_weight = thinning_small_weight
                                         )
+
 
     }
 

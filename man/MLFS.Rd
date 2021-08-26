@@ -31,8 +31,8 @@ MLFS(
   nb_laplace = 0,
   harvesting_type = "final_cut",
   share_thinning = 0.8,
-  final_cut_weight = 1e+07,
-  thinning_small_weight = 1e+05,
+  final_cut_weight = 10,
+  thinning_small_weight = 1,
   species_n_threshold = 100,
   height_model = "naslund",
   crownHeight_model = "lm",
@@ -139,11 +139,11 @@ if harvesting_type is 'combined'}
 
 \item{final_cut_weight}{numeric value affecting the probability distribution
 of harvested trees. Greater value increases the share of harvested trees
-having larger DBH. Default is 10000000.}
+having larger DBH. Default is 10.}
 
 \item{thinning_small_weight}{numeric value affecting the probability
 distribution of harvested trees. Greater value increases the share of
-harvested trees having smaller DBH. Default is 100000.}
+harvested trees having smaller DBH. Default is 1.}
 
 \item{species_n_threshold}{a positive integer defining the minimum number of
 observations required to treat a species as an independent group}
