@@ -25,6 +25,7 @@ MLFS(
   plot_upscale_type,
   plot_upscale_factor,
   mortality_share = NA,
+  mortality_share_type = "volume",
   mortality_model = "rf",
   ingrowth_model = "glm",
   rf_mtry = NULL,
@@ -114,6 +115,10 @@ plot}
 of the volume which is to be the subject of mortality. If a single value,
 then it is used in all simulation steps. If a vector of values, the first
 value is used in the first step, the second in the second step, and so on.}
+
+\item{mortality_share_type}{character, it can be 'volume' or 'n_trees'. If
+'volume' then the mortality share relates to total standing volume, if
+'n_trees' then mortality share relates to the total number of standing trees}
 
 \item{mortality_model}{model to be used for mortality prediction: 'glm' for
 generalized linear models; 'rf' for random forest algorithm; 'naiveBayes' for

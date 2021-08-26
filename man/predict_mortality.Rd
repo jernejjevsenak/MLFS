@@ -9,6 +9,7 @@ predict_mortality(
   df_predict,
   df_climate,
   mortality_share = NA,
+  mortality_share_type = "volume",
   include_climate,
   site_vars,
   select_months_climate = c(1:12),

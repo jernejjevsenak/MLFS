@@ -41,6 +41,9 @@
 #' of the volume which is to be the subject of mortality. If a single value,
 #' then it is used in all simulation steps. If a vector of values, the first
 #' value is used in the first step, the second in the second step, and so on.
+#' @param mortality_share_type character, it can be 'volume' or 'n_trees'. If
+#' 'volume' then the mortality share relates to total standing volume, if
+#' 'n_trees' then mortality share relates to the total number of standing trees
 #' @param forest_area_ha the total area of all forest which are subject of the
 #' simulation.
 #' @param harvesting_type character, it could be 'random', 'final_cut',
@@ -124,6 +127,7 @@ MLFS <- function(data_NFI, data_site,
                  plot_upscale_factor,
 
                  mortality_share = NA,
+                 mortality_share_type = "volume",
                  mortality_model = "rf",
                  ingrowth_model = "glm",
                  rf_mtry = NULL,
@@ -505,6 +509,7 @@ MLFS <- function(data_NFI, data_site,
     # Simulate mortality
     mortality_outputs <- predict_mortality(df_fit = data_mortality,
                                            df_predict = initial_df,
+                                           mortality_share_type = mortality_share_type,
                                            df_climate = data_climate,
                                            site_vars = site_vars,
                                            sim_mortality = sim_mortality,

@@ -6,6 +6,7 @@
 #'
 
 predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = NA,
+                              mortality_share_type = "volume",
                               include_climate, site_vars, select_months_climate = c(1:12),
                               mortality_model = "rf", nb_laplace = 0,
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
@@ -188,23 +189,35 @@ if (sim_mortality == TRUE){
 
   df_predict <- arrange(df_predict, -p_mortality)
 
-  # cut_th <- round(nrow(df_predict) * mortality_share)
-  df_predict$vol_ha_mid <- df_predict$volume_mid * df_predict$weight_mid
 
-  volume_total <- sum(df_predict$vol_ha_mid, na.rm = TRUE)
+  if (mortality_share_type == "volume"){
 
-  df_predict <- mutate(df_predict,
-                       col_sum = cumsum(replace_na(vol_ha_mid, 0)),
-                       code = ifelse(col_sum < (volume_total * mortality_share), 2, 0))
+    df_predict$vol_ha_mid <- df_predict$volume_mid * df_predict$weight_mid
+    volume_total <- sum(df_predict$vol_ha_mid, na.rm = TRUE)
+    df_predict <- mutate(df_predict,
+                         col_sum = cumsum(replace_na(vol_ha_mid, 0)),
+                         code = ifelse(col_sum < (volume_total * mortality_share), 2, 0))
 
-  # df_predict[c(1:cut_th), "code"] <- 2
+    df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
 
-  df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
-  # df_predict[c((cut_th+1):nrow(df_predict)), "code"] <- 0
+    df_predict$p_mortality <- NULL
+    df_predict$col_sum <- NULL
+    df_predict$vol_ha_mid <- NULL
 
-  df_predict$p_mortality <- NULL
-  df_predict$col_sum <- NULL
-  df_predict$vol_ha_mid <- NULL
+  } else if (mortality_share_type == "n_trees"){
+
+    cut_th <- round(nrow(df_predict) * mortality_share)
+    df_predict[c(1:cut_th), "code"] <- 2
+    df_predict[c((cut_th+1):nrow(df_predict)), "code"] <- 0
+
+    df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
+
+  } else {
+
+    stop(paste0("mortality_share_type should be 'n_trees' or 'volume' but instead it is ", mortality_share_type))
+
+  }
+
 
   } else if (sim_mortality == FALSE){
 
