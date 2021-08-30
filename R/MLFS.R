@@ -576,8 +576,6 @@ MLFS <- function(data_NFI, data_site,
 
                                         df_weights = if (!is.null(data_harvesting_weights)) df_weights <- data_harvesting_weights[,c(1,sim)],
 
-
-
                                         harvest_sum_level = harvest_sum_level,
                                         plot_upscale_type = plot_upscale_type,
                                         plot_upscale_factor = plot_upscale_factor,
