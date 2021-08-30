@@ -7,6 +7,7 @@
 simulate_harvesting(
   df,
   harvesting_sum,
+  df_weights = NULL,
   harvesting_type = "random",
   share_thinning = 0.8,
   final_cut_weight = 1e+07,

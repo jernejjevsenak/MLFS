@@ -9,6 +9,9 @@
 #' details.
 #' @param data_climate data frame with climate data, covering the initial
 #' calibration period and all the years which will be included in the simulation
+#' @param data_harvesting_weights data frame with harvesting weights for each
+#' species. The first column represents species code, each next column consists
+#' of species harvesting weights related to each step
 #' @param sim_mortality logical, should mortality be simulated?
 #' @param sim_ingrowth logical, should ingrowth be simulated?
 #' @param data_volF_param optional, data frame with species-specific volume
@@ -109,6 +112,7 @@ MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
                  data_climate = NULL,
                  data_volF_param = NULL,
+                 data_harvesting_weights = NULL,
                  form_factors = NULL,
                  form_factors_level = 'species_plot',
                  uniform_form_factor = 0.42,
@@ -466,6 +470,20 @@ MLFS <- function(data_NFI, data_site,
     harvesting_sum <- rep(harvesting_sum, sim_steps)
   }
 
+  # If the ncol of data_harvesting_weights is 2, we replicate the column using the sim_steps
+  if (!is.null(data_harvesting_weights)){
+    if (ncol(data_harvesting_weights) == 2){
+
+      data_harvesting_weights_column <- data_harvesting_weights[,2]
+
+      for (missing_step in 2:sim_steps){
+
+        data_harvesting_weights[,missing_step +1] <- data_harvesting_weights_column
+
+      }
+    }
+  }
+
   if (length(mortality_share) < sim_steps && length(mortality_share) > 1){
 
     n_missing <- sim_steps - length(mortality_share)
@@ -499,6 +517,20 @@ MLFS <- function(data_NFI, data_site,
   }
 
 
+  # If the ncol of data_harvesting_weights is > 2, we replicate the column using the sim_steps
+  if (!is.null(data_harvesting_weights)){
+    if (ncol(data_harvesting_weights) > 2 && ncol(data_harvesting_weights) < (sim_steps + 1)){
+
+      data_harvesting_weights_column <- data_harvesting_weights[,2]
+
+      for (missing_step in (ncol(data_harvesting_weights):sim_steps)){
+
+        data_harvesting_weights[,missing_step +1] <- data_harvesting_weights_column
+
+      }
+    }
+  }
+
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
 
@@ -525,9 +557,6 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df <- mortality_outputs$predicted_mortality
 
-
-
-
     if (set_eval_mortality == TRUE){
 
       eval_mortality_output <- mortality_outputs$eval_mortality
@@ -539,19 +568,22 @@ MLFS <- function(data_NFI, data_site,
     # Simulate harvesting
     if (sim_harvesting == TRUE){
 
-      initial_df <- simulate_harvesting(df = initial_df,
+      initial_df1 <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
                                         share_thinning = share_thinning[sim-1],
+
+                                        df_weights = if (!is.null(data_harvesting_weights)) df_weights <- data_harvesting_weights[,c(1,sim)],
+
+
 
                                         harvest_sum_level = harvest_sum_level,
                                         plot_upscale_type = plot_upscale_type,
                                         plot_upscale_factor = plot_upscale_factor,
 
                                         final_cut_weight = final_cut_weight,
-                                        thinning_small_weight = thinning_small_weight
-                                        )
+                                        thinning_small_weight = thinning_small_weight)
 
 
     }
