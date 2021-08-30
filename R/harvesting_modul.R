@@ -92,7 +92,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                         a$share_volume * final_cut_weight,
     #                         a$share_volume * (1/final_cut_weight))
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$BA_mid ^ (a$harvesting_weight * final_cut_weight))
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (a$harvesting_weight)) * final_cut_weight)
 
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
@@ -111,7 +111,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                         a$share_volume * thinning_small_weight,
     #                         a$share_volume * (1/thinning_small_weight))
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$BA_mid ^ (a$harvesting_weight * -thinning_small_weight))
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (-thinning_small_weight)) * a$harvesting_weight)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
@@ -139,7 +139,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                           aFC$share_volume * final_cut_weight,
     #                           aFC$share_volume * (1/final_cut_weight))
 
-    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = aFC$BA_mid ^ (aFC$harvesting_weight * final_cut_weight))
+    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = (aFC$BA_mid ^ final_cut_weight) * aFC$harvesting_weight)
     aFC <- aFC[sampled_rows, ]
     aFC <- arrange(aFC, protected)
 
@@ -163,7 +163,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                         aTH$share_volume * thinning_small_weight,
     #                         aTH$share_volume * (1/thinning_small_weight))
 
-    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = aTH$BA_mid ^ (aTH$harvesting_weight * -thinning_small_weight))
+    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$harvesting_weight)
     aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
                   code = ifelse(col_sum < (harvesting_sum * share_thinning), 1, code))
 
