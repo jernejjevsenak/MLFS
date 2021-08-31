@@ -4,7 +4,8 @@
 #' @keywords internal
 
 simulate_harvesting <- function(df, harvesting_sum,
-                                df_weights = NULL,
+                                df_thinning_weights = NULL,
+                                df_final_cut_weights = NULL,
                                 harvesting_type = "random",
                                 share_thinning = 0.8,
                                 final_cut_weight = 10000000,
@@ -33,17 +34,27 @@ simulate_harvesting <- function(df, harvesting_sum,
   b <- df[df$code == 2,]
   a <- df[df$code != 2,]
 
-  if(!is.null(df_weights)){
+  if(!is.null(df_thinning_weights)){
 
-    a <- merge(a, df_weights, by = 'species')
-    colnames(a)[ncol(a)] <- 'harvesting_weight'
+    a <- merge(a, df_thinning_weights, by = 'species', all.x = TRUE)
+    colnames(a)[ncol(a)] <- 'thinning_weight'
 
   } else {
 
-    a$harvesting_weight <- 1
+    a$thinning_weight <- 1
 
   }
 
+  if(!is.null(df_final_cut_weights)){
+
+    a <- merge(a, df_final_cut_weights, by = 'species', all.x = TRUE)
+    colnames(a)[ncol(a)] <- 'final_cut_weight'
+
+  } else {
+
+    a$final_cut_weight <- 1
+
+  }
 
 if (harvest_sum_level == 1){  # regional (national level)
 
@@ -77,7 +88,7 @@ if (harvest_sum_level == 1){  # regional (national level)
   # 1 random harvesting
   if (harvesting_type == "random"){
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$harvesting_weight)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$thinning_weight)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
@@ -92,7 +103,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                         a$share_volume * final_cut_weight,
     #                         a$share_volume * (1/final_cut_weight))
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (a$harvesting_weight)) * final_cut_weight)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (a$final_cut_weight)) * final_cut_weight)
 
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
@@ -111,7 +122,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                         a$share_volume * thinning_small_weight,
     #                         a$share_volume * (1/thinning_small_weight))
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (-thinning_small_weight)) * a$harvesting_weight)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (-thinning_small_weight)) * a$thinning_weight)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
@@ -139,7 +150,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                           aFC$share_volume * final_cut_weight,
     #                           aFC$share_volume * (1/final_cut_weight))
 
-    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = (aFC$BA_mid ^ final_cut_weight) * aFC$harvesting_weight)
+    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = (aFC$BA_mid ^ final_cut_weight) * aFC$final_cut_weight)
     aFC <- aFC[sampled_rows, ]
     aFC <- arrange(aFC, protected)
 
@@ -163,7 +174,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #                         aTH$share_volume * thinning_small_weight,
     #                         aTH$share_volume * (1/thinning_small_weight))
 
-    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$harvesting_weight)
+    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$thinning_weight)
     aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
                   code = ifelse(col_sum < (harvesting_sum * share_thinning), 1, code))
 
@@ -173,7 +184,6 @@ if (harvest_sum_level == 1){  # regional (national level)
     #############
 
     a <- rbind(aTH, aFC)
-
 
   } else {
 

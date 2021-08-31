@@ -10,7 +10,8 @@ MLFS(
   data_tariffs = NULL,
   data_climate = NULL,
   data_volF_param = NULL,
-  data_harvesting_weights = NULL,
+  data_thinning_weights = NULL,
+  data_final_cut_weights = NULL,
   form_factors = NULL,
   form_factors_level = "species_plot",
   uniform_form_factor = 0.42,
@@ -67,9 +68,13 @@ calibration period and all the years which will be included in the simulation}
 \item{data_volF_param}{optional, data frame with species-specific volume
 function parameters}
 
-\item{data_harvesting_weights}{data frame with harvesting weights for each
+\item{data_thinning_weights}{data frame with thinning weights for each
 species. The first column represents species code, each next column consists
-of species harvesting weights related to each step}
+of species-specific thinning weights applied in each simulation step}
+
+\item{data_final_cut_weights}{data frame with final cut weights for each
+species. The first column represents species code, each next column consists
+of species-specific final cut weights applied in each simulation step}
 
 \item{form_factors}{optional, data frame with species-specific form factors}
 
