@@ -179,6 +179,9 @@ for (M in unique_dv){
   dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
   dv_temporal_predict$BAI_new <- predict(rf_mod, dv_temporal_predict)
 
+  # predicted BAI can't be less than 0
+  dv_temporal_predict$BAI_new <- ifelse(dv_temporal_predict$BAI_new < 0, 0, dv_temporal_predict$BAI_new)
+
   dv_temporal_predict <- mutate(dv_temporal_predict,
                                        p_BA = BA,
                                        p_volume = volume,
@@ -292,6 +295,8 @@ for (M in uniq_tSk){
   dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
 
   dv_temporal_predict$BAI_new <- predict(rf_mod, dv_temporal_predict)
+  # predicted BAI can't be less than 0
+  dv_temporal_predict$BAI_new <- ifelse(dv_temporal_predict$BAI_new < 0, 0, dv_temporal_predict$BAI_new)
 
   dv_temporal_predict <- mutate(dv_temporal_predict,
                                 p_BA = BA,

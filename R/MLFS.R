@@ -572,6 +572,7 @@ MLFS <- function(data_NFI, data_site,
 
   sim = 2 # at some point, delete this
 
+
   for (sim in 2:sim_steps){
 
     # Simulate mortality
@@ -757,8 +758,6 @@ MLFS <- function(data_NFI, data_site,
                                             rf_mtry = rf_mtry,
                                             species_n_threshold = species_n_threshold,
                                             include_climate = include_climate)
-
-
 
     # Next, we simulate height and crownHeight based on half period attributes
 
