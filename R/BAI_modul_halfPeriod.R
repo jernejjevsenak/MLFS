@@ -43,7 +43,7 @@ if (include_climate == TRUE){
 
 }
 
-formula <- as.formula(paste0("BAI ~ BA + BAL + stand_BA + stand_n + species +", paste(site_vars, collapse = "+")))
+formula <- as.formula(paste0("BAI ~ BA + BAL + stand_BA + stand_n + species +", paste(all_of(site_vars), collapse = "+")))
 
 # df_predict <-filter(df_predict, !(code %in% c(1,2)))
 

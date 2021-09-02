@@ -78,7 +78,7 @@ if (sim_mortality == TRUE){
   }
 
   formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid +",
-                               paste(site_vars, collapse = "+")))
+                               paste(all_of(site_vars), collapse = "+")))
 
   ##############
   # Eval phase #
@@ -130,7 +130,7 @@ if (sim_mortality == TRUE){
 
         train$mortality <- factor(train$mortality)
         model_mortality <- naive_bayes(formula, data = train, laplace = nb_laplace)
-        test$mortality_pred <- predict(model_mortality, test, type="prob")[,2]
+        suppressWarnings(test$mortality_pred <- predict(model_mortality, test, type="prob")[,2])
 
       } else {
 
@@ -179,7 +179,7 @@ if (sim_mortality == TRUE){
 
     df_fit$mortality <- factor(df_fit$mortality)
     model_mortality <- naive_bayes(formula, data = df_fit, laplace = nb_laplace)
-    df_predict$p_mortality <- predict(model_mortality, df_predict, type="prob")[,2]
+    suppressWarnings(df_predict$p_mortality <- predict(model_mortality, df_predict, type="prob")[,2])
 
   } else {
 

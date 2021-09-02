@@ -8,6 +8,30 @@ vol_form_factors <- function(df, form_factors = NULL, form_factors_level = "spec
 
   initial_colnames <- colnames(df)
 
+  # In case of form_factors_level = "species", make sure you have species in form factors data frame
+  if (form_factors_level == "species"){
+
+    if (!('species' %in% colnames(form_factors))){
+      stop("column 'species' is missing in form_factors data frame")
+    }
+
+    if ('plotID' %in% colnames(form_factors)){
+      stop("column 'plotID' should not be present in form_factors data frame")
+    }
+  }
+
+  # In case of form_factors_level = "species_plot", make sure you have species and plotID in form factors data frame
+  if (form_factors_level == "species_plot"){
+
+    if (!('species' %in% colnames(form_factors))){
+      stop("column 'species' is missing in form_factors data frame")
+    }
+
+    if (!('plotID' %in% colnames(form_factors))){
+      stop("column 'plotID' is missing in form_factors data frame")
+    }
+  }
+
   # specify form factors
   if (is.null(form_factors)){
 
