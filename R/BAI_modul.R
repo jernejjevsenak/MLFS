@@ -145,15 +145,15 @@ for (M in unique_dv){
 
       if (is.null(rf_mtry)){
 
-        rf_mod <- randomForest(formula, data = train)
+        rf_mod_species <- randomForest(formula, data = train)
 
       } else {
 
-        rf_mod <- randomForest(formula, data = train, mtry = rf_mtry)
+        rf_mod_species <- randomForest(formula, data = train, mtry = rf_mtry)
 
       }
 
-      test$BAI_pred <- predict(rf_mod, test)
+      test$BAI_pred <- predict(rf_mod_species, test)
 
       eval_list[[m_holder]] <- test
       m_holder = m_holder + 1
@@ -167,17 +167,17 @@ for (M in unique_dv){
 
   if (is.null(rf_mtry)){
 
-    rf_mod <- randomForest(formula, data = dv_temporal_fit)
+    rf_mod_species <- randomForest(formula, data = dv_temporal_fit)
 
   } else {
 
-    rf_mod <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
+    rf_mod_species <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
   }
 
   # Do the same for initial data
   dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
-  dv_temporal_predict$BAI_new <- predict(rf_mod, dv_temporal_predict)
+  dv_temporal_predict$BAI_new <- predict(rf_mod_species, dv_temporal_predict)
 
   # predicted BAI can't be less than 0
   dv_temporal_predict$BAI_new <- ifelse(dv_temporal_predict$BAI_new < 0, 0, dv_temporal_predict$BAI_new)
@@ -262,15 +262,15 @@ for (M in uniq_tSk){
 
       if (is.null(rf_mtry)){
 
-        rf_mod <- randomForest(formula, data = train)
+        rf_mod_speciesGroups <- randomForest(formula, data = train)
 
       } else {
 
-        rf_mod <- randomForest(formula, data = train, mtry = rf_mtry)
+        rf_mod_speciesGroups <- randomForest(formula, data = train, mtry = rf_mtry)
 
       }
 
-      test$BAI_pred <- predict(rf_mod, test)
+      test$BAI_pred <- predict(rf_mod_speciesGroups, test)
 
       eval_list[[m_holder]] <- test
       m_holder = m_holder + 1
@@ -284,17 +284,17 @@ for (M in uniq_tSk){
 
   if (is.null(rf_mtry)){
 
-    rf_mod <- randomForest(formula, data = dv_temporal_fit)
+    rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit)
 
   } else {
 
-    rf_mod <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
+    rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
   }
 
   dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
 
-  dv_temporal_predict$BAI_new <- predict(rf_mod, dv_temporal_predict)
+  dv_temporal_predict$BAI_new <- predict(rf_mod_speciesGroups, dv_temporal_predict)
   # predicted BAI can't be less than 0
   dv_temporal_predict$BAI_new <- ifelse(dv_temporal_predict$BAI_new < 0, 0, dv_temporal_predict$BAI_new)
 
@@ -354,7 +354,9 @@ DF_predictions <- rbind(dead_trees, DF_predictions_species, DF_predictions_sGrou
 final_output_list <- list(
 
   predicted_BAI = DF_predictions,
-  eval_BAI = data_eval_BAI
+  eval_BAI = data_eval_BAI,
+  rf_model_species = rf_mod_species,
+  rf_model_speciesGroups = rf_mod_speciesGroups
 
 )
 

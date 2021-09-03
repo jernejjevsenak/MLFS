@@ -134,11 +134,11 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     if (crownHeight_model == "lm"){
 
-      mod1 <- lm(crownHeight ~ ., data = temp_df)
+      model_species <- lm(crownHeight ~ ., data = temp_df)
 
     } else if(crownHeight_model == "brnn") {
 
-      capture.output(mod1 <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons))
+      capture.output(model_species <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons))
 
     }
 
@@ -146,7 +146,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
-    dv_temporal_predict_noNA$crownHeight_new <- predict(mod1, newdata = dv_temporal_predict_noNA)
+    dv_temporal_predict_noNA$crownHeight_new <- predict(model_species, newdata = dv_temporal_predict_noNA)
 
 
     if (sum(is.na(dv_temporal_predict$BA)) > 0){
@@ -175,7 +175,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
 
 
-    dv_temporal_predict_noNA$p_crownHeight_new <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
+    dv_temporal_predict_noNA$p_crownHeight_new <- predict(model_species, newdata = rename(dv_temporal_predict_noNA,
                                                                              "height_X" = "height",
                                                                              "height" = "p_height"))
 
@@ -276,11 +276,11 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     if (crownHeight_model == "lm"){
 
-      mod1 <- lm(crownHeight ~ ., data = temp_df)
+      model_speciesGroups <- lm(crownHeight ~ ., data = temp_df)
 
     } else if(crownHeight_model == "brnn") {
 
-      capture.output(mod1 <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons))
+      capture.output(model_speciesGroups <- brnn(crownHeight ~ ., data = temp_df, neurons = BRNN_neurons))
 
     }
 
@@ -289,7 +289,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
     dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
-    dv_temporal_predict_noNA$crownHeight_new <- predict(mod1, newdata = dv_temporal_predict_noNA)
+    dv_temporal_predict_noNA$crownHeight_new <- predict(model_speciesGroups, newdata = dv_temporal_predict_noNA)
 
 
 
@@ -324,7 +324,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
 
 
-    dv_temporal_predict_noNA$p_crownHeight_new <- predict(mod1, newdata = rename(dv_temporal_predict_noNA,
+    dv_temporal_predict_noNA$p_crownHeight_new <- predict(model_speciesGroups, newdata = rename(dv_temporal_predict_noNA,
                                                                                  "height_X" = "height",
                                                                                  "height" = "p_height"))
 
@@ -379,7 +379,9 @@ crownHeight_prediction <- function(df_fit,  df_predict,
   final_output_list <- list(
 
     predicted_crownHeight = data_crownHeight_predictions,
-    eval_crownHeight = data_eval_crownHeight_predictions
+    eval_crownHeight = data_eval_crownHeight_predictions,
+    model_species = model_species,
+    model_speciesGroups = model_speciesGroups
 
   )
 

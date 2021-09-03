@@ -97,17 +97,17 @@ height_prediction <- function(df_fit,  df_predict,
 
       if (height_pred_level == 1){
 
-        capture.output(mod1 <- brnn(height ~ BA + plotID, data = dv_temporal_fit, neurons = BRNN_neurons))
+        capture.output(mod_species <- brnn(height ~ BA + plotID, data = dv_temporal_fit, neurons = BRNN_neurons))
 
       } else {
 
-        capture.output(mod1 <- brnn(height ~ BA, data = dv_temporal_fit, neurons = BRNN_neurons))
+        capture.output(mod_species <- brnn(height ~ BA, data = dv_temporal_fit, neurons = BRNN_neurons))
 
       }
 
     } else {
 
-      mod1 <- lmfor::fithd(dv_temporal_fit$BA,
+      mod_species <- lmfor::fithd(dv_temporal_fit$BA,
                     dv_temporal_fit$height,
                     plot = dv_temporal_fit$plotID,
                     modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
@@ -167,7 +167,7 @@ height_prediction <- function(df_fit,  df_predict,
 
       eval_step <- dv_temporal_fit
 
-      eval_step$h_pred <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
+      eval_step$h_pred <- predict(mod_species, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 
       eval_list[[p]] <- eval_step
 
@@ -188,7 +188,7 @@ height_prediction <- function(df_fit,  df_predict,
 
       dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
       dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
-      dv_temporal_predict_noNA$height_new <- predict(mod1, newdata =dv_temporal_predict_noNA)
+      dv_temporal_predict_noNA$height_new <- predict(mod_species, newdata =dv_temporal_predict_noNA)
 
 
       if (sum(is.na(dv_temporal_predict$BA)) > 0){
@@ -218,7 +218,7 @@ height_prediction <- function(df_fit,  df_predict,
       }
 
 
-      dv_temporal_predict_noNA$p_height_new <- predict(mod1,
+      dv_temporal_predict_noNA$p_height_new <- predict(mod_species,
                                                    newdata = rename(dv_temporal_predict_noNA,
                                                                           "BA_temp" = "BA",
                                                                           "BA" = "p_BA"))
@@ -238,8 +238,8 @@ height_prediction <- function(df_fit,  df_predict,
 
     } else {
 
-      dv_temporal_predict$height_new <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
-      dv_temporal_predict$p_height_new <- predict(mod1, newdata = rename(dv_temporal_predict,
+      dv_temporal_predict$height_new <- predict(mod_species, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
+      dv_temporal_predict$p_height_new <- predict(mod_species, newdata = rename(dv_temporal_predict,
                                                                        "d" = "p_BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 
       dv_temporal_predict$height <- ifelse(is.na(dv_temporal_predict$height), dv_temporal_predict$height_new, dv_temporal_predict$height)
@@ -284,17 +284,17 @@ height_prediction <- function(df_fit,  df_predict,
 
       if (height_pred_level == 1){
 
-        capture.output(mod1 <- brnn(height ~ BA + plotID, data = dv_temporal_fit, neurons = BRNN_neurons))
+        capture.output(mod_speciesGroups <- brnn(height ~ BA + plotID, data = dv_temporal_fit, neurons = BRNN_neurons))
 
       } else {
 
-        capture.output(mod1 <- brnn(height ~ BA, data = dv_temporal_fit, neurons = BRNN_neurons))
+        capture.output(mod_speciesGroups <- brnn(height ~ BA, data = dv_temporal_fit, neurons = BRNN_neurons))
 
       }
 
     } else {
 
-      mod1 <- lmfor::fithd(dv_temporal_fit$BA,
+      mod_speciesGroups <- lmfor::fithd(dv_temporal_fit$BA,
                     dv_temporal_fit$height,
                     plot = dv_temporal_fit$plotID,
                     modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
@@ -355,7 +355,7 @@ height_prediction <- function(df_fit,  df_predict,
 
         eval_step <- dv_temporal_fit
 
-        eval_step$h_pred <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
+        eval_step$h_pred <- predict(mod_speciesGroups, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 
         eval_list[[p]] <- eval_step
 
@@ -376,7 +376,7 @@ height_prediction <- function(df_fit,  df_predict,
       dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
       dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
 
-      dv_temporal_predict_noNA$height_new <- predict(mod1, newdata =dv_temporal_predict_noNA)
+      dv_temporal_predict_noNA$height_new <- predict(mod_speciesGroups, newdata =dv_temporal_predict_noNA)
 
     if (sum(is.na(dv_temporal_predict$BA)) > 0){
 
@@ -405,7 +405,7 @@ height_prediction <- function(df_fit,  df_predict,
       }
 
 
-      dv_temporal_predict_noNA$p_height_new <- predict(mod1,
+      dv_temporal_predict_noNA$p_height_new <- predict(mod_speciesGroups,
                                                        newdata = rename(dv_temporal_predict_noNA,
                                                                         "BA_temp" = "BA",
                                                                         "BA" = "p_BA"))
@@ -426,8 +426,8 @@ height_prediction <- function(df_fit,  df_predict,
 
     } else {
 
-      dv_temporal_predict$height_new <- predict(mod1, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
-      dv_temporal_predict$p_height_new <- predict(mod1, newdata = rename(dv_temporal_predict,
+      dv_temporal_predict$height_new <- predict(mod_speciesGroups, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
+      dv_temporal_predict$p_height_new <- predict(mod_speciesGroups, newdata = rename(dv_temporal_predict,
                                                                        "d" = "p_BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 
       dv_temporal_predict$height <- ifelse(is.na(dv_temporal_predict$height), dv_temporal_predict$height_new, dv_temporal_predict$height)
@@ -480,7 +480,9 @@ height_prediction <- function(df_fit,  df_predict,
   final_output_list <- list(
 
     data_height_predictions = data_height_predictions,
-    data_height_eval = data_height_eval
+    data_height_eval = data_height_eval,
+    model_species = mod_species,
+    model_speciesGroups = mod_speciesGroups
 
   )
 

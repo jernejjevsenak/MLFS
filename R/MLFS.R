@@ -190,6 +190,7 @@ MLFS <- function(data_NFI, data_site,
 
   # String related to height model is converted to lowercase
   height_model <- tolower(height_model)
+  crownHeight_model <- tolower(crownHeight_model)
 
   # sim_steps should be positive
   if (sim_steps < 1){
@@ -255,7 +256,6 @@ MLFS <- function(data_NFI, data_site,
                                       blocked_cv = blocked_cv, k = k)
 
   data_mortality <- h_predictions$data_height_predictions
-
 
   Crown_h_predictions <- crownHeight_prediction(df_fit = data_mortality,
                                            df_predict = data_mortality,
@@ -671,6 +671,7 @@ MLFS <- function(data_NFI, data_site,
 
     }
 
+
     # Ingrowth is now added, BAL and stand variables have changed. We therefore
     # update all variables
     initial_df <- calculate_BAL(initial_df)
@@ -851,11 +852,22 @@ MLFS <- function(data_NFI, data_site,
   final_ouputs <- list(
 
     sim_results = final_calculations,
+
     height_eval = h_predictions$data_height_eval,
     crownHeight_eval = Crown_h_predictions$eval_crownHeight,
     mortality_eval = eval_mortality_output,
     ingrowth_eval = eval_ingrowth_output,
-    BAI_eval = eval_BAI_output
+    BAI_eval = eval_BAI_output,
+
+    height_model_species = h_predictions$model_species,
+    height_model_speciesGroups = h_predictions$model_speciesGroups,
+    crownHeight_model_species = Crown_h_predictions$model_species,
+    crownHeight_model_speciesGroups = Crown_h_predictions$model_speciesGroups,
+    mortality_model = mortality_outputs$model_output,
+    BAI_model_species = BAI_outputs$rf_model_species,
+    BAI_model_speciesGroups = BAI_outputs$rf_model_speciesGroups,
+    ingrowth_model_small = ingrowth_outputs$mod_ing_small,
+    ingrowth_model_big = ingrowth_outputs$mod_ing_big
 
   )
 

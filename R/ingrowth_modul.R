@@ -81,28 +81,28 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
       if (ingrowth_model == "glm"){
 
-        pois_mod_ing_small <- glm(formula_ing_small, data = train, family = "poisson")
-        pois_mod_ing_big <- glm(formula_ing_big, data = train, family = "poisson")
+        mod_ing_small <- glm(formula_ing_small, data = train, family = "poisson")
+        mod_ing_big <- glm(formula_ing_big, data = train, family = "poisson")
 
-        test$ingrowth_small_pred <- round(predict(pois_mod_ing_small, test, type = "response"), 0)
-        test$ingrowth_big_pred <- round(predict(pois_mod_ing_big, test, type = "response"), 0)
+        test$ingrowth_small_pred <- round(predict(mod_ing_small, test, type = "response"), 0)
+        test$ingrowth_big_pred <- round(predict(mod_ing_big, test, type = "response"), 0)
 
       } else if (ingrowth_model == "rf"){
 
         if (is.null(rf_mtry)){
 
-          pois_mod_ing_small <- randomForest(formula_ing_small, data = train)
-          pois_mod_ing_big <- randomForest(formula_ing_big, data = train)
+          mod_ing_small <- randomForest(formula_ing_small, data = train)
+          mod_ing_big <- randomForest(formula_ing_big, data = train)
 
         } else {
 
-          pois_mod_ing_small <- randomForest(formula_ing_small, data = train, mtry = rf_mtry)
-          pois_mod_ing_big <- randomForest(formula_ing_big, data = train, mtry = rf_mtry)
+          mod_ing_small <- randomForest(formula_ing_small, data = train, mtry = rf_mtry)
+          mod_ing_big <- randomForest(formula_ing_big, data = train, mtry = rf_mtry)
 
         }
 
-        test$ingrowth_small_pred <- round(predict(pois_mod_ing_small, test), 0)
-        test$ingrowth_big_pred <- round(predict(pois_mod_ing_big, test), 0)
+        test$ingrowth_small_pred <- round(predict(mod_ing_small, test), 0)
+        test$ingrowth_big_pred <- round(predict(mod_ing_big, test), 0)
 
         # Just in case of negative predictions (highly unlikely, but still possible)
         test$ingrowth_small_pred <- ifelse(test$ingrowth_small_pred < 0, 0, test$ingrowth_small_pred)
@@ -135,28 +135,28 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   if (ingrowth_model == "glm"){
 
-    pois_mod_ing_small <- glm(formula_ing_small, data = df_fit, family = "poisson")
-    pois_mod_ing_big <- glm(formula_ing_big, data = df_fit, family = "poisson")
+    mod_ing_small <- glm(formula_ing_small, data = df_fit, family = "poisson")
+    mod_ing_big <- glm(formula_ing_big, data = df_fit, family = "poisson")
 
-    df_predict$ing_small <- round(predict(pois_mod_ing_small, df_predict, type = "response"), 0)
-    df_predict$ing_big <- round(predict(pois_mod_ing_big, df_predict, type = "response"), 0)
+    df_predict$ing_small <- round(predict(mod_ing_small, df_predict, type = "response"), 0)
+    df_predict$ing_big <- round(predict(mod_ing_big, df_predict, type = "response"), 0)
 
   } else if(ingrowth_model == "rf") {
 
     if (is.null(rf_mtry)){
 
-      pois_mod_ing_small <- randomForest(formula_ing_small, data = df_fit)
-      pois_mod_ing_big <- randomForest(formula_ing_big, data = df_fit)
+      mod_ing_small <- randomForest(formula_ing_small, data = df_fit)
+      mod_ing_big <- randomForest(formula_ing_big, data = df_fit)
 
     } else {
 
-      pois_mod_ing_small <- randomForest(formula_ing_small, data = df_fit, mtry = rf_mtry)
-      pois_mod_ing_big <- randomForest(formula_ing_big, data = df_fit, mtry = rf_mtry)
+      mod_ing_small <- randomForest(formula_ing_small, data = df_fit, mtry = rf_mtry)
+      mod_ing_big <- randomForest(formula_ing_big, data = df_fit, mtry = rf_mtry)
 
     }
 
-    df_predict$ing_small <- round(predict(pois_mod_ing_small, df_predict, type = "response"), 0)
-    df_predict$ing_big <- round(predict(pois_mod_ing_big, df_predict, type = "response"), 0)
+    df_predict$ing_small <- round(predict(mod_ing_small, df_predict, type = "response"), 0)
+    df_predict$ing_big <- round(predict(mod_ing_big, df_predict, type = "response"), 0)
 
     # Just in case of negative predictions (highly unlikely, but still possible)
     df_predict$ing_small <- ifelse(df_predict$ing_small < 0, 0, df_predict$ing_small)
@@ -319,7 +319,9 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   final_output_list <- list(
 
     predicted_ingrowth = both_df,
-    eval_ingrowth = df_eval_ingrowth
+    eval_ingrowth = df_eval_ingrowth,
+    model_ingrowth_small = mod_ing_small,
+    model_ingrowth_big = mod_ing_big
 
   )
 
