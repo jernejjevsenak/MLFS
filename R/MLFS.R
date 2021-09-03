@@ -568,8 +568,6 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
-
-
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
 
