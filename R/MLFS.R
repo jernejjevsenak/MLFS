@@ -458,6 +458,9 @@ MLFS <- function(data_NFI, data_site,
   eval_ingrowth_output <- "the argument set_eval_ingrowth is set to FALSE"
   eval_BAI_output <- "the argument set_eval_BAI is set to FALSE"
 
+  # If ingrowth is simulated, then these objects are later overwritten
+  ing_model_output_small <-  "Ingrowth is not simulated. No model output available"
+  ing_model_output_big <-   "Ingrowth is not simulated. No model output available"
 
   # If the length of share_thinning is 1, we replicate the value using the sim_steps
   if (length(share_thinning) == 1){
@@ -663,6 +666,11 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df <- ingrowth_outputs$predicted_ingrowth
 
+    # save models for ingrowth
+    ing_model_output_small <-  ingrowth_outputs$mod_ing_small
+    ing_model_output_big <- ingrowth_outputs$mod_ing_big
+
+
     if (set_eval_ingrowth == TRUE){
 
       eval_ingrowth_output <- ingrowth_outputs$eval_ingrowth
@@ -866,8 +874,8 @@ MLFS <- function(data_NFI, data_site,
     mortality_model = mortality_outputs$model_output,
     BAI_model_species = BAI_outputs$rf_model_species,
     BAI_model_speciesGroups = BAI_outputs$rf_model_speciesGroups,
-    ingrowth_model_small = ingrowth_outputs$mod_ing_small,
-    ingrowth_model_big = ingrowth_outputs$mod_ing_big
+    ingrowth_model_small = ing_model_output_small,
+    ingrowth_model_big = ing_model_output_big
 
   )
 
