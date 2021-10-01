@@ -15,6 +15,10 @@
 #' @param data_final_cut_weights data frame with final cut weights for each
 #' species. The first column represents species code, each next column consists
 #' of species-specific final cut weights applied in each simulation step
+#' @param data_plot_weights_thinning data frame with harvesting weights related to plot
+#' IDs, used for thinning
+#' @param data_plot_weights_final_cut data frame with harvesting weights related
+#' to plot IDs, used for final cut
 #' @param sim_mortality logical, should mortality be simulated?
 #' @param sim_ingrowth logical, should ingrowth be simulated?
 #' @param data_volF_param optional, data frame with species-specific volume
@@ -117,6 +121,9 @@ MLFS <- function(data_NFI, data_site,
                  data_volF_param = NULL,
                  data_thinning_weights = NULL,
                  data_final_cut_weights = NULL,
+                 data_plot_weights_thinning = NULL,
+                 data_plot_weights_final_cut = NULL,
+
                  form_factors = NULL,
                  form_factors_level = 'species_plot',
                  uniform_form_factor = 0.42,
@@ -505,6 +512,41 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
+  # If the ncol of data_plot_weights_final_cut is 2, we replicate the column using the sim_steps
+  if (!is.null(data_plot_weights_final_cut)){
+    if (ncol(data_plot_weights_final_cut) == 2){
+
+      data_thinning_weights_column <- data_plot_weights_final_cut[,2]
+
+      for (missing_step in 2:sim_steps){
+
+        data_plot_weights_final_cut[,missing_step +1] <- data_thinning_weights_column
+
+      }
+    }
+  }
+
+  # If the ncol of data_plot_weights_thinning is 2, we replicate the column using the sim_steps
+  if (!is.null(data_plot_weights_thinning)){
+    if (ncol(data_plot_weights_thinning) == 2){
+
+      data_thinning_weights_column <- data_plot_weights_thinning[,2]
+
+      for (missing_step in 2:sim_steps){
+
+        data_plot_weights_thinning[,missing_step +1] <- data_thinning_weights_column
+
+      }
+    }
+  }
+
+
+
+
+
+
+
+
 
 
   if (length(mortality_share) < sim_steps && length(mortality_share) > 1){
@@ -568,6 +610,47 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
+
+
+
+  # If the ncol of data_plot_weights_final_cut is > 2, we replicate the column using the sim_steps
+  if (!is.null(data_plot_weights_final_cut)){
+    if (ncol(data_plot_weights_final_cut) > 2 && ncol(data_plot_weights_final_cut) < (sim_steps + 1)){
+
+      data_thinning_weights_column <- data_plot_weights_final_cut[,2]
+
+      for (missing_step in (ncol(data_plot_weights_final_cut):sim_steps)){
+
+        data_plot_weights_final_cut[,missing_step +1] <- data_thinning_weights_column
+
+      }
+    }
+  }
+
+
+
+  # If the ncol of data_plot_weights_thinning is > 2, we replicate the column using the sim_steps
+  if (!is.null(data_plot_weights_thinning)){
+    if (ncol(data_plot_weights_thinning) > 2 && ncol(data_plot_weights_thinning) < (sim_steps + 1)){
+
+      data_thinning_weights_column <- data_plot_weights_thinning[,2]
+
+      for (missing_step in (ncol(data_plot_weights_thinning):sim_steps)){
+
+        data_plot_weights_thinning[,missing_step +1] <- data_thinning_weights_column
+
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
 
@@ -614,6 +697,10 @@ MLFS <- function(data_NFI, data_site,
 
                                         df_thinning_weights = if (!is.null(data_thinning_weights)) df_weights <- data_thinning_weights[,c(1,sim)],
                                         df_final_cut_weights = if (!is.null(data_final_cut_weights)) df_weights <- data_final_cut_weights[,c(1,sim)],
+
+
+                                        df_thinning_weights_plot = if (!is.null(df_thinning_weights_plot)) df_weights <- df_thinning_weights_plot[,c(1,sim)],
+                                        df_final_cut_weights_plot= if (!is.null(data_plot_weights_final_cut)) df_weights <- data_plot_weights_final_cut[,c(1,sim)],
 
                                         harvest_sum_level = harvest_sum_level,
                                         plot_upscale_type = plot_upscale_type,

@@ -6,6 +6,10 @@
 simulate_harvesting <- function(df, harvesting_sum,
                                 df_thinning_weights = NULL,
                                 df_final_cut_weights = NULL,
+
+                                df_thinning_weights_plot = NULL,
+                                df_final_cut_weights_plot = NULL,
+
                                 harvesting_type = "random",
                                 share_thinning = 0.8,
                                 final_cut_weight = 10000000,
@@ -34,6 +38,7 @@ simulate_harvesting <- function(df, harvesting_sum,
   b <- df[df$code == 2,]
   a <- df[df$code != 2,]
 
+  # merge thinning weights (species)
   if(!is.null(df_thinning_weights)){
 
     a <- merge(a, df_thinning_weights, by = 'species', all.x = TRUE)
@@ -45,6 +50,7 @@ simulate_harvesting <- function(df, harvesting_sum,
 
   }
 
+  # merge final_cut weights (species)
   if(!is.null(df_final_cut_weights)){
 
     a <- merge(a, df_final_cut_weights, by = 'species', all.x = TRUE)
@@ -55,6 +61,38 @@ simulate_harvesting <- function(df, harvesting_sum,
     a$final_cut_weight <- 1
 
   }
+
+
+
+
+
+  # merge thinning weights (plot)
+  if(!is.null(df_thinning_weights_plot)){
+
+    a <- merge(a, df_thinning_weights_plot, by = 'plotID', all.x = TRUE)
+    colnames(a)[ncol(a)] <- 'thinning_weight_plot'
+
+  } else {
+
+    a$thinning_weight_plot <- 1
+
+  }
+
+  # merge final_cut weights (plot)
+  if(!is.null(df_final_cut_weights_plot)){
+
+    a <- merge(a, df_final_cut_weights_plot, by = 'plotID', all.x = TRUE)
+    colnames(a)[ncol(a)] <- 'final_cut_weight_plot'
+
+  } else {
+
+    a$final_cut_weight_plot <- 1
+
+  }
+
+
+
+
 
 if (harvest_sum_level == 1){  # regional (national level)
 
@@ -88,22 +126,13 @@ if (harvest_sum_level == 1){  # regional (national level)
   # 1 random harvesting
   if (harvesting_type == "random"){
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$thinning_weight)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$thinning_weight * a$thinning_weight_plot)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
   } else if (harvesting_type == "final_cut"){
 
-    # 1 final cut
-    # sum_volume <- sum(a$volume_mid, na.rm = T)
-    # a$share_volume <- a$volume_mid / sum_volume
-
-    # more intense
-    #a$share_volume <- ifelse(a$share_volume > mean(a$share_volume, na.rm = TRUE),
-    #                         a$share_volume * final_cut_weight,
-    #                         a$share_volume * (1/final_cut_weight))
-
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (a$final_cut_weight)) * final_cut_weight)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (final_cut_weight)) * a$final_cut_weight * a$final_cut_weight_plot)
 
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
@@ -113,16 +142,7 @@ if (harvest_sum_level == 1){  # regional (national level)
 
   } else if (harvesting_type == "thinning") {
 
-    # 3 thinning which prefers smaller trees
-    #sum_volume <- sum(a$volume_mid, na.rm = T)
-    #a$share_volume <- (1 - (a$volume_mid / sum_volume))
-
-    # more intense
-    #a$share_volume <- ifelse(a$share_volume > mean(a$share_volume, na.rm = TRUE),
-    #                         a$share_volume * thinning_small_weight,
-    #                         a$share_volume * (1/thinning_small_weight))
-
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (-thinning_small_weight)) * a$thinning_weight)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (-thinning_small_weight)) * a$thinning_weight * a$thinning_weight_plot)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
@@ -143,14 +163,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     # aFC Final_cut #
     #################
 
-    #aFC$share_volume <- aFC$volume_mid / sum_volume
-
-    # more intense
-    #aFC$share_volume <- ifelse(aFC$share_volume > mean(aFC$share_volume, na.rm = TRUE),
-    #                           aFC$share_volume * final_cut_weight,
-    #                           aFC$share_volume * (1/final_cut_weight))
-
-    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = (aFC$BA_mid ^ final_cut_weight) * aFC$final_cut_weight)
+    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = (aFC$BA_mid ^ final_cut_weight) * aFC$final_cut_weight * aFC$final_cut_weight_plot)
     aFC <- aFC[sampled_rows, ]
     aFC <- arrange(aFC, protected)
 
@@ -163,18 +176,10 @@ if (harvest_sum_level == 1){  # regional (national level)
     # aTH THINNING #
     ################
 
-    # aFC_cut <- aFC[aFC$code == 1, "treeID"]
-
     #remove trees which were already cut
     aTH <- aTH[!(aTH$treeID %in% c(aFC$treeID)),]
 
-    #aTH$share_volume <- (1 - (aTH$volume_mid / sum_volume))
-    # more intense
-    #aTH$share_volume <- ifelse(aTH$share_volume > mean(aTH$share_volume, na.rm = TRUE),
-    #                         aTH$share_volume * thinning_small_weight,
-    #                         aTH$share_volume * (1/thinning_small_weight))
-
-    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$thinning_weight)
+    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$thinning_weight * aFC$thinning_weight_plot)
     aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
                   code = ifelse(col_sum < (harvesting_sum * share_thinning), 1, code))
 
