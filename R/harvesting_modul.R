@@ -4,8 +4,8 @@
 #' @keywords internal
 
 simulate_harvesting <- function(df, harvesting_sum,
-                                df_thinning_weights = NULL,
-                                df_final_cut_weights = NULL,
+                                df_thinning_weights_species = NULL,
+                                df_final_cut_weights_species = NULL,
 
                                 df_thinning_weights_plot = NULL,
                                 df_final_cut_weights_plot = NULL,
@@ -39,31 +39,38 @@ simulate_harvesting <- function(df, harvesting_sum,
   a <- df[df$code != 2,]
 
   # merge thinning weights (species)
-  if(!is.null(df_thinning_weights)){
+  if(!is.null(df_thinning_weights_species)){
 
-    a <- merge(a, df_thinning_weights, by = 'species', all.x = TRUE)
-    colnames(a)[ncol(a)] <- 'thinning_weight'
+    a <- merge(a, df_thinning_weights_species, by = 'species', all.x = TRUE)
+    colnames(a)[ncol(a)] <- 'thinning_weight_species'
+
+    a$thinning_weight_species <- ifelse(is.na(a$thinning_weight_species), 1, a$thinning_weight_species)
+
+    # Probabilities can not be 0
+    a$thinning_weight_species <- ifelse(a$thinning_weight_species < 0.00001, 0.001, a$thinning_weight_species)
 
   } else {
 
-    a$thinning_weight <- 1
+    a$thinning_weight_species <- 1
 
   }
 
   # merge final_cut weights (species)
-  if(!is.null(df_final_cut_weights)){
+  if(!is.null(df_final_cut_weights_species)){
 
-    a <- merge(a, df_final_cut_weights, by = 'species', all.x = TRUE)
-    colnames(a)[ncol(a)] <- 'final_cut_weight'
+    a <- merge(a, df_final_cut_weights_species, by = 'species', all.x = TRUE)
+    colnames(a)[ncol(a)] <- 'final_cut_weight_species'
+
+    a$final_cut_weight_species <- ifelse(is.na(a$final_cut_weight_species), 1, a$final_cut_weight_species)
+    # Probabilities can not be 0
+    a$final_cut_weight_species <- ifelse(a$final_cut_weight_species < 0.00001, 0.001, a$final_cut_weight_species)
+
 
   } else {
 
-    a$final_cut_weight <- 1
+    a$final_cut_weight_species <- 1
 
   }
-
-
-
 
 
   # merge thinning weights (plot)
@@ -71,6 +78,11 @@ simulate_harvesting <- function(df, harvesting_sum,
 
     a <- merge(a, df_thinning_weights_plot, by = 'plotID', all.x = TRUE)
     colnames(a)[ncol(a)] <- 'thinning_weight_plot'
+
+    a$thinning_weight_plot <- ifelse(is.na(a$thinning_weight_plot), 1, a$thinning_weight_plot)
+
+    # Probabilities can not be 0
+    a$thinning_weight_plot <- ifelse(a$thinning_weight_plot < 0.00001, 0.001, a$thinning_weight_plot)
 
   } else {
 
@@ -83,6 +95,10 @@ simulate_harvesting <- function(df, harvesting_sum,
 
     a <- merge(a, df_final_cut_weights_plot, by = 'plotID', all.x = TRUE)
     colnames(a)[ncol(a)] <- 'final_cut_weight_plot'
+
+    a$final_cut_weight_plot <- ifelse(is.na(a$final_cut_weight_plot), 1, a$final_cut_weight_plot)
+    # Probabilities can not be 0
+    a$final_cut_weight_plot <- ifelse(a$final_cut_weight_plot < 0.00001, 0.001, a$final_cut_weight_plot)
 
   } else {
 
@@ -126,29 +142,26 @@ if (harvest_sum_level == 1){  # regional (national level)
   # 1 random harvesting
   if (harvesting_type == "random"){
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = a$thinning_weight * a$thinning_weight_plot)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = 1 * a$thinning_weight_species * a$thinning_weight_plot)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
   } else if (harvesting_type == "final_cut"){
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (final_cut_weight)) * a$final_cut_weight * a$final_cut_weight_plot)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (final_cut_weight)) * a$final_cut_weight_species * a$final_cut_weight_plot)
 
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
     #################################################################
 
-
   } else if (harvesting_type == "thinning") {
 
-    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (-thinning_small_weight)) * a$thinning_weight * a$thinning_weight_plot)
+    sampled_rows <- sample(1:NROW(a), size = nrow(a), prob = (a$BA_mid ^ (-thinning_small_weight)) * a$thinning_weight_species * a$thinning_weight_plot)
     a <- a[sampled_rows, ]
     a <- arrange(a, protected) # protected trees are at the bottom, so they won't be harvested
 
     ##############################################
-
-
 
   } else if (harvesting_type == "combined"){
 
@@ -163,7 +176,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     # aFC Final_cut #
     #################
 
-    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = (aFC$BA_mid ^ final_cut_weight) * aFC$final_cut_weight * aFC$final_cut_weight_plot)
+    sampled_rows <- sample(1:NROW(aFC), size = nrow(aFC), prob = (aFC$BA_mid ^ final_cut_weight) * aFC$final_cut_weight_species * aFC$final_cut_weight_plot)
     aFC <- aFC[sampled_rows, ]
     aFC <- arrange(aFC, protected)
 
@@ -179,7 +192,7 @@ if (harvest_sum_level == 1){  # regional (national level)
     #remove trees which were already cut
     aTH <- aTH[!(aTH$treeID %in% c(aFC$treeID)),]
 
-    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$thinning_weight * aFC$thinning_weight_plot)
+    sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$thinning_weight_species * aTH$thinning_weight_plot)
     aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
                   code = ifelse(col_sum < (harvesting_sum * share_thinning), 1, code))
 

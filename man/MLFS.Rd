@@ -10,10 +10,10 @@ MLFS(
   data_tariffs = NULL,
   data_climate = NULL,
   data_volF_param = NULL,
-  data_thinning_weights = NULL,
-  data_final_cut_weights = NULL,
-  data_plot_weights_thinning = NULL,
-  data_plot_weights_final_cut = NULL,
+  thinning_weights_species = NULL,
+  final_cut_weights_species = NULL,
+  thinning_weights_plot = NULL,
+  final_cut_weights_plot = NULL,
   form_factors = NULL,
   form_factors_level = "species_plot",
   uniform_form_factor = 0.42,
@@ -70,18 +70,18 @@ calibration period and all the years which will be included in the simulation}
 \item{data_volF_param}{optional, data frame with species-specific volume
 function parameters}
 
-\item{data_thinning_weights}{data frame with thinning weights for each
+\item{thinning_weights_species}{data frame with thinning weights for each
 species. The first column represents species code, each next column consists
 of species-specific thinning weights applied in each simulation step}
 
-\item{data_final_cut_weights}{data frame with final cut weights for each
+\item{final_cut_weights_species}{data frame with final cut weights for each
 species. The first column represents species code, each next column consists
 of species-specific final cut weights applied in each simulation step}
 
-\item{data_plot_weights_thinning}{data frame with harvesting weights related to plot
+\item{thinning_weights_plot}{data frame with harvesting weights related to plot
 IDs, used for thinning}
 
-\item{data_plot_weights_final_cut}{data frame with harvesting weights related
+\item{final_cut_weights_plot}{data frame with harvesting weights related
 to plot IDs, used for final cut}
 
 \item{form_factors}{optional, data frame with species-specific form factors}

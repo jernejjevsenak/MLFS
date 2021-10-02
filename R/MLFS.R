@@ -9,15 +9,15 @@
 #' details.
 #' @param data_climate data frame with climate data, covering the initial
 #' calibration period and all the years which will be included in the simulation
-#' @param data_thinning_weights data frame with thinning weights for each
+#' @param thinning_weights_species data frame with thinning weights for each
 #' species. The first column represents species code, each next column consists
 #' of species-specific thinning weights applied in each simulation step
-#' @param data_final_cut_weights data frame with final cut weights for each
+#' @param final_cut_weights_species data frame with final cut weights for each
 #' species. The first column represents species code, each next column consists
 #' of species-specific final cut weights applied in each simulation step
-#' @param data_plot_weights_thinning data frame with harvesting weights related to plot
+#' @param thinning_weights_plot data frame with harvesting weights related to plot
 #' IDs, used for thinning
-#' @param data_plot_weights_final_cut data frame with harvesting weights related
+#' @param final_cut_weights_plot data frame with harvesting weights related
 #' to plot IDs, used for final cut
 #' @param sim_mortality logical, should mortality be simulated?
 #' @param sim_ingrowth logical, should ingrowth be simulated?
@@ -119,10 +119,10 @@ MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
                  data_climate = NULL,
                  data_volF_param = NULL,
-                 data_thinning_weights = NULL,
-                 data_final_cut_weights = NULL,
-                 data_plot_weights_thinning = NULL,
-                 data_plot_weights_final_cut = NULL,
+                 thinning_weights_species = NULL,
+                 final_cut_weights_species = NULL,
+                 thinning_weights_plot = NULL,
+                 final_cut_weights_plot = NULL,
 
                  form_factors = NULL,
                  form_factors_level = 'species_plot',
@@ -181,6 +181,7 @@ MLFS <- function(data_NFI, data_site,
   ingrowth_small <- NULL
   ingrowth_big <- NULL
   n <- NULL
+  df_thinning_weights_plot <- NULL
 
   # NFI codes
   ## 0 (normal)
@@ -484,57 +485,57 @@ MLFS <- function(data_NFI, data_site,
     harvesting_sum <- rep(harvesting_sum, sim_steps)
   }
 
-  # If the ncol of data_thinning_weights is 2, we replicate the column using the sim_steps
-  if (!is.null(data_thinning_weights)){
-    if (ncol(data_thinning_weights) == 2){
+  # If the ncol of thinning_weights_species is 2, we replicate the column using the sim_steps
+  if (!is.null(thinning_weights_species)){
+    if (ncol(thinning_weights_species) == 2){
 
-      data_thinning_weights_column <- data_thinning_weights[,2]
+      thinning_weights_species_column <- thinning_weights_species[,2]
 
       for (missing_step in 2:sim_steps){
 
-        data_thinning_weights[,missing_step +1] <- data_thinning_weights_column
+        thinning_weights_species[,missing_step +1] <- thinning_weights_species_column
 
       }
     }
   }
 
-  # If the ncol of data_final_cut_weights is 2, we replicate the column using the sim_steps
-  if (!is.null(data_final_cut_weights)){
-    if (ncol(data_final_cut_weights) == 2){
+  # If the ncol of final_cut_weights_species is 2, we replicate the column using the sim_steps
+  if (!is.null(final_cut_weights_species)){
+    if (ncol(final_cut_weights_species) == 2){
 
-      data_final_cut_weights_column <- data_final_cut_weights[,2]
+      final_cut_weights_species_column <- final_cut_weights_species[,2]
 
       for (missing_step in 2:sim_steps){
 
-        data_final_cut_weights[,missing_step +1] <- data_final_cut_weights_column
+        final_cut_weights_species[,missing_step +1] <- final_cut_weights_species_column
 
       }
     }
   }
 
-  # If the ncol of data_plot_weights_final_cut is 2, we replicate the column using the sim_steps
-  if (!is.null(data_plot_weights_final_cut)){
-    if (ncol(data_plot_weights_final_cut) == 2){
+  # If the ncol of final_cut_weights_plot is 2, we replicate the column using the sim_steps
+  if (!is.null(final_cut_weights_plot)){
+    if (ncol(final_cut_weights_plot) == 2){
 
-      data_thinning_weights_column <- data_plot_weights_final_cut[,2]
+      thinning_weights_species_column <- final_cut_weights_plot[,2]
 
       for (missing_step in 2:sim_steps){
 
-        data_plot_weights_final_cut[,missing_step +1] <- data_thinning_weights_column
+        final_cut_weights_plot[,missing_step +1] <- thinning_weights_species_column
 
       }
     }
   }
 
-  # If the ncol of data_plot_weights_thinning is 2, we replicate the column using the sim_steps
-  if (!is.null(data_plot_weights_thinning)){
-    if (ncol(data_plot_weights_thinning) == 2){
+  # If the ncol of thinning_weights_plot is 2, we replicate the column using the sim_steps
+  if (!is.null(thinning_weights_plot)){
+    if (ncol(thinning_weights_plot) == 2){
 
-      data_thinning_weights_column <- data_plot_weights_thinning[,2]
+      thinning_weights_species_column <- thinning_weights_plot[,2]
 
       for (missing_step in 2:sim_steps){
 
-        data_plot_weights_thinning[,missing_step +1] <- data_thinning_weights_column
+        thinning_weights_plot[,missing_step +1] <- thinning_weights_species_column
 
       }
     }
@@ -582,46 +583,29 @@ MLFS <- function(data_NFI, data_site,
   }
 
 
-  # If the ncol of data_thinning_weights is > 2, we replicate the column using the sim_steps
-  if (!is.null(data_thinning_weights)){
-    if (ncol(data_thinning_weights) > 2 && ncol(data_thinning_weights) < (sim_steps + 1)){
+  # If the ncol of thinning_weights_species is > 2, we replicate the column using the sim_steps
+  if (!is.null(thinning_weights_species)){
+    if (ncol(thinning_weights_species) > 2 && ncol(thinning_weights_species) < (sim_steps + 1)){
 
-      data_thinning_weights_column <- data_thinning_weights[,2]
+      thinning_weights_species_column <- thinning_weights_species[,2]
 
-      for (missing_step in (ncol(data_thinning_weights):sim_steps)){
+      for (missing_step in (ncol(thinning_weights_species):sim_steps)){
 
-        data_thinning_weights[,missing_step +1] <- data_thinning_weights_column
-
-      }
-    }
-  }
-
-  # If the ncol of data_final_cut_weights is > 2, we replicate the column using the sim_steps
-  if (!is.null(data_final_cut_weights)){
-    if (ncol(data_final_cut_weights) > 2 && ncol(data_final_cut_weights) < (sim_steps + 1)){
-
-      data_final_cut_weights_column <- data_final_cut_weights[,2]
-
-      for (missing_step in (ncol(data_final_cut_weights):sim_steps)){
-
-        data_final_cut_weights[,missing_step +1] <- data_final_cut_weights_column
+        thinning_weights_species[,missing_step +1] <- thinning_weights_species_column
 
       }
     }
   }
 
+  # If the ncol of final_cut_weights_species is > 2, we replicate the column using the sim_steps
+  if (!is.null(final_cut_weights_species)){
+    if (ncol(final_cut_weights_species) > 2 && ncol(final_cut_weights_species) < (sim_steps + 1)){
 
+      final_cut_weights_species_column <- final_cut_weights_species[,2]
 
+      for (missing_step in (ncol(final_cut_weights_species):sim_steps)){
 
-  # If the ncol of data_plot_weights_final_cut is > 2, we replicate the column using the sim_steps
-  if (!is.null(data_plot_weights_final_cut)){
-    if (ncol(data_plot_weights_final_cut) > 2 && ncol(data_plot_weights_final_cut) < (sim_steps + 1)){
-
-      data_thinning_weights_column <- data_plot_weights_final_cut[,2]
-
-      for (missing_step in (ncol(data_plot_weights_final_cut):sim_steps)){
-
-        data_plot_weights_final_cut[,missing_step +1] <- data_thinning_weights_column
+        final_cut_weights_species[,missing_step +1] <- final_cut_weights_species_column
 
       }
     }
@@ -629,15 +613,32 @@ MLFS <- function(data_NFI, data_site,
 
 
 
-  # If the ncol of data_plot_weights_thinning is > 2, we replicate the column using the sim_steps
-  if (!is.null(data_plot_weights_thinning)){
-    if (ncol(data_plot_weights_thinning) > 2 && ncol(data_plot_weights_thinning) < (sim_steps + 1)){
 
-      data_thinning_weights_column <- data_plot_weights_thinning[,2]
+  # If the ncol of final_cut_weights_plot is > 2, we replicate the column using the sim_steps
+  if (!is.null(final_cut_weights_plot)){
+    if (ncol(final_cut_weights_plot) > 2 && ncol(final_cut_weights_plot) < (sim_steps + 1)){
 
-      for (missing_step in (ncol(data_plot_weights_thinning):sim_steps)){
+      thinning_weights_species_column <- final_cut_weights_plot[,2]
 
-        data_plot_weights_thinning[,missing_step +1] <- data_thinning_weights_column
+      for (missing_step in (ncol(final_cut_weights_plot):sim_steps)){
+
+        final_cut_weights_plot[,missing_step +1] <- thinning_weights_species_column
+
+      }
+    }
+  }
+
+
+
+  # If the ncol of thinning_weights_plot is > 2, we replicate the column using the sim_steps
+  if (!is.null(thinning_weights_plot)){
+    if (ncol(thinning_weights_plot) > 2 && ncol(thinning_weights_plot) < (sim_steps + 1)){
+
+      thinning_weights_species_column <- thinning_weights_plot[,2]
+
+      for (missing_step in (ncol(thinning_weights_plot):sim_steps)){
+
+        thinning_weights_plot[,missing_step +1] <- thinning_weights_species_column
 
       }
     }
@@ -695,12 +696,11 @@ MLFS <- function(data_NFI, data_site,
                                         harvesting_type = harvesting_type,
                                         share_thinning = share_thinning[sim-1],
 
-                                        df_thinning_weights = if (!is.null(data_thinning_weights)) df_weights <- data_thinning_weights[,c(1,sim)],
-                                        df_final_cut_weights = if (!is.null(data_final_cut_weights)) df_weights <- data_final_cut_weights[,c(1,sim)],
+                                        df_thinning_weights_species = if (!is.null(thinning_weights_species)) df_weights <- thinning_weights_species[,c(1,sim)],
+                                        df_final_cut_weights_species = if (!is.null(final_cut_weights_species)) df_weights <- final_cut_weights_species[,c(1,sim)],
 
-
-                                        df_thinning_weights_plot = if (!is.null(df_thinning_weights_plot)) df_weights <- df_thinning_weights_plot[,c(1,sim)],
-                                        df_final_cut_weights_plot= if (!is.null(data_plot_weights_final_cut)) df_weights <- data_plot_weights_final_cut[,c(1,sim)],
+                                        df_thinning_weights_plot = if (!is.null(thinning_weights_plot)) df_weights <- thinning_weights_plot[,c(1,sim)],
+                                        df_final_cut_weights_plot= if (!is.null(final_cut_weights_plot)) df_weights <- final_cut_weights_plot[,c(1,sim)],
 
                                         harvest_sum_level = harvest_sum_level,
                                         plot_upscale_type = plot_upscale_type,
@@ -708,8 +708,6 @@ MLFS <- function(data_NFI, data_site,
 
                                         final_cut_weight = final_cut_weight,
                                         thinning_small_weight = thinning_small_weight)
-
-
     }
 
     # Simulate BAI

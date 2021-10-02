@@ -7,8 +7,8 @@
 simulate_harvesting(
   df,
   harvesting_sum,
-  df_thinning_weights = NULL,
-  df_final_cut_weights = NULL,
+  df_thinning_weights_species = NULL,
+  df_final_cut_weights_species = NULL,
   df_thinning_weights_plot = NULL,
   df_final_cut_weights_plot = NULL,
   harvesting_type = "random",
