@@ -299,8 +299,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   }
 
-
-
   new_trees$BAL_mid <- NA
   new_trees$stand_BA_mid <- NA
   new_trees$stand_n_mid <- NA
@@ -320,8 +318,8 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
     predicted_ingrowth = both_df,
     eval_ingrowth = df_eval_ingrowth,
-    model_ingrowth_small = mod_ing_small,
-    model_ingrowth_big = mod_ing_big
+    mod_ingrowth_small = mod_ing_small,
+    mod_ingrowth_big = mod_ing_big
 
   )
 
