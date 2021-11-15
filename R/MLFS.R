@@ -188,7 +188,7 @@ MLFS <- function(data_NFI, data_site,
   ingrowth_big <- NULL
   n <- NULL
   species <- NULL
-  max_DBH <- NULL
+  DBH_max <- NULL
   max_DBH_data <- NULL
   max_size_DBH_joint <- NULL
   DBH_max_data <- NULL
