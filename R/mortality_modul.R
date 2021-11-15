@@ -190,11 +190,11 @@ if (sim_mortality == TRUE){
 
   }
 
-
-
   df_predict <- merge(df_predict, df_max_size, by = 'species', all.x = TRUE)
 
-  df_predict <- dplyr::mutate(df_predict, p_mortality = ifelse(BA_mid > BA_max, 1, p_mortality)) %>%
+  df_predict <- dplyr::mutate(df_predict, p_mortality = ifelse(BA_mid > BA_max, 1, p_mortality),
+                              BA_max = NULL
+                              ) %>%
     arrange(-p_mortality)
 
   if (mortality_share_type == "volume"){
