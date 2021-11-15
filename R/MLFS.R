@@ -715,7 +715,7 @@ MLFS <- function(data_NFI, data_site,
                                            eval_model_mortality = set_eval_mortality,
                                            k = k, blocked_cv = blocked_cv,
                                            sim_step_years = sim_step_years,
-                                           df_max_size = max_size
+                                           df_max_size = max_size_data
                                            )
 
     initial_df <- mortality_outputs$predicted_mortality
