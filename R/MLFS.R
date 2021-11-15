@@ -203,9 +203,10 @@ MLFS <- function(data_NFI, data_site,
 
   options(dplyr.summarise.inform= FALSE)
 
-  # claculate maximum tree size
+  # calculate maximum tree size
   max_size_data <- dplyr::group_by(data_NFI, species) %>% summarise(DBH_max_data = max(DBH, na.rm = TRUE))
 
+  # If not provided by user, we use the calculations
   if (!is.null(max_size)){
 
     if (sum(colnames(max_size) %in% c('species', "max_DBH") < 2)){
