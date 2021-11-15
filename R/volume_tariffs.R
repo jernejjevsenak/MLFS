@@ -30,7 +30,7 @@ tarifa_class <- NULL
                                ifelse(df$tarifa_class > 20 & df$tarifa_class <= 40, df$v45 / 1600.0 * (df$p_D - 2.5) * (df$p_D - 7.5),
                                       df$v45 / 1800 * df$p_D * (df$p_D - 5))))
 
-  df <- select(df, all_of(initial_colnames))
+  df <- dplyr::select(df, all_of(initial_colnames))
 
   return(df)
 }

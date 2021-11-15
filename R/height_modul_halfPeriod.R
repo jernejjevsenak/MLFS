@@ -130,7 +130,7 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
       if (sum(is.na(dv_temporal_predict$BA)) > 0){
 
         dv_temporal_predict_yesNA$height_mid <- NA
-        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dplyr::select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
 
       } else {
 
@@ -223,7 +223,7 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
       if (sum(is.na(dv_temporal_predict$BA)) > 0){
 
         dv_temporal_predict_yesNA$height_mid <- NA
-        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dplyr::select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
 
       } else {
 

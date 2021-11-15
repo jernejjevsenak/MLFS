@@ -24,10 +24,10 @@ calculate_BAL <- function(df){
   df$BAL <- NULL
 
   # harvested trees get reduced weight
-  temp <- mutate(df, weight = ifelse(code %in% c(1), weight /2, weight),
+  temp <- dplyr::mutate(df, weight = ifelse(code %in% c(1), weight /2, weight),
                      BA_ha = BA * weight)
 
-  temp <- select(temp, year, plotID, treeID, BA_ha)
+  temp <- dplyr::select(temp, year, plotID, treeID, BA_ha)
 
   temp <- temp %>% group_by(year, plotID) %>% mutate(count = row_number(plotID)) # %>% arrange(year, plotID, count)
 
@@ -35,7 +35,7 @@ calculate_BAL <- function(df){
 
   joined <- merge(temp, temp_sum, by = c("year", "plotID"))
 
-  joined_BAL <- select(joined, -year, -plotID, -treeID, -count)
+  joined_BAL <- dplyr::select(joined, -year, -plotID, -treeID, -count)
 
   joined_BAL[,-1][is.na(joined_BAL[,-1])] <- 0
 
@@ -47,13 +47,13 @@ calculate_BAL <- function(df){
 
   # final <- cbind(joined, joined_BAL[,"BAL"])
 
-  final <- select(joined, year, plotID, treeID, BAL)
+  final <- dplyr::select(joined, year, plotID, treeID, BAL)
 
   # summary(final)
 
   df1 <- merge(df, final, by = c("year", "plotID", "treeID"))
 
-  df1 <- select(df1, all_of(initial_colnames))
+  df1 <- dplyr::select(df1, all_of(initial_colnames))
 
   colnames(df1)
 

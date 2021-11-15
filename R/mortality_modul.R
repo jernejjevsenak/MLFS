@@ -53,7 +53,7 @@ if (sim_mortality == TRUE){
 
     df_predict <- merge(df_predict, climate_predict, by = "plotID")
 
-    df_predict <- select(df_predict, all_of(initial_colnames))
+    df_predict <- dplyr::select(df_predict, all_of(initial_colnames))
 
     site_vars <- c(site_vars, "p_sum", "t_avg")
 
@@ -144,7 +144,7 @@ if (sim_mortality == TRUE){
 
     df_eval_mortality <- do.call(rbind, eval_list)
 
-    df_eval_mortality <- select(df_eval_mortality, plotID, treeID, year, speciesGroup, code,
+    df_eval_mortality <- dplyr::select(df_eval_mortality, plotID, treeID, year, speciesGroup, code,
                                 species, mortality,  mortality_pred)
   } else {
 

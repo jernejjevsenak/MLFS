@@ -4,6 +4,7 @@
 #' @keywords internal
 
 simulate_harvesting <- function(df, harvesting_sum,
+
                                 df_thinning_weights_species = NULL,
                                 df_final_cut_weights_species = NULL,
 
@@ -193,11 +194,12 @@ if (harvest_sum_level == 1){  # regional (national level)
     aTH <- aTH[!(aTH$treeID %in% c(aFC$treeID)),]
 
     sampled_rows <- sample(1:NROW(aTH), size = nrow(aTH), prob = (aTH$BA_mid ^ -thinning_small_weight) * aTH$thinning_weight_species * aTH$thinning_weight_plot)
-    aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
-                  code = ifelse(col_sum < (harvesting_sum * share_thinning), 1, code))
 
     aTH <- aTH[sampled_rows, ]
     aTH <- arrange(aTH, protected) # protected trees are at the bottom, so they won't be harvested
+
+    aTH <- mutate(aTH, col_sum = cumsum(replace_na(volume_ha, 0)),
+                  code = ifelse(col_sum < (harvesting_sum * share_thinning), 1, code))
 
     #############
 

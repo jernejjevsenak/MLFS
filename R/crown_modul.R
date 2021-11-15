@@ -78,7 +78,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
 
-    temp_df <- select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
+    temp_df <- dplyr::select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
 
     ########
     # eval #
@@ -152,7 +152,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     if (sum(is.na(dv_temporal_predict$BA)) > 0){
 
       dv_temporal_predict_yesNA$crownHeight_new <- NA
-      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dplyr::select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
 
     } else {
 
@@ -221,7 +221,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
 
-    temp_df <- select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
+    temp_df <- dplyr::select(dv_temporal_fit, crownHeight, height, all_of(site_vars))
 
     ########
     # eval #
@@ -356,7 +356,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
       DF_eval_sGroups,
       DF_eval_species)
 
-    data_eval_crownHeight_predictions <- select(data_eval_crownHeight_predictions, plotID, treeID, year, speciesGroup, code,
+    data_eval_crownHeight_predictions <- dplyr::select(data_eval_crownHeight_predictions, plotID, treeID, year, speciesGroup, code,
                                                 species, crownHeight, crownHeight_pred)
 
   } else {

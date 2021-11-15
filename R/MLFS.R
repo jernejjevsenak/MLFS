@@ -119,6 +119,7 @@ MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
                  data_climate = NULL,
                  data_volF_param = NULL,
+
                  thinning_weights_species = NULL,
                  final_cut_weights_species = NULL,
                  thinning_weights_plot = NULL,
@@ -181,7 +182,8 @@ MLFS <- function(data_NFI, data_site,
   ingrowth_small <- NULL
   ingrowth_big <- NULL
   n <- NULL
-  df_thinning_weights_plot <- NULL
+
+  # df_thinning_weights_plot <- NULL
 
   # NFI codes
   ## 0 (normal)
@@ -285,10 +287,10 @@ MLFS <- function(data_NFI, data_site,
            ingrowth_big = ifelse(code == 15, 1, 0)
     )
 
-  data_ingrowth_stand <- select(data_ingrowth, plotID, year, stand_BA, stand_n, BAL, all_of(site_vars)) %>%
+  data_ingrowth_stand <- dplyr::select(data_ingrowth, plotID, year, stand_BA, stand_n, BAL, all_of(site_vars)) %>%
     group_by(plotID, year) %>% summarise_all(.funs = mean, na.rm = TRUE)
 
-  data_ingrowth_ingrowth <- select(data_ingrowth, plotID, year, ingrowth_small, ingrowth_big) %>%
+  data_ingrowth_ingrowth <- dplyr::select(data_ingrowth, plotID, year, ingrowth_small, ingrowth_big) %>%
     group_by(plotID, year) %>% summarise_all(.funs = sum, na.rm = TRUE)
 
   data_ingrowth <- merge(data_ingrowth_stand, data_ingrowth_ingrowth, by = c("plotID", "year"))
@@ -517,11 +519,11 @@ MLFS <- function(data_NFI, data_site,
   if (!is.null(final_cut_weights_plot)){
     if (ncol(final_cut_weights_plot) == 2){
 
-      thinning_weights_species_column <- final_cut_weights_plot[,2]
+      thinning_weights_plot_column <- final_cut_weights_plot[,2]
 
       for (missing_step in 2:sim_steps){
 
-        final_cut_weights_plot[,missing_step +1] <- thinning_weights_species_column
+        final_cut_weights_plot[,missing_step +1] <- thinning_weights_plot_column
 
       }
     }
@@ -531,11 +533,11 @@ MLFS <- function(data_NFI, data_site,
   if (!is.null(thinning_weights_plot)){
     if (ncol(thinning_weights_plot) == 2){
 
-      thinning_weights_species_column <- thinning_weights_plot[,2]
+      thinning_weights_plot_column <- thinning_weights_plot[,2]
 
       for (missing_step in 2:sim_steps){
 
-        thinning_weights_plot[,missing_step +1] <- thinning_weights_species_column
+        thinning_weights_plot[,missing_step +1] <- thinning_weights_plot_column
 
       }
     }
@@ -618,11 +620,11 @@ MLFS <- function(data_NFI, data_site,
   if (!is.null(final_cut_weights_plot)){
     if (ncol(final_cut_weights_plot) > 2 && ncol(final_cut_weights_plot) < (sim_steps + 1)){
 
-      thinning_weights_species_column <- final_cut_weights_plot[,2]
+      thinning_weights_plot_column <- final_cut_weights_plot[,2]
 
       for (missing_step in (ncol(final_cut_weights_plot):sim_steps)){
 
-        final_cut_weights_plot[,missing_step +1] <- thinning_weights_species_column
+        final_cut_weights_plot[,missing_step +1] <- thinning_weights_plot_column
 
       }
     }
@@ -632,13 +634,14 @@ MLFS <- function(data_NFI, data_site,
 
   # If the ncol of thinning_weights_plot is > 2, we replicate the column using the sim_steps
   if (!is.null(thinning_weights_plot)){
+
     if (ncol(thinning_weights_plot) > 2 && ncol(thinning_weights_plot) < (sim_steps + 1)){
 
-      thinning_weights_species_column <- thinning_weights_plot[,2]
+      thinning_weights_plot_column <- thinning_weights_plot[,2]
 
       for (missing_step in (ncol(thinning_weights_plot):sim_steps)){
 
-        thinning_weights_plot[,missing_step +1] <- thinning_weights_species_column
+        thinning_weights_plot[,missing_step +1] <- thinning_weights_plot_column
 
       }
     }
@@ -656,7 +659,6 @@ MLFS <- function(data_NFI, data_site,
   sim_steps <- sim_steps + 1
 
   sim = 2 # at some point, delete this
-
 
   for (sim in 2:sim_steps){
 
@@ -687,10 +689,13 @@ MLFS <- function(data_NFI, data_site,
 
     }
 
+
     # Simulate harvesting
     if (sim_harvesting == TRUE){
 
-      initial_df <- simulate_harvesting(df = initial_df,
+
+      ###########
+      initial_df1 <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
@@ -700,7 +705,7 @@ MLFS <- function(data_NFI, data_site,
                                         df_final_cut_weights_species = if (!is.null(final_cut_weights_species)) df_weights <- final_cut_weights_species[,c(1,sim)],
 
                                         df_thinning_weights_plot = if (!is.null(thinning_weights_plot)) df_weights <- thinning_weights_plot[,c(1,sim)],
-                                        df_final_cut_weights_plot= if (!is.null(final_cut_weights_plot)) df_weights <- final_cut_weights_plot[,c(1,sim)],
+                                        df_final_cut_weights_plot = if (!is.null(final_cut_weights_plot)) df_weights <- final_cut_weights_plot[,c(1,sim)],
 
                                         harvest_sum_level = harvest_sum_level,
                                         plot_upscale_type = plot_upscale_type,
@@ -750,8 +755,8 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- ingrowth_outputs$predicted_ingrowth
 
     # save models for ingrowth
-    ing_model_output_small <-  ingrowth_outputs$mod_ing_small
-    ing_model_output_big <- ingrowth_outputs$mod_ing_big
+    ing_model_output_small <-  ingrowth_outputs$mod_ingrowth_small
+    ing_model_output_big <- ingrowth_outputs$mod_ingrowth_big
 
 
     if (set_eval_ingrowth == TRUE){

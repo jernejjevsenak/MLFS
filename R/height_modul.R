@@ -194,7 +194,7 @@ height_prediction <- function(df_fit,  df_predict,
       if (sum(is.na(dv_temporal_predict$BA)) > 0){
 
         dv_temporal_predict_yesNA$height_new <- NA
-        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dplyr::select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
 
       } else {
 
@@ -224,7 +224,7 @@ height_prediction <- function(df_fit,  df_predict,
                                                                           "BA" = "p_BA"))
 
       if (nrow(dv_temporal_predict_yesNA) > 0){
-      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+      dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dplyr::select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
       } else {
         dv_temporal_predict <- dv_temporal_predict_noNA
       }
@@ -381,7 +381,7 @@ height_prediction <- function(df_fit,  df_predict,
     if (sum(is.na(dv_temporal_predict$BA)) > 0){
 
         dv_temporal_predict_yesNA$height_new <- NA
-        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dplyr::select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
 
       } else {
 
@@ -411,7 +411,7 @@ height_prediction <- function(df_fit,  df_predict,
                                                                         "BA" = "p_BA"))
 
       if (nrow(dv_temporal_predict_yesNA) > 0){
-        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
+        dv_temporal_predict <- rbind(dv_temporal_predict_noNA, dplyr::select(dv_temporal_predict_yesNA, colnames(dv_temporal_predict_noNA)))
       } else {
         dv_temporal_predict <- dv_temporal_predict_noNA
       }
@@ -455,7 +455,7 @@ height_prediction <- function(df_fit,  df_predict,
     DF_eval_sGroups,
     DF_eval_species)
 
-  data_height_eval <- select(data_height_eval, plotID, treeID, year, speciesGroup, code, species, height, BA, h_pred)
+  data_height_eval <- dplyr::select(data_height_eval, plotID, treeID, year, speciesGroup, code, species, height, BA, h_pred)
 
   } else {
 
