@@ -36,6 +36,8 @@ stand_BA <- NULL
 stand_n <- NULL
 col_sum <- NULL
 vol_ha_mid <- NULL
+BA_mid <- NULL
+BA_max <- NULL
 
 if (sim_mortality == TRUE){
 

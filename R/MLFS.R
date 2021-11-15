@@ -187,8 +187,11 @@ MLFS <- function(data_NFI, data_site,
   ingrowth_small <- NULL
   ingrowth_big <- NULL
   n <- NULL
-
-  # df_thinning_weights_plot <- NULL
+  species <- NULL
+  max_DBH <- NULL
+  max_DBH_data <- NULL
+  max_size_DBH_joint <- NULL
+  DBH_max_data <- NULL
 
   # NFI codes
   ## 0 (normal)
