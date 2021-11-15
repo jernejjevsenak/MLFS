@@ -20,7 +20,8 @@ predict_mortality(
   blocked_cv = TRUE,
   sim_mortality = TRUE,
   sim_step_years = 5,
-  rf_mtry = NULL
+  rf_mtry = NULL,
+  df_max_size = NULL
 )
 }
 \description{

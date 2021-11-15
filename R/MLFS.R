@@ -114,6 +114,10 @@
 #' and returned as the output
 #' @param set_eval_BAI logical, should the the BAI model be evaluated and
 #' returned as the output
+#' @param max_size This is a data frame with the maximum values of DBH for each
+#' species. If a tree exceeds this value, it dies. If not provided, the maximum
+#' is estimated from the input data. Two columns must be present, i.e. species
+#' and max_DBH.
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -165,7 +169,8 @@ MLFS <- function(data_NFI, data_site,
                  set_eval_height = TRUE,
                  set_eval_ingrowth = TRUE,
                  set_eval_BAI = TRUE,
-                 k = 10, blocked_cv = TRUE){
+                 k = 10, blocked_cv = TRUE,
+                 max_size = NULL){
 
   # Define global variables
   DBH <- NULL
@@ -197,6 +202,33 @@ MLFS <- function(data_NFI, data_site,
   setTxtProgressBar(pb, 1)
 
   options(dplyr.summarise.inform= FALSE)
+
+  # claculate maximum tree size
+  max_size_data <- dplyr::group_by(data_NFI, species) %>% summarise(DBH_max_data = max(DBH, na.rm = TRUE))
+
+  if (!is.null(max_size)){
+
+    if (sum(colnames(max_size) %in% c('species', "max_DBH") < 2)){
+
+      stop(paste0("max_DBH data frame should have two columns 'species' and 'max_DBH'"))
+    }
+
+
+    max_size_data <- merge(max_size_data, max_size, by = "species", all.x = TRUE)
+    max_size_data <-  mutate(max_size_data,
+                             max_size_DBH_joint = ifelse(is.na(max_DBH), max_DBH_data, max_DBH),
+                             max_DBH = NULL,
+                             max_DBH_data= NULL) %>%
+      mutate(BA_max = ((max_size_DBH_joint/2)^2 * pi)/10000,
+             max_size_DBH_joint = NULL)
+
+  } else {
+
+    max_size <- mutate(max_size_data,
+                       BA_max = ((DBH_max_data/2)^2 * pi)/10000,
+                       DBH_max_data = NULL)
+
+  }
 
   # String related to height model is converted to lowercase
   height_model <- tolower(height_model)
@@ -677,7 +709,9 @@ MLFS <- function(data_NFI, data_site,
                                            select_months_climate = select_months_climate,
                                            eval_model_mortality = set_eval_mortality,
                                            k = k, blocked_cv = blocked_cv,
-                                           sim_step_years = sim_step_years)
+                                           sim_step_years = sim_step_years,
+                                           df_max_size = max_size
+                                           )
 
     initial_df <- mortality_outputs$predicted_mortality
 
@@ -693,9 +727,7 @@ MLFS <- function(data_NFI, data_site,
     # Simulate harvesting
     if (sim_harvesting == TRUE){
 
-
-      ###########
-      initial_df1 <- simulate_harvesting(df = initial_df,
+      initial_df <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
                                         harvesting_type = harvesting_type,
@@ -963,7 +995,8 @@ MLFS <- function(data_NFI, data_site,
     BAI_model_species = BAI_outputs$rf_model_species,
     BAI_model_speciesGroups = BAI_outputs$rf_model_speciesGroups,
     ingrowth_model_small = ing_model_output_small,
-    ingrowth_model_big = ing_model_output_big
+    ingrowth_model_big = ing_model_output_big,
+    max_size = max_size
 
   )
 

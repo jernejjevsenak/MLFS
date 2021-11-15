@@ -51,7 +51,8 @@ MLFS(
   set_eval_ingrowth = TRUE,
   set_eval_BAI = TRUE,
   k = 10,
-  blocked_cv = TRUE
+  blocked_cv = TRUE,
+  max_size = NULL
 )
 }
 \arguments{
@@ -213,6 +214,11 @@ returned as the output}
 \item{k}{the number of folds to be used in the k fold cross-validation}
 
 \item{blocked_cv}{logical, should the blocked cross-validation be used}
+
+\item{max_size}{This is a data frame with the maximum values of DBH for each
+species. If a tree exceeds this value, it dies. If not provided, the maximum
+is estimated from the input data. Two columns must be present, i.e. species
+and max_DBH.}
 }
 \description{
 Machine Learning Forest Simulator
