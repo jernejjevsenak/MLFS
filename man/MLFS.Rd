@@ -218,7 +218,7 @@ returned as the output}
 \item{max_size}{This is a data frame with the maximum values of DBH for each
 species. If a tree exceeds this value, it dies. If not provided, the maximum
 is estimated from the input data. Two columns must be present, i.e. species
-and max_DBH.}
+and DBH_max.}
 }
 \description{
 Machine Learning Forest Simulator
