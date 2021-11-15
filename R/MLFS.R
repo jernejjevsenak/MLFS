@@ -117,7 +117,7 @@
 #' @param max_size This is a data frame with the maximum values of DBH for each
 #' species. If a tree exceeds this value, it dies. If not provided, the maximum
 #' is estimated from the input data. Two columns must be present, i.e. species
-#' and max_DBH.
+#' and DBH_max.
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -212,15 +212,15 @@ MLFS <- function(data_NFI, data_site,
   # If not provided by user, we use the calculations
   if (!is.null(max_size)){
 
-    if (sum(colnames(max_size) %in% c('species', "max_DBH") < 2)){
+    if (sum(colnames(max_size) %in% c('species', "DBH_max")) < 2){
 
-      stop(paste0("max_DBH data frame should have two columns 'species' and 'max_DBH'"))
+      stop(paste0("max_DBH data frame should have two columns 'species' and 'DBH_max'"))
     }
 
 
     max_size_data <- merge(max_size_data, max_size, by = "species", all.x = TRUE)
     max_size_data <-  mutate(max_size_data,
-                             max_size_DBH_joint = ifelse(is.na(max_DBH), max_DBH_data, max_DBH),
+                             max_size_DBH_joint = ifelse(is.na(DBH_max), DBH_max_data, DBH_max),
                              max_DBH = NULL,
                              max_DBH_data= NULL) %>%
       mutate(BA_max = ((max_size_DBH_joint/2)^2 * pi)/10000,
