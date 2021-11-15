@@ -219,16 +219,17 @@ MLFS <- function(data_NFI, data_site,
 
 
     max_size_data <- merge(max_size_data, max_size, by = "species", all.x = TRUE)
-    max_size_data <-  mutate(max_size_data,
+    max_size_data1 <-  mutate(max_size_data,
                              max_size_DBH_joint = ifelse(is.na(DBH_max), DBH_max_data, DBH_max),
-                             max_DBH = NULL,
-                             max_DBH_data= NULL) %>%
+                             DBH_max = NULL,
+                             DBH_max_data= NULL) %>%
       mutate(BA_max = ((max_size_DBH_joint/2)^2 * pi)/10000,
-             max_size_DBH_joint = NULL)
+             max_size_DBH_joint = NULL
+             )
 
   } else {
 
-    max_size <- mutate(max_size_data,
+    max_size_data <- mutate(max_size_data,
                        BA_max = ((DBH_max_data/2)^2 * pi)/10000,
                        DBH_max_data = NULL)
 
