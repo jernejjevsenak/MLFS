@@ -123,7 +123,7 @@ specified harvesting sum: 0 for plot level and 1 for regional level.}
 
 \item{plot_upscale_type}{character defining the upscale method of plot level
 area. It can be 'area' or 'upscale factor'. If 'area', provide the forest
-area represented by all plots in hectars (forest_area_ha argument). If
+area represented by all plots in hectares (forest_area_ha argument). If
 'factor', provide the fixed factor to upscale the area of all plots. Please
 note: forest_area_ha/plot_upscale_factor = number of unique plots. This
 argument is important when harvesting sum is defined on regional level.}

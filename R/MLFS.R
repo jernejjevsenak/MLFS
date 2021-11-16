@@ -1,6 +1,7 @@
 #' MLFS
 #'
 #' Machine Learning Forest Simulator
+#'
 #' @param data_NFI data frame with individual tree variables
 #' @param data_site data frame with site descriptors. This data is related to
 #' data_NFI based on the 'plotID' column
@@ -36,7 +37,7 @@
 #' specified harvesting sum: 0 for plot level and 1 for regional level.
 #' @param plot_upscale_type character defining the upscale method of plot level
 #' area. It can be 'area' or 'upscale factor'. If 'area', provide the forest
-#' area represented by all plots in hectars (forest_area_ha argument). If
+#' area represented by all plots in hectares (forest_area_ha argument). If
 #' 'factor', provide the fixed factor to upscale the area of all plots. Please
 #' note: forest_area_ha/plot_upscale_factor = number of unique plots. This
 #' argument is important when harvesting sum is defined on regional level.
@@ -122,6 +123,7 @@
 #' the max DBH for each species, when the maximum is estimated from the input
 #' data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
 #' is ignored. Default is 1. To increase maximum for 10 %, use 1.1.
+#'
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
