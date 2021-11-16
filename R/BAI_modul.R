@@ -335,7 +335,7 @@ DF_evaluation_sGroups <- dplyr::filter(DF_evaluation_sGroups, !(species %in% uni
 
 data_eval_BAI <- rbind(DF_evaluation_species, DF_evaluation_sGroups)
 
-data_eval_BAI <- dplyr::sekect(data_eval_BAI, plotID, treeID, year, speciesGroup, code,
+data_eval_BAI <- dplyr::select(data_eval_BAI, plotID, treeID, year, speciesGroup, code,
                                             species, BAI, BAI_pred)
 
 } else {
@@ -348,7 +348,7 @@ DF_predictions_sGroups <- do.call(rbind, list_predictions)
 DF_predictions_sGroups <- dplyr::filter(DF_predictions_sGroups, !(species %in% unique_dv))
 
 # rbind predictions
-dead_trees <- dplyr::sekect(dead_trees, colnames(DF_predictions_species))
+dead_trees <- dplyr::select(dead_trees, colnames(DF_predictions_species))
 DF_predictions <- rbind(dead_trees, DF_predictions_species, DF_predictions_sGroups)
 
 final_output_list <- list(
