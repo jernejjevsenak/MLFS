@@ -167,7 +167,7 @@ MLFS <- function(data_NFI, data_site,
                  height_model = "naslund",
                  crownHeight_model = "lm",
                  BRNN_neurons = 3,
-                 height_pred_level = 0, # prediction level for lmfor (0 regional, 1 plot level) - works only if you have all species on all plots
+                 height_pred_level = 0, # prediction level for lmfor (0 regional, 1 plot level)
                  include_climate = FALSE,
                  select_months_climate = c(1:12),
                  set_eval_mortality = TRUE,
