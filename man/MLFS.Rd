@@ -30,8 +30,8 @@ MLFS(
   plot_upscale_factor,
   mortality_share = NA,
   mortality_share_type = "volume",
-  mortality_model = "rf",
-  ingrowth_model = "glm",
+  mortality_model = "glm",
+  ingrowth_model = "ZIF_poiss",
   rf_mtry = NULL,
   nb_laplace = 0,
   harvesting_type = "final_cut",
@@ -39,8 +39,8 @@ MLFS(
   final_cut_weight = 10,
   thinning_small_weight = 1,
   species_n_threshold = 100,
-  height_model = "naslund",
-  crownHeight_model = "lm",
+  height_model = "brnn",
+  crownHeight_model = "brnn",
   BRNN_neurons = 3,
   height_pred_level = 0,
   include_climate = FALSE,
@@ -145,7 +145,8 @@ generalized linear models; 'rf' for random forest algorithm; 'naiveBayes' for
 Naive Bayes algorithm}
 
 \item{ingrowth_model}{model to be used for ingrowth predictions. 'glm' for
-generalized linear models and 'rf' for random forest}
+generalized linear models (Poisson regression), 'ZIF_poiss' for zero inflated
+Poisson regression and 'rf' for random forest}
 
 \item{rf_mtry}{number of variables randomly sampled as candidates at each
 split of a random forest model. If NULL, default settings are applied.}
