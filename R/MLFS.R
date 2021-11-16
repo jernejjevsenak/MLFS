@@ -269,7 +269,6 @@ MLFS <- function(data_NFI, data_site,
   # save site variable names and use them in formulas
   site_vars <- colnames(data_site)[-1] # plotID should be removed
 
-
   # merge NFI and site descriptors
   data <- merge(data_NFI, data_site, by = "plotID")
 
@@ -529,6 +528,18 @@ MLFS <- function(data_NFI, data_site,
     mortality_share <- rep(mortality_share, sim_steps)
   }
 
+  # If the length of thinning_small_weight is 1, we replicate the value using the sim_steps
+  if (length(thinning_small_weight) == 1){
+    thinning_small_weight <- rep(thinning_small_weight, sim_steps)
+  }
+
+  # If the length of final_cut_weight is 1, we replicate the value using the sim_steps
+  if (length(final_cut_weight) == 1){
+    final_cut_weight <- rep(final_cut_weight, sim_steps)
+  }
+
+
+
   # If the length of harvesting_sum is 1, we replicate the value using the sim_steps
   if (length(harvesting_sum)== 1){
     harvesting_sum <- rep(harvesting_sum, sim_steps)
@@ -591,14 +602,6 @@ MLFS <- function(data_NFI, data_site,
   }
 
 
-
-
-
-
-
-
-
-
   if (length(mortality_share) < sim_steps && length(mortality_share) > 1){
 
     n_missing <- sim_steps - length(mortality_share)
@@ -609,6 +612,35 @@ MLFS <- function(data_NFI, data_site,
 
     }
   }
+
+  if (length(thinning_small_weight) < sim_steps && length(thinning_small_weight) > 1){
+
+    n_missing <- sim_steps - length(thinning_small_weight)
+    thinning_small_weight <- c(thinning_small_weight, rep(thinning_small_weight[length(thinning_small_weight)], n_missing))
+
+    if (sim_mortality == TRUE){
+      warning("The last value in thinning_small_weight vector is used for undefined simulation years.")
+
+    }
+  }
+
+
+  if (length(final_cut_weight) < sim_steps && length(final_cut_weight) > 1){
+
+    n_missing <- sim_steps - length(final_cut_weight)
+    final_cut_weight <- c(final_cut_weight, rep(final_cut_weight[length(final_cut_weight)], n_missing))
+
+    if (sim_mortality == TRUE){
+      warning("The last value in final_cut_weight vector is used for undefined simulation years.")
+
+    }
+  }
+
+
+
+
+
+
 
   if (length(harvesting_sum) < sim_steps && length(harvesting_sum) > 1){
 
@@ -758,8 +790,8 @@ MLFS <- function(data_NFI, data_site,
                                         plot_upscale_type = plot_upscale_type,
                                         plot_upscale_factor = plot_upscale_factor,
 
-                                        final_cut_weight = final_cut_weight,
-                                        thinning_small_weight = thinning_small_weight)
+                                        final_cut_weight = final_cut_weight[sim-1],
+                                        thinning_small_weight = thinning_small_weight[sim-1])
     }
 
     # Simulate BAI

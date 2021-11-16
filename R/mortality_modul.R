@@ -81,7 +81,7 @@ if (sim_mortality == TRUE){
 
   }
 
-  formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid +",
+  formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
                                paste(all_of(site_vars), collapse = "+")))
 
   ##############

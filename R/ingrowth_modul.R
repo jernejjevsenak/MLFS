@@ -87,6 +87,15 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
         test$ingrowth_small_pred <- round(predict(mod_ing_small, test, type = "response"), 0)
         test$ingrowth_big_pred <- round(predict(mod_ing_big, test, type = "response"), 0)
 
+      } else if  (ingrowth_model == "ZIF_poiss"){
+
+        mod_ing_small <- zeroinfl(formula_ing_small, data = train)
+        mod_ing_big <- zeroinfl(formula_ing_big, data = train)
+
+        test$ingrowth_small_pred <- round(predict(mod_ing_small, test, type = "response"), 0)
+        test$ingrowth_big_pred <- round(predict(mod_ing_big, test, type = "response"), 0)
+
+
       } else if (ingrowth_model == "rf"){
 
         if (is.null(rf_mtry)){
@@ -110,7 +119,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
       } else {
 
-        stop("ingrowth_model should be 'glm' or 'rf'" )
+        stop("ingrowth_model should be 'glm', 'ZIF_poiss', or 'rf'" )
 
       }
 
@@ -141,6 +150,17 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
     df_predict$ing_small <- round(predict(mod_ing_small, df_predict, type = "response"), 0)
     df_predict$ing_big <- round(predict(mod_ing_big, df_predict, type = "response"), 0)
 
+
+  } else if  (ingrowth_model == "ZIF_poiss"){
+
+      mod_ing_small <- zeroinfl(formula_ing_small, data = df_fit)
+      mod_ing_big <- zeroinfl(formula_ing_big, data = df_fit)
+
+      df_predict$ing_small <- round(predict(mod_ing_small, df_predict, type = "response"), 0)
+      df_predict$ing_big <- round(predict(mod_ing_big, df_predict, type = "response"), 0)
+
+
+
   } else if(ingrowth_model == "rf") {
 
     if (is.null(rf_mtry)){
@@ -164,7 +184,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   } else {
 
-    stop("ingrowth_model should be 'glm' or 'rf'" )
+    stop("ingrowth_model should be 'glm', 'ZIF_poiss', or 'rf'" )
 
   }
 
@@ -307,7 +327,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   new_trees <- merge(new_trees, protected_df, by = "plotID", all.x = TRUE)
 
-  new_trees <-  select(new_trees, colnames(df_before))
+  new_trees <-  dplyr::select(new_trees, colnames(df_before))
 
   both_df <- rbind(df_before, new_trees)
   both_df$BAL <- NA
