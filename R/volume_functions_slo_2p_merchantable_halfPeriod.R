@@ -48,7 +48,7 @@ volume_merchantable_halfPeriod <- function(df) {
     (pi * (df[, "D"]/20)^2 * (df[, "height"]*10)/2/1000 )))))))))))) # valj
 
 
-  df <- select(df, all_of(initial_colnames))
+  df <- dplyr::select(df, all_of(initial_colnames))
 
   return(df)
 }

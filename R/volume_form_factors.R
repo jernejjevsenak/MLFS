@@ -77,7 +77,7 @@ vol_form_factors <- function(df, form_factors = NULL, form_factors_level = "spec
   df$volume <- df$height * df$BA * df$form
   df$p_volume <- df$p_height * df$p_BA * df$form
 
-  df <- select(df, all_of(initial_colnames))
+  df <- dplyr::select(df, all_of(initial_colnames))
 
   return(df)
 }

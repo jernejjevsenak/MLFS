@@ -36,31 +36,31 @@ BAI_prediction <- function(df_fit, df_predict,
 # 2 Predict BAI for next NFI period #
 #####################################
 
-dead_trees <-filter(df_predict, code %in%  c(1,2)) %>%
-    mutate(p_BA = BA,
-           p_weight = weight,
-           p_height = height,
-           p_crownHeight = crownHeight,
-           p_volume = volume,
+dead_trees <- dplyr::filter(df_predict, code %in%  c(1,2)) %>%
+                     mutate(p_BA = BA,
+                            p_weight = weight,
+                            p_height = height,
+                            p_crownHeight = crownHeight,
+                            p_volume = volume,
 
-           p_volume_mid = volume_mid,
-           p_BA_mid = BA_mid,
-           p_weight_mid = weight_mid,
-           p_height_mid = height_mid,
-           p_crownHeight_mid = crownHeight_mid,
+                            p_volume_mid = volume_mid,
+                            p_BA_mid = BA_mid,
+                            p_weight_mid = weight_mid,
+                            p_height_mid = height_mid,
+                            p_crownHeight_mid = crownHeight_mid,
 
-           volume_mid = NA,
-           BA_mid = NA,
-           BAI_mid = NA,
-           weight_mid = NA,
-           height_mid = NA,
-           crownHeight_mid = NA,
+                            volume_mid = NA,
+                            BA_mid = NA,
+                            BAI_mid = NA,
+                            weight_mid = NA,
+                            height_mid = NA,
+                            crownHeight_mid = NA,
 
-           BA = NA,
-           weight = NA,
-           BAI = NA,
-           height = NA,
-           crownHeight = NA)
+                            BA = NA,
+                            weight = NA,
+                            BAI = NA,
+                            height = NA,
+                            crownHeight = NA)
 
 if (include_climate == TRUE){
 
@@ -70,7 +70,7 @@ if (include_climate == TRUE){
 
 formula <- as.formula(paste0("BAI ~ BA + BAL + stand_BA + stand_n + species +", paste(all_of(site_vars), collapse = "+")))
 
-df_predict <-filter(df_predict, !(code %in% c(1,2)))
+df_predict <- dplyr::filter(df_predict, !(code %in% c(1,2)))
 
 df_fit <-  dplyr::filter(df_fit, !is.na(BAI))
 BAI_data <-  table(df_fit$species)
@@ -331,11 +331,11 @@ for (M in uniq_tSk){
 if (eval_model_BAI == TRUE){
 
 DF_evaluation_sGroups <- do.call(rbind, eval_list)
-DF_evaluation_sGroups <- filter(DF_evaluation_sGroups, !(species %in% unique_dv))
+DF_evaluation_sGroups <- dplyr::filter(DF_evaluation_sGroups, !(species %in% unique_dv))
 
 data_eval_BAI <- rbind(DF_evaluation_species, DF_evaluation_sGroups)
 
-data_eval_BAI <- select(data_eval_BAI, plotID, treeID, year, speciesGroup, code,
+data_eval_BAI <- dplyr::sekect(data_eval_BAI, plotID, treeID, year, speciesGroup, code,
                                             species, BAI, BAI_pred)
 
 } else {
@@ -345,10 +345,10 @@ data_eval_BAI <- select(data_eval_BAI, plotID, treeID, year, speciesGroup, code,
 }
 
 DF_predictions_sGroups <- do.call(rbind, list_predictions)
-DF_predictions_sGroups <- filter(DF_predictions_sGroups, !(species %in% unique_dv))
+DF_predictions_sGroups <- dplyr::filter(DF_predictions_sGroups, !(species %in% unique_dv))
 
 # rbind predictions
-dead_trees <- select(dead_trees, colnames(DF_predictions_species))
+dead_trees <- dplyr::sekect(dead_trees, colnames(DF_predictions_species))
 DF_predictions <- rbind(dead_trees, DF_predictions_species, DF_predictions_sGroups)
 
 final_output_list <- list(

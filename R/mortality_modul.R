@@ -48,7 +48,8 @@ if (sim_mortality == TRUE){
     max_year_predict <- max(df_predict$year)
     min_year_predict <- max_year_predict + sim_step_years
 
-    climate_predict <- filter(df_climate, year %in% seq(min_year_predict, max_year_predict)) %>% filter(month %in% select_months_climate) %>%
+    climate_predict <- dplyr::filter(df_climate, year %in% seq(min_year_predict, max_year_predict)) %>%
+      dplyr::filter(month %in% select_months_climate) %>%
       group_by(plotID) %>% summarise(p_sum = sum(p_sum), t_avg = mean(t_avg))
 
     df_predict$t_avg <- NULL
@@ -62,7 +63,7 @@ if (sim_mortality == TRUE){
 
   }
 
-  df_predict <- filter(df_predict, code %in% c(0,3,15))
+  df_predict <- dplyr::filter(df_predict, code %in% c(0,3,15))
   df_fit <- mutate(df_fit, mortality = ifelse(code == 2, 1, 0),
                    BA_mid = BA,
                    BAL_mid = BAL,
@@ -228,7 +229,7 @@ if (sim_mortality == TRUE){
 
   } else if (sim_mortality == FALSE){
 
-    df_predict <- filter(df_predict, code %in% c(0,3,15))
+    df_predict <- dplyr::filter(df_predict, code %in% c(0,3,15))
     df_predict[, "year"] <- df_predict[, "year"] + sim_step_years
     df_predict[ , "code"] <- 0
     df_eval_mortality <- paste0("sim_mortality is set to FALSE.",

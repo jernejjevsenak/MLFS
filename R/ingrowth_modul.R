@@ -43,9 +43,9 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   }
 
-  sp_group_data <- select(df_before, species, speciesGroup) %>% distinct()
+  sp_group_data <- dplyr::select(df_before, species, speciesGroup) %>% distinct()
 
-  df_predict <- select(df_predict, year, plotID, stand_BA, stand_n, BAL, all_of(site_vars_A)) %>%
+  df_predict <- dplyr::select(df_predict, year, plotID, stand_BA, stand_n, BAL, all_of(site_vars_A)) %>%
     group_by(plotID) %>% summarise_all(.funs = mean, na.rm = TRUE)
 
   # Machine Learning Method for Count Data?
@@ -120,7 +120,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
     df_eval_ingrowth <- do.call(rbind, eval_list)
 
-    df_eval_ingrowth <- select(df_eval_ingrowth, plotID, year,
+    df_eval_ingrowth <- dplyr::select(df_eval_ingrowth, plotID, year,
                                ingrowth_small, ingrowth_big,
                                ingrowth_small_pred, ingrowth_big_pred)
   } else {
@@ -171,7 +171,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   # Rezultati so OK
 
   new_trees_small <- dplyr::select(df_predict, plotID, year, all_of(site_vars_A), ing_small) %>%
-    filter(ing_small > 0)
+    dplyr::filter(ing_small > 0)
 
   list_new_trees_small <- list()
   b = 1
@@ -208,7 +208,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   # new trees big
 
   new_trees_big <- dplyr::select(df_predict, plotID, year, all_of(site_vars_A), ing_big) %>%
-    filter(ing_big > 0)
+    dplyr::filter(ing_big > 0)
 
   list_new_trees_big <- list()
   b = 1

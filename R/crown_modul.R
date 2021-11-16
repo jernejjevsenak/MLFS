@@ -74,7 +74,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     dv_temporal_fit <- subset(df_fit, subset = df_fit$species %in% M)
 
     # BA can not be missing!
-    dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
+    dv_temporal_fit <- dplyr::filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
 
@@ -144,8 +144,8 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     # predict crownHeight for BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
-    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
+    dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(height))
+    dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(height))
     dv_temporal_predict_noNA$crownHeight_new <- predict(model_species, newdata = dv_temporal_predict_noNA)
 
 
@@ -168,8 +168,8 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
-    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
+    dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(p_height))
+    dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(p_height))
 
     if (nrow(dv_temporal_predict_yesNA) > 0){dv_temporal_predict_yesNA$p_crownHeight_new <- NA}
 
@@ -217,7 +217,7 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     dv_temporal_fit <- subset(df_fit, subset = df_fit$speciesGroup %in% M)
 
     # BA can not be missing!
-    dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
+    dv_temporal_fit <- dplyr::filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
 
@@ -287,8 +287,8 @@ crownHeight_prediction <- function(df_fit,  df_predict,
     # predict crownHeight for BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
 
-    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height))
+    dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(height))
+    dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(height))
     dv_temporal_predict_noNA$crownHeight_new <- predict(model_speciesGroups, newdata = dv_temporal_predict_noNA)
 
 
@@ -317,8 +317,8 @@ crownHeight_prediction <- function(df_fit,  df_predict,
 
     # predict crownHeight for p_BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
-    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_height))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_height))
+    dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(p_height))
+    dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(p_height))
 
     if (nrow(dv_temporal_predict_yesNA) > 0){dv_temporal_predict_yesNA$p_crownHeight_new <- NA}
 
@@ -346,12 +346,12 @@ crownHeight_prediction <- function(df_fit,  df_predict,
   }
 
   DF_predictions_sGroups <- do.call(rbind, list_predictions)
-  DF_predictions_sGroups <-filter(DF_predictions_sGroups, !(key %in% DF_predictions_species$key))
+  DF_predictions_sGroups <-dplyr::filter(DF_predictions_sGroups, !(key %in% DF_predictions_species$key))
 
   DF_eval_sGroups <- do.call(rbind, eval_list)
 
   if (eval_model_crownHeight == TRUE){
-    DF_eval_sGroups <-filter(DF_eval_sGroups, !(key %in% DF_eval_species$key))
+    DF_eval_sGroups <-dplyr::filter(DF_eval_sGroups, !(key %in% DF_eval_species$key))
     data_eval_crownHeight_predictions <- rbind(
       DF_eval_sGroups,
       DF_eval_species)

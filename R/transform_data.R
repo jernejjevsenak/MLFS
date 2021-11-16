@@ -43,8 +43,10 @@ transform_data <- function(df, include_climate, df_climate, select_months_climat
       max_year <- max(df_temp$year)
       min_year <- unique_years[i + 1]
 
-      climate_fit <- filter(df_climate, year %in% seq(min_year, max_year)) %>% filter(month %in% select_months_climate) %>%
-        group_by(plotID) %>% summarise(p_sum = sum(p_sum), t_avg = mean(t_avg))
+      climate_fit <- dplyr::filter(df_climate, year %in% seq(min_year, max_year)) %>%
+                     dplyr::filter(month %in% select_months_climate) %>%
+                     group_by(plotID) %>%
+                     summarise(p_sum = sum(p_sum), t_avg = mean(t_avg))
 
       df_temp <- merge(df_temp, climate_fit, by = "plotID")
 

@@ -28,15 +28,6 @@ BAI_prediction_halfPeriod <- function(df_fit, df_predict,
 # 2 Predict BAI for next NFI period #
 #####################################
 
-#dead_trees <- filter(df_predict, code %in%  c(1,2)) %>%
-#    mutate(p_BA = BA,
-#           p_height = height,
-#           p_volume = volume,
-#           BA = NA,
-#           BAI = NA,
-#           height = NA,
-#           crownHeight = NA)
-
 if (include_climate == TRUE){
 
   site_vars <- c(site_vars, "p_sum", "t_avg")
@@ -44,8 +35,6 @@ if (include_climate == TRUE){
 }
 
 formula <- as.formula(paste0("BAI ~ BA + BAL + stand_BA + stand_n + species +", paste(all_of(site_vars), collapse = "+")))
-
-# df_predict <-filter(df_predict, !(code %in% c(1,2)))
 
 df_fit <-  dplyr::filter(df_fit, !is.na(BAI))
 BAI_data <-  table(df_fit$species)
@@ -177,11 +166,7 @@ for (M in uniq_tSk){
 
 
 DF_predictions_sGroups <- do.call(rbind, list_predictions)
-DF_predictions_sGroups <- filter(DF_predictions_sGroups, !(species %in% unique_dv))
-
-# rbind predictions
-# dead_trees <- select(dead_trees, colnames(DF_predictions_species))
-# DF_predictions <- rbind(dead_trees, DF_predictions_species, DF_predictions_sGroups)
+DF_predictions_sGroups <- dplyr::filter(DF_predictions_sGroups, !(species %in% unique_dv))
 
 DF_predictions <- rbind(DF_predictions_species, DF_predictions_sGroups)
 

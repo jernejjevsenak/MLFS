@@ -21,8 +21,8 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
   #####################
   # 1 Volume for PCAB #
   #####################
-  df_PCAB <- filter(df, species == "PCAB")
-  param_PCAB <- filter(data_volF_param, species == "PCAB")
+  df_PCAB <- dplyr::filter(df, species == "PCAB")
+  param_PCAB <- dplyr::filter(data_volF_param, species == "PCAB")
 
   a = param_PCAB$a
   b = param_PCAB$b
@@ -42,8 +42,8 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
   #####################
   # 2 Volume for ABAL #
   #####################
-  df_ABAL <- filter(df, species == "ABAL")
-  param_ABAL <- filter(data_volF_param, species == "ABAL")
+  df_ABAL <- dplyr::filter(df, species == "ABAL")
+  param_ABAL <- dplyr::filter(data_volF_param, species == "ABAL")
 
   a = param_ABAL$a
   b = param_ABAL$b
@@ -64,8 +64,8 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
   #####################
   # 3 Volume for FASY #
   #####################
-  df_FASY <- filter(df, species == "FASY")
-  param_FASY <- filter(data_volF_param, species == "FASY")
+  df_FASY <- dplyr::filter(df, species == "FASY")
+  param_FASY <- dplyr::filter(data_volF_param, species == "FASY")
 
   a = param_FASY$a
   b = param_FASY$b
@@ -86,8 +86,8 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
   #####################
   # 4 Volume for PISY #
   #####################
-  df_PISY <- filter(df, species == "PISY")
-  param_PISY <- filter(data_volF_param, species == "PISY")
+  df_PISY <- dplyr::filter(df, species == "PISY")
+  param_PISY <- dplyr::filter(data_volF_param, species == "PISY")
 
   a = param_PISY$a
   b = param_PISY$b
@@ -109,8 +109,8 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
   #####################
   # 5 Volume for QUSP #
   #####################
-  df_QUSP <- filter(df, species %in% c("QUSP", "QUCE", "QUPE", "QUPU", "QURO", "QURU", "QUSP"))
-  param_QUSP <- filter(data_volF_param, species == "QUSP")
+  df_QUSP <- dplyr::filter(df, species %in% c("QUSP", "QUCE", "QUPE", "QUPU", "QURO", "QURU", "QUSP"))
+  param_QUSP <- dplyr::filter(data_volF_param, species == "QUSP")
 
   a = param_QUSP$a
   b = param_QUSP$b
@@ -131,10 +131,10 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
   # 4 Volume for Rest #
   #####################
 
-  df_REST <- filter(df, !(species %in% c("PCAB", "ABAL", "FASY", "PISY",
+  df_REST <- dplyr::filter(df, !(species %in% c("PCAB", "ABAL", "FASY", "PISY",
                                          "QUSP", "QUCE", "QUPE", "QUPU", "QURO", "QURU", "QUSP")))
 
-  param_REST <- filter(data_volF_param, species == "REST") # is this the best option?
+  param_REST <- dplyr::filter(data_volF_param, species == "REST") # is this the best option?
 
   a = param_REST$a
   b = param_REST$b
@@ -162,7 +162,7 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
               df_QUSP,
               df_REST)
 
-  df <- select(df, all_of(initial_colnames)) %>% arrange(plotID, treeID)
+  df <- dplyr::select(df, all_of(initial_colnames)) %>% arrange(plotID, treeID)
 
   return(df)
 }

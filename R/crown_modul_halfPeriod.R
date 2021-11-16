@@ -70,7 +70,7 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
     dv_temporal_fit <- subset(df_fit, subset = df_fit$species %in% M)
 
     # BA can not be missing!
-    dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
+    dv_temporal_fit <- dplyr::filter(dv_temporal_fit, !is.na(BA))
 
     # I change the name of BA into BA_mid, so that the predict function will select the right variable
     dv_temporal_fit <- rename(dv_temporal_fit, "BA_mid" = "BA", "height_mid" = "height")
@@ -98,8 +98,8 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
 
     # predict crownHeight for BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
-    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height_mid))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height_mid))
+    dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(height_mid))
+    dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(height_mid))
     dv_temporal_predict_noNA$crownHeight_mid <- predict(mod1, newdata = dv_temporal_predict_noNA)
 
 
@@ -141,7 +141,7 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
     dv_temporal_fit <- subset(df_fit, subset = df_fit$speciesGroup %in% M)
 
     # BA can not be missing!
-    dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
+    dv_temporal_fit <- dplyr::filter(dv_temporal_fit, !is.na(BA))
 
     # I change the name of BA into BA_mid, so that the predict function will select the right variable
     dv_temporal_fit <- rename(dv_temporal_fit, "BA_mid" = "BA", "height_mid" = "height")
@@ -149,19 +149,6 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
     temp_df <- dplyr::select(dv_temporal_fit, crownHeight, height_mid, all_of(site_vars))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     ###################
     # prediction part #
@@ -180,8 +167,8 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
     # predict crownHeight for BA
     dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
 
-    dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(height_mid))
-    dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(height_mid))
+    dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(height_mid))
+    dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(height_mid))
     dv_temporal_predict_noNA$crownHeight_mid <- predict(mod1, newdata = dv_temporal_predict_noNA)
 
 
@@ -214,7 +201,7 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
   }
 
   DF_predictions_sGroups <- do.call(rbind, list_predictions)
-  DF_predictions_sGroups <-filter(DF_predictions_sGroups, !(key %in% DF_predictions_species$key))
+  DF_predictions_sGroups <-dplyr::filter(DF_predictions_sGroups, !(key %in% DF_predictions_species$key))
 
 
   data_crownHeight_predictions <- rbind(

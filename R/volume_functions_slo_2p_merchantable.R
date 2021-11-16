@@ -91,7 +91,7 @@ volume_merchantable <- function(df) {
                                                                                  (pi * (df[, "p_D"]/20)^2 * (df[, "p_height"]*10)/2/1000 )))))))))))) # valj
 
 
-  df <- select(df, all_of(initial_colnames))
+  df <- dplyr::select(df, all_of(initial_colnames))
 
   return(df)
 }

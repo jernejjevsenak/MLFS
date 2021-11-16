@@ -79,7 +79,7 @@ vol_form_factors_halfPeriod <- function(df, form_factors = NULL, form_factors_le
 
   df$volume_mid <- df$height_mid * df$BA_mid * df$form
 
-  df <- select(df, all_of(initial_colnames), volume_mid)
+  df <- dplyr::select(df, all_of(initial_colnames), volume_mid)
 
   return(df)
 }

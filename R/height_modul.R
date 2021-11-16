@@ -37,7 +37,7 @@ height_prediction <- function(df_fit,  df_predict,
   ###################
 
   # Remove trees withour BA
-  # no_BA <- filter(df_predict, is.na(BA))
+  # no_BA <- dplyr::filter(df_predict, is.na(BA))
 
   ##################### Loop for all traiff groups ########################
   # We define here strategy: if there are enough measurements, we calculate heights for species
@@ -83,7 +83,7 @@ height_prediction <- function(df_fit,  df_predict,
     ###################### izbira dv ########################################
     dv_temporal_fit <- subset(df_fit, subset = df_fit$species %in% M)
     # BA can not be missing!
-    dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
+    dv_temporal_fit <- dplyr::filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- dplyr::filter(df_predict, species %in% M)
 
@@ -186,8 +186,8 @@ height_prediction <- function(df_fit,  df_predict,
       # 1 predictions for BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
 
-      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
-      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
+      dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(BA))
+      dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(BA))
       dv_temporal_predict_noNA$height_new <- predict(mod_species, newdata =dv_temporal_predict_noNA)
 
 
@@ -210,8 +210,8 @@ height_prediction <- function(df_fit,  df_predict,
 
       # 2 predictions for p_BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
-      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_BA))
-      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_BA))
+      dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(p_BA))
+      dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(p_BA))
 
       if (nrow(dv_temporal_predict_yesNA) > 0){
         dv_temporal_predict_yesNA$p_height_new <- NA
@@ -274,10 +274,10 @@ height_prediction <- function(df_fit,  df_predict,
     dv_temporal_fit <- subset(df_fit, subset = df_fit$speciesGroup %in% M)
 
     # BA can not be missing!
-    dv_temporal_fit <- filter(dv_temporal_fit, !is.na(BA))
+    dv_temporal_fit <- dplyr::filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
-    # dv_temporal_predict <- filter(dv_temporal_predict, !is.na(BA))
+    # dv_temporal_predict <- dplyr::filter(dv_temporal_predict, !is.na(BA))
 
 
     if (height_model == "brnn"){
@@ -373,8 +373,8 @@ height_prediction <- function(df_fit,  df_predict,
 
       # 1 predictions for BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
-      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(BA))
-      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(BA))
+      dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(BA))
+      dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(BA))
 
       dv_temporal_predict_noNA$height_new <- predict(mod_speciesGroups, newdata =dv_temporal_predict_noNA)
 
@@ -397,8 +397,8 @@ height_prediction <- function(df_fit,  df_predict,
 
       # 2 predictions for p_BA
       dv_temporal_predict$key_temp <- seq(1:nrow(dv_temporal_predict))
-      dv_temporal_predict_noNA <- filter(dv_temporal_predict, !is.na(p_BA))
-      dv_temporal_predict_yesNA <- filter(dv_temporal_predict, is.na(p_BA))
+      dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(p_BA))
+      dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(p_BA))
 
       if (nrow(dv_temporal_predict_yesNA) > 0){
         dv_temporal_predict_yesNA$p_height_new <- NA
@@ -444,12 +444,12 @@ height_prediction <- function(df_fit,  df_predict,
   }
 
   DF_predictions_sGroups <- do.call(rbind, list_predictions)
-  DF_predictions_sGroups <-filter(DF_predictions_sGroups, !(key %in% DF_predictions_species$key))
+  DF_predictions_sGroups <-dplyr::filter(DF_predictions_sGroups, !(key %in% DF_predictions_species$key))
 
   if (eval_model_height == TRUE){
 
   DF_eval_sGroups <- do.call(rbind, eval_list)
-  DF_eval_sGroups <-filter(DF_eval_sGroups, !(key %in% DF_eval_species$key))
+  DF_eval_sGroups <-dplyr::filter(DF_eval_sGroups, !(key %in% DF_eval_species$key))
 
   data_height_eval <- rbind(
     DF_eval_sGroups,
