@@ -91,7 +91,8 @@
 #' @param rf_mtry number of variables randomly sampled as candidates at each
 #' split of a random forest model. If NULL, default settings are applied.
 #' @param ingrowth_model model to be used for ingrowth predictions. 'glm' for
-#' generalized linear models and 'rf' for random forest
+#' generalized linear models (Poisson regression), 'ZIF_poiss' for zero inflated
+#' Poisson regression and 'rf' for random forest
 #' @param sim_steps The number of simulation steps
 #' @param merchantable_whole_tree character, 'merchantable' or 'whole_tree'. It
 #' indicates which type of volume functions will be used. This parameter is used
@@ -154,8 +155,8 @@ MLFS <- function(data_NFI, data_site,
 
                  mortality_share = NA,
                  mortality_share_type = "volume",
-                 mortality_model = "rf",
-                 ingrowth_model = "glm",
+                 mortality_model = "glm",
+                 ingrowth_model = "ZIF_poiss",
                  rf_mtry = NULL,
                  nb_laplace = 0,
                  harvesting_type = "final_cut",
@@ -164,8 +165,8 @@ MLFS <- function(data_NFI, data_site,
                  thinning_small_weight = 1,
 
                  species_n_threshold = 100,
-                 height_model = "naslund",
-                 crownHeight_model = "lm",
+                 height_model = "brnn",
+                 crownHeight_model = "brnn",
                  BRNN_neurons = 3,
                  height_pred_level = 0, # prediction level for lmfor (0 regional, 1 plot level)
                  include_climate = FALSE,
