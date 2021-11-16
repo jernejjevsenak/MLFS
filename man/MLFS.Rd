@@ -52,7 +52,8 @@ MLFS(
   set_eval_BAI = TRUE,
   k = 10,
   blocked_cv = TRUE,
-  max_size = NULL
+  max_size = NULL,
+  max_size_increase_factor = 1
 )
 }
 \arguments{
@@ -88,7 +89,7 @@ to plot IDs, used for final cut}
 \item{form_factors}{optional, data frame with species-specific form factors}
 
 \item{form_factors_level}{character, the level of specified form factors. It
-can be ‘species’, ‘plot’ or ‘species_plot’}
+can be 'species', 'plot' or 'species_plot'}
 
 \item{uniform_form_factor}{numeric, uniform form factor to be used for all
 species and plots. Only if form_factors are not provided}
@@ -215,10 +216,15 @@ returned as the output}
 
 \item{blocked_cv}{logical, should the blocked cross-validation be used}
 
-\item{max_size}{This is a data frame with the maximum values of DBH for each
-species. If a tree exceeds this value, it dies. If not provided, the maximum
-is estimated from the input data. Two columns must be present, i.e. species
-and DBH_max.}
+\item{max_size}{a data frame with the maximum values of DBH for each species.
+If a tree exceeds this value, it dies. If not provided, the maximum is
+estimated from the input data. Two columns must be present, i.e. 'species'
+and 'DBH_max'.}
+
+\item{max_size_increase_factor}{numeric value, which will be used to increase
+the max DBH for each species, when the maximum is estimated from the input
+data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
+is ignored. Default is 1. To increase maximum for 10 %, use 1.1.}
 }
 \description{
 Machine Learning Forest Simulator

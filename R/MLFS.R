@@ -25,7 +25,7 @@
 #' function parameters
 #' @param form_factors optional, data frame with species-specific form factors
 #' @param form_factors_level character, the level of specified form factors. It
-#' can be ‘species’, ‘plot’ or ‘species_plot’
+#' can be 'species', 'plot' or 'species_plot'
 #' @param uniform_form_factor numeric, uniform form factor to be used for all
 #' species and plots. Only if form_factors are not provided
 #' @param volume_calculation character string defining the method for volume
@@ -114,10 +114,14 @@
 #' and returned as the output
 #' @param set_eval_BAI logical, should the the BAI model be evaluated and
 #' returned as the output
-#' @param max_size This is a data frame with the maximum values of DBH for each
-#' species. If a tree exceeds this value, it dies. If not provided, the maximum
-#' is estimated from the input data. Two columns must be present, i.e. species
-#' and DBH_max.
+#' @param max_size a data frame with the maximum values of DBH for each species.
+#' If a tree exceeds this value, it dies. If not provided, the maximum is
+#' estimated from the input data. Two columns must be present, i.e. 'species'
+#' and 'DBH_max'.
+#' @param max_size_increase_factor numeric value, which will be used to increase
+#' the max DBH for each species, when the maximum is estimated from the input
+#' data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
+#' is ignored. Default is 1. To increase maximum for 10 %, use 1.1.
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -170,7 +174,8 @@ MLFS <- function(data_NFI, data_site,
                  set_eval_ingrowth = TRUE,
                  set_eval_BAI = TRUE,
                  k = 10, blocked_cv = TRUE,
-                 max_size = NULL){
+                 max_size = NULL,
+                 max_size_increase_factor = 1.0){
 
   # Define global variables
   DBH <- NULL
@@ -208,6 +213,9 @@ MLFS <- function(data_NFI, data_site,
 
   # calculate maximum tree size
   max_size_data <- dplyr::group_by(data_NFI, species) %>% summarise(DBH_max_data = max(DBH, na.rm = TRUE))
+
+  # Increase
+  max_size_data$DBH_max_data <- max_size_data$DBH_max_data * max_size_increase_factor
 
   # If not provided by user, we use the calculations
   if (!is.null(max_size)){
