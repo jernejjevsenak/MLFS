@@ -122,7 +122,7 @@
 #' @param max_size_increase_factor numeric value, which will be used to increase
 #' the max DBH for each species, when the maximum is estimated from the input
 #' data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
-#' is ignored. Default is 1. To increase maximum for 10 %, use 1.1.
+#' is ignored. Default is 1. To increase maximum for 10 percent, use 1.1.
 #'
 
 MLFS <- function(data_NFI, data_site,
