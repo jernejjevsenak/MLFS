@@ -44,7 +44,7 @@ volume_whole_tree <- function(df) {
 
 
                                                      ifelse(df[, "speciesGroup"] == 1,  #smreka
-                                                            ( 0.2452791e+00*df[, "D"]*df[, "height"] - 0.1609334e-01*df[, "D"]*df[, "height"]^2 + 0.25960567e-03*df[, "D"]*df[, "height"]^3 + 0.55778174e-01*df[, "D"]^2*df[, "height"] - 0.24898613e-03*df[, "D"]^2*df[, "height"]^2 + 0.22516935e-03*df[, "D"]^3*df[, "height"] - 0.10924494e-07*df[, "D"]^3*df[, "height"]^3 + 0.36412393e-07*df[, "D"]^4*df[, "height"]^2 - 0.61708995e-12*df[, "D"]^5*df[, "height"]^3)/1000,
+                                                            ( 0.2452791e+00*df[, "D"]*df[, "height"] - 0.1609334e-01*df[, "D"]*df[, "height"]^2 + 0.25960567e-03*df[, "D"]*df[, "height"]^3 + 0.55778174e-01*df[, "D"]^2*df[, "height"] - 0.24898613e-03*df[, "D"]^2*df[, "height"]^2 - 0.22516935e-03*df[, "D"]^3*df[, "height"] - 0.10924494e-07*df[, "D"]^3*df[, "height"]^3 + 0.36412393e-07*df[, "D"]^4*df[, "height"]^2 - 0.61708995e-12*df[, "D"]^5*df[, "height"]^3)/1000,
 
                                                             ifelse(df[, "speciesGroup"] == 2, #jelka
                                                                    ( 0.19819580e+00*df[, "D"]*df[, "height"] - 0.16444325e-01*df[, "D"]*df[, "height"]^2 + 0.25488555e-03*df[, "D"]*df[, "height"]^3 + 0.57219088e-01*df[, "D"]^2*df[, "height"] - 0.33008640e-03*df[, "D"]^2*df[, "height"]^2 + 0.18112376e-04*df[, "D"]^3*df[, "height"] - 0.77266170e-07*df[, "D"]^3*df[, "height"]^3 + 0.93429794e-08*df[, "D"]^4*df[, "height"]^2 - 0.50060347e-12*df[, "D"]^5*df[, "height"]^3)/1000,

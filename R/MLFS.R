@@ -124,7 +124,8 @@
 #' the max DBH for each species, when the maximum is estimated from the input
 #' data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
 #' is ignored. Default is 1. To increase maximum for 10 percent, use 1.1.
-#'
+#' @param ingrowth_table data frame with arguments needed for the correct
+#' ingrowth simulation. Three columns are needed: code, threshold, and weight.
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -178,7 +179,10 @@ MLFS <- function(data_NFI, data_site,
                  set_eval_BAI = TRUE,
                  k = 10, blocked_cv = TRUE,
                  max_size = NULL,
-                 max_size_increase_factor = 1.0){
+                 max_size_increase_factor = 1.0,
+
+                 ingrowth_table = NULL
+                 ){
 
   # Define global variables
   DBH <- NULL
@@ -202,11 +206,11 @@ MLFS <- function(data_NFI, data_site,
   DBH_max_data <- NULL
 
   # NFI codes
-  ## 0 (normal)
-  ## 1 (harvested)
-  ## 2 (dead - mortality)
-  ## 3 (ingrowth - small)
-  ## 15 (ingrowth - big)
+  ## 0  (normal)
+  ## 1  (harvested)
+  ## 2  (dead - mortality)
+  ## 3  (ingrowth level 1)
+  ## 15 (ingrowth level 2)
 
   pb = txtProgressBar(min = 0, max = sim_steps, initial = 0, style = 3)
 
@@ -228,7 +232,6 @@ MLFS <- function(data_NFI, data_site,
       stop(paste0("max_DBH data frame should have two columns 'species' and 'DBH_max'"))
     }
 
-
     max_size_data <- merge(max_size_data, max_size, by = "species", all.x = TRUE)
     max_size_data <-  mutate(max_size_data,
                              max_size_DBH_joint = ifelse(is.na(DBH_max), DBH_max_data, DBH_max),
@@ -243,7 +246,6 @@ MLFS <- function(data_NFI, data_site,
     max_size_data <- mutate(max_size_data,
                        BA_max = ((DBH_max_data/2)^2 * pi)/10000,
                        DBH_max_data = NULL)
-
   }
 
   # String related to height model is converted to lowercase
@@ -268,7 +270,7 @@ MLFS <- function(data_NFI, data_site,
   }
 
   # save site variable names and use them in formulas
-  site_vars <- colnames(data_site)[-1] # plotID should be removed
+  site_vars <- colnames(data_site)[!(colnames(data_site) %in% c("plotID"))]
 
   # merge NFI and site descriptors
   data <- merge(data_NFI, data_site, by = "plotID")
@@ -328,19 +330,35 @@ MLFS <- function(data_NFI, data_site,
   data_mortality <- dplyr::filter(data_mortality, !is.na(BA))
 
   # 5) Ingrowth - consists only of tree codes 0, 3, 15
-  data_ingrowth <- data_mortality
-  data_ingrowth <- dplyr::filter(data_ingrowth, code %in% c(0, 3, 15)) %>%
-    mutate(ingrowth_small = ifelse(code == 3, 1, 0),
-           ingrowth_big = ifelse(code == 15, 1, 0)
-    )
+   if (sim_ingrowth == TRUE){
 
-  data_ingrowth_stand <- dplyr::select(data_ingrowth, plotID, year, stand_BA, stand_n, BAL, all_of(site_vars)) %>%
-    group_by(plotID, year) %>% summarise_all(.funs = mean, na.rm = TRUE)
+     data_ingrowth <- data_mortality
 
-  data_ingrowth_ingrowth <- dplyr::select(data_ingrowth, plotID, year, ingrowth_small, ingrowth_big) %>%
-    group_by(plotID, year) %>% summarise_all(.funs = sum, na.rm = TRUE)
+     ing_codes <- unique(ingrowth_table$code)
+     ing_code_var <- c() # This is empty vector where we store ingrowth_var names
 
-  data_ingrowth <- merge(data_ingrowth_stand, data_ingrowth_ingrowth, by = c("plotID", "year"))
+     data_ingrowth <- dplyr::filter(data_ingrowth, code %in% c(0, ing_codes))
+
+     # Here we define different levels of ingrowth
+     for (i_codes in ing_codes){
+
+       var_name <- paste0("ingrowth_", i_codes)
+       ing_code_var <- c(ing_code_var, var_name)
+
+       data_ingrowth$new_var <- ifelse(data_ingrowth$code == i_codes, 1, 0)
+       colnames(data_ingrowth)[ncol(data_ingrowth)] <- var_name
+
+     }
+
+     data_ingrowth_stand <- dplyr::select(data_ingrowth, plotID, year, stand_BA, stand_n, BAL, all_of(site_vars)) %>%
+       group_by(plotID, year) %>% summarise_all(.funs = mean, na.rm = TRUE)
+
+     data_ingrowth_ingrowth <- dplyr::select(data_ingrowth, plotID, year, ing_code_var) %>%
+       group_by(plotID, year) %>% summarise_all(.funs = sum, na.rm = TRUE)
+
+     data_ingrowth <- merge(data_ingrowth_stand, data_ingrowth_ingrowth, by = c("plotID", "year"))
+
+   }
 
   ######################################################################################
 
@@ -516,8 +534,16 @@ MLFS <- function(data_NFI, data_site,
   eval_BAI_output <- "the argument set_eval_BAI is set to FALSE"
 
   # If ingrowth is simulated, then these objects are later overwritten
-  ing_model_output_small <-  "Ingrowth is not simulated. No model output available"
-  ing_model_output_big <-   "Ingrowth is not simulated. No model output available"
+
+  if (sim_ingrowth == TRUE){
+
+    for (i_codes in ing_codes){
+      assign(paste0("ing_model_output_", i_codes), "Ingrowth is not simulated. No model output available")
+    }
+
+  }
+
+
 
   # If the length of share_thinning is 1, we replicate the value using the sim_steps
   if (length(share_thinning) == 1){
@@ -829,15 +855,18 @@ MLFS <- function(data_NFI, data_site,
     ingrowth_outputs <- predict_ingrowth(df_fit = data_ingrowth, df_predict = initial_df,
                                    site_vars = site_vars, include_climate = include_climate,
                                    eval_model_ingrowth = set_eval_ingrowth,
-                                   k = k, blocked_cv = blocked_cv, ingrowth_model = ingrowth_model
+                                   k = k, blocked_cv = blocked_cv, ingrowth_model = ingrowth_model,
+                                   ingrowth_table = ingrowth_table
                                    )
 
     initial_df <- ingrowth_outputs$predicted_ingrowth
 
     # save models for ingrowth
-    ing_model_output_small <-  ingrowth_outputs$mod_ingrowth_small
-    ing_model_output_big <- ingrowth_outputs$mod_ingrowth_big
+    for (i_code in ing_codes){
 
+      assign(paste0("ing_model_output_", i_code), ingrowth_outputs[[paste0("mod_ingrowth_", i_code)]])
+
+    }
 
     if (set_eval_ingrowth == TRUE){
 
@@ -1042,11 +1071,19 @@ MLFS <- function(data_NFI, data_site,
     mortality_model = mortality_outputs$model_output,
     BAI_model_species = BAI_outputs$rf_model_species,
     BAI_model_speciesGroups = BAI_outputs$rf_model_speciesGroups,
-    ingrowth_model_small = ing_model_output_small,
-    ingrowth_model_big = ing_model_output_big,
+    # ingrowth_model_small = ing_model_output_small,
+    # ingrowth_model_big = ing_model_output_big,
     max_size = max_size
 
   )
+
+  # append the ingrowth models
+  if (sim_ingrowth == TRUE){
+    for (i in 1:length(ing_codes)){
+      final_ouputs[[length(final_ouputs)]] <- get(paste0("ing_model_output_", ing_codes[i]))
+      names(final_output_list)[[length(final_ouputs)]] <- paste0("ingrowth_model_",ing_codes[i])
+    }
+  }
 
   close(pb)
 
