@@ -26,6 +26,10 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   ing_big <- NULL
   DBH <- NULL
   protected <- NULL
+  code <- NULL
+  mtry <- NULL
+  threshold <- NULL
+  weight <- NULL
 
   ############
   # Ingrowth #

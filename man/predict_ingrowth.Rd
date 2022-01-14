@@ -13,7 +13,8 @@ predict_ingrowth(
   k = 10,
   blocked_cv = TRUE,
   ingrowth_model = "glm",
-  rf_mtry = NULL
+  rf_mtry = NULL,
+  ingrowth_table = NULL
 )
 }
 \description{

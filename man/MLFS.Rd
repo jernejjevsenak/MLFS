@@ -53,7 +53,8 @@ MLFS(
   k = 10,
   blocked_cv = TRUE,
   max_size = NULL,
-  max_size_increase_factor = 1
+  max_size_increase_factor = 1,
+  ingrowth_table = NULL
 )
 }
 \arguments{
@@ -226,6 +227,9 @@ and 'DBH_max'.}
 the max DBH for each species, when the maximum is estimated from the input
 data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
 is ignored. Default is 1. To increase maximum for 10 percent, use 1.1.}
+
+\item{ingrowth_table}{data frame with arguments needed for the correct
+ingrowth simulation. Three columns are needed: code, threshold, and weight.}
 }
 \description{
 Machine Learning Forest Simulator
