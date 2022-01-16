@@ -1077,11 +1077,15 @@ MLFS <- function(data_NFI, data_site,
 
   )
 
+  list_n_elements <- length(final_ouputs)
+  n_el <- 1
+
   # append the ingrowth models
   if (sim_ingrowth == TRUE){
     for (i in 1:length(ing_codes)){
-      final_ouputs[[length(final_ouputs)]] <- get(paste0("ing_model_output_", ing_codes[i]))
+      final_ouputs[[list_n_elements + n_el]] <- get(paste0("ing_model_output_", ing_codes[i]))
       names(final_output_list)[[length(final_ouputs)]] <- paste0("ingrowth_model_",ing_codes[i])
+      n_el <- n_el + 1
     }
   }
 
