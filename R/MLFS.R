@@ -124,8 +124,11 @@
 #' the max DBH for each species, when the maximum is estimated from the input
 #' data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
 #' is ignored. Default is 1. To increase maximum for 10 percent, use 1.1.
-#' @param ingrowth_table data frame with arguments needed for the correct
-#' ingrowth simulation. Three columns are needed: code, threshold, and weight.
+#' @param ingrowth_codes numeric value or a vector of codes which refer to
+#' ingrowth trees
+#' @param ingrowth_max_DBH_percentile which percentile should be used to estimate
+#' the maximum simulated value of ingrowth trees?
+
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -181,7 +184,9 @@ MLFS <- function(data_NFI, data_site,
                  max_size = NULL,
                  max_size_increase_factor = 1.0,
 
-                 ingrowth_table = NULL
+                 ingrowth_codes = NULL,
+                 ingrowth_max_DBH_percentile = 0.90
+
                  ){
 
   # Define global variables
@@ -204,13 +209,14 @@ MLFS <- function(data_NFI, data_site,
   max_DBH_data <- NULL
   max_size_DBH_joint <- NULL
   DBH_max_data <- NULL
+  weight <- NULL
 
   # NFI codes
   ## 0  (normal)
   ## 1  (harvested)
   ## 2  (dead - mortality)
-  ## 3  (ingrowth level 1)
-  ## 15 (ingrowth level 2)
+  ## 3  (ingrowth level 1) # optional
+  ## 15 (ingrowth level 2) # optional
 
   pb = txtProgressBar(min = 0, max = sim_steps, initial = 0, style = 3)
 
@@ -275,11 +281,48 @@ MLFS <- function(data_NFI, data_site,
   # merge NFI and site descriptors
   data <- merge(data_NFI, data_site, by = "plotID")
 
+  # Function to calculate the most common value in a vector
+  # source: https://stackoverflow.com/questions/29255473/most-frequent-value-mode-by-group
+  Mode <- function(x) {
+    ux <- unique(x)
+    ux[which.max(tabulate(match(x, ux)))]
+  }
+
+  if (sim_ingrowth == TRUE){
+
+  # calculate the ingrowth table
+  ingrowth_table <- dplyr::filter(data, code %in% c(ingrowth_codes)) %>%
+    dplyr::group_by(code) %>%
+    dplyr::summarise(DBH_threshold = min(DBH),
+              DBH_max = quantile(DBH, ingrowth_max_DBH_percentile, na.rm = T),
+              weight = Mode(weight))
+
+  # calculate the parameters for ingrowth distributions
+  ing_param_list <- list()
+  ipl_holder <- 1
+
+  for (i in unique(ingrowth_table$code)){
+
+    temp_DBH_max <- dplyr::filter(ingrowth_table, code == i) %>%
+      dplyr::select(DBH_max)
+
+    temp_par_table <- dplyr::filter(data, code == i,
+                                    DBH < as.numeric(temp_DBH_max))
+
+    temp_parameters <- quantile(temp_par_table$DBH, probs = seq(0, 1, 0.05))
+
+    ing_param_list[[ipl_holder]] <- temp_parameters
+    names(ing_param_list)[ipl_holder] <- i
+    ipl_holder <- ipl_holder + 1
+
+  }
+
+  }
+
   # 1 Calculate basal area and remove DBH, we don't need it anymore
   data <- dplyr::mutate(data,
                         BA = ((DBH/2)^2 * pi)/10000,
-                        DBH = NULL
-                        )
+                        DBH = NULL)
 
   data <- calculate_standVars(df = data)
 
@@ -856,8 +899,8 @@ MLFS <- function(data_NFI, data_site,
                                    site_vars = site_vars, include_climate = include_climate,
                                    eval_model_ingrowth = set_eval_ingrowth,
                                    k = k, blocked_cv = blocked_cv, ingrowth_model = ingrowth_model,
-                                   ingrowth_table = ingrowth_table
-                                   )
+                                   ingrowth_table = ingrowth_table,
+                                   DBH_distribution_parameters = ing_param_list)
 
     initial_df <- ingrowth_outputs$predicted_ingrowth
 

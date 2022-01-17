@@ -8,7 +8,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
                              include_climate = include_climate,
                              eval_model_ingrowth = TRUE, k = 10, blocked_cv = TRUE,
                              ingrowth_model = "glm", rf_mtry = NULL,
-                             ingrowth_table = NULL){
+                             ingrowth_table = NULL, DBH_distribution_parameters = NULL){
 
   # Define Global variables
   species <- NULL
@@ -18,10 +18,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   stand_BA <- NULL
   stand_n <- NULL
   BAL <- NULL
-  ingrowth_small <- NULL
-  ingrowth_big <- NULL
-  ingrowth_small_pred <- NULL
-  ingrowth_big_pred <- NULL
   ing_small <- NULL
   ing_big <- NULL
   DBH <- NULL
@@ -51,6 +47,11 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   df_predict <- dplyr::select(df_predict, year, plotID, stand_BA, stand_n, BAL, all_of(site_vars_A)) %>%
     group_by(plotID) %>% summarise_all(.funs = mean, na.rm = TRUE)
+
+
+
+
+
 
   # extract the
   ing_codes <- unique(ingrowth_table$code)
@@ -217,33 +218,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   # Creating the DBH distributions of new trees
 
   new_trees_list_bind <- list()
@@ -272,54 +246,35 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
     assign("new_trees_temp", eval(parse(text = paste0("dplyr::select(new_trees_temp, -ingrowth_",i_codes, ")"))))
 
+    temp_parameters <- unname(DBH_distribution_parameters[which(names(DBH_distribution_parameters) == i_codes)] )[[1]]
 
-    DBH_threshold <- dplyr::filter(ingrowth_table, code == i_codes) %>% dplyr::select(threshold)
+    nn <- nrow(new_trees_temp) /  (length(temp_parameters) - 1) + 1
 
-    x <- runif(nrow(new_trees_temp), as.numeric(DBH_threshold), as.numeric(DBH_threshold) + 5)
+    q_list <- list()
 
-    x <- sort(x, decreasing = F)
-    probs <- seq(0.5,2, length.out = nrow(new_trees_temp))
-    x <- x * probs
-    x <- x * probs
-    x <- x * probs
-    x <- scales::rescale(x, to = c(as.numeric(DBH_threshold), as.numeric(DBH_threshold) + 5))
-    x <- sample(x)
+    for (i in 1:(length(temp_parameters) - 1)){
 
-    new_trees_temp$DBH <- x
+      temp_sim <- runif(nn,temp_parameters[i],temp_parameters[i + 1])
+      q_list[[i]] <- temp_sim
+
+    }
+
+    sim_distribution <- c(do.call(rbind, q_list))
+
+    # due to rounding, the numbers usually won't match: apply correction
+    if (nrow(new_trees_temp) != length(sim_distribution)){
+
+      diff_n <- length(sim_distribution) - nrow(new_trees_temp)
+
+      sim_distribution <- sim_distribution[-sample(length(sim_distribution), diff_n)]
+    }
+
+    new_trees_temp$DBH <- sim_distribution
     new_trees_temp$code <- i_codes
 
     new_trees_list_bind[[b]] <- new_trees_temp
     b = b + 1
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   new_trees <- do.call(rbind, new_trees_list_bind)
   new_treeIDs <- sample(seq(max(df_before$treeID) + 1 , length.out = nrow(new_trees)))
@@ -373,8 +328,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   new_trees$crownHeight_mid<- NA
   new_trees$volume_mid<- NA
 
-  # new_trees$protected <- NA
-
   if (include_climate == FALSE){
     new_trees$t_avg <- NA
     new_trees$p_sum <- NA
@@ -385,7 +338,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   new_trees$stand_BA_mid <- NA
   new_trees$stand_n_mid <- NA
 
-  protected_df <- df_before %>% group_by(plotID) %>% summarise(protected = median(protected))
+  protected_df <- df_before %>% dplyr::group_by(plotID) %>% dplyr::summarise(protected = median(protected))
 
   new_trees <- merge(new_trees, protected_df, by = "plotID", all.x = TRUE)
 

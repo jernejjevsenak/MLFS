@@ -19,7 +19,7 @@ export(volume_merchantable_halfPeriod)
 export(vol_tariffs_halfPeriod)
 
 import("lmfor")
-importFrom("stats", "D", "as.formula", "glm", "lm",
+importFrom("stats", "D", "as.formula", "glm", "lm", "quantile",
                "na.pass", "predict", "runif", "median")
 importFrom("utils", "capture.output", "setTxtProgressBar", "txtProgressBar")
 importFrom("magrittr", "%>%")

@@ -14,7 +14,8 @@ predict_ingrowth(
   blocked_cv = TRUE,
   ingrowth_model = "glm",
   rf_mtry = NULL,
-  ingrowth_table = NULL
+  ingrowth_table = NULL,
+  DBH_distribution_parameters = NULL
 )
 }
 \description{
