@@ -15,172 +15,84 @@ V_general = function(df, data_volF_param = data_volF_param){
   p_H <- NULL
   plotID <- NULL
   treeID <- NULL
+  equation <- NULL
+  p_equation <- NULL
+  rowwise <- NULL
+  DBH_min <- NULL
+  DBH_max <- NULL
+  vol_factor <- NULL
+  BA_min <- NULL
+  BA_max <- NULL
+  valid <- NULL
+  p_volume <- NULL
+  p_valid <- NULL
 
   initial_colnames <- colnames(df)
 
-  #####################
-  # 1 Volume for PCAB #
-  #####################
-  df_PCAB <- dplyr::filter(df, species == "PCAB")
-  param_PCAB <- dplyr::filter(data_volF_param, species == "PCAB")
+  # I create new variable 'species temp', which is used to merge with volume functions
+  df <- dplyr::mutate(df, species_temp = ifelse(species %in% unique(data_volF_param$species), species, "REST"))
+  data_volF_param <- dplyr::rename(data_volF_param, 'species_temp' = 'species')
 
-  a = param_PCAB$a
-  b = param_PCAB$b
-  c = param_PCAB$c
-  d = param_PCAB$d
-  e = param_PCAB$e
-  f = param_PCAB$f
-  g = param_PCAB$g
+  # Check that we have all equations or, that we have the REST equation available
+  if (sum(!(unique(df$species) %in% unique(data_volF_param$species_temp))) > 1){
 
-  df_PCAB <- mutate(df_PCAB,
-               D = sqrt(4*BA/pi) * 100/10, #cm -> dm
-               p_D = sqrt(4*p_BA/pi) * 100/10, #cm -> dm
+    if (!("REST" %in% unique(data_volF_param$species_temp))){
 
-               H = height * 10, # m -> dm
-               p_H = p_height * 10,
+      stop(paste0("The equations and parameters for volume functions are missing for the following species:",
+                  paste0(unique(df$species)[!(unique(df$species) %in% unique(data_volF_param$species_temp))], collapse=", "),
+                  ". Alternatively, provide the equation for the 'REST' category"))
+    }
+  }
 
-               volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D) / 1000,   # dm3 -> m3
-               p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D) / 1000)   # dm3 -> m3
+  # If volume functions are provided per plot and species, we do merge using both variables, otherwise only species (species_temp)
+  if ("plotID" %in% colnames(data_volF_param)){
 
-  #####################
-  # 2 Volume for ABAL #
-  #####################
-  df_ABAL <- dplyr::filter(df, species == "ABAL")
-  param_ABAL <- dplyr::filter(data_volF_param, species == "ABAL")
+    df <- merge(df, data_volF_param, by = c("plotID", "species_temp"), all.x = TRUE)
 
-  a = param_ABAL$a
-  b = param_ABAL$b
-  c = param_ABAL$c
-  d = param_ABAL$d
-  e = param_ABAL$e
-  f = param_ABAL$f
-  g = param_ABAL$g
+  } else {
 
-  df_ABAL <- mutate(df_ABAL,
-                    D = sqrt(4*BA/pi) * 100/10, # cm -> dm
-                    p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
+    df <- merge(df, data_volF_param, by = "species_temp", all.x = TRUE)
 
-                    H = height * 10, # m -> dm
-                    p_H = p_height * 10, # m -> dm
+  }
 
-                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,  # dm3 -> m3
-                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D+g)/1000)   # dm3 -> m3
+  df_current <- df %>%
 
+         rowwise() %>% mutate(
 
-  #####################
-  # 3 Volume for FASY #
-  #####################
-  df_FASY <- dplyr::filter(df, species == "FASY")
-  param_FASY <- dplyr::filter(data_volF_param, species == "FASY")
+         BA_min = ((DBH_min/2)^2 * pi)/10000,
+         BA_max = ((DBH_max/2)^2 * pi)/10000,
 
-  a = param_FASY$a
-  b = param_FASY$b
-  c = param_FASY$c
-  d = param_FASY$d
-  e = param_FASY$e
-  f = param_FASY$f
-  g = param_FASY$g
+         D = sqrt(4*BA/pi) * 100,
+         H = height,
+         volume = eval(parse(text=equation))/vol_factor,
 
-  df_FASY <- mutate(df_FASY,
-                    D = sqrt(4*BA/pi) * 100/10, # cm -> dm
-                    p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
+         valid = ifelse(is.na(DBH_min), TRUE,
+                        ifelse(BA >= BA_min &  BA <= BA_max, TRUE, FALSE))
 
-                    H = height * 10, # m -> dm
-                    p_H = p_height * 10,
+         ) %>% filter(valid == TRUE) %>% select(-p_BA, -p_height, -p_volume)
 
-                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D+g)/1000,   # dm3 -> m3
-                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D+g)/1000)   # dm3 -> m3
+df_previous <- df %>%
+    rowwise() %>% mutate(
+
+      BA_min = ((DBH_min/2)^2 * pi)/10000,
+      BA_max = ((DBH_max/2)^2 * pi)/10000,
+
+      p_D = sqrt(4*p_BA/pi) * 100,
+      p_H = p_height,
+      p_equation = gsub("H", "p_H", gsub("D", "p_D", equation)),
+      p_volume = eval(parse(text=p_equation))/vol_factor,
+      p_valid = ifelse(is.na(DBH_min), TRUE,
+                       ifelse(p_BA >= BA_min &  p_BA <= BA_max, TRUE, FALSE))
+
+    ) %>% filter(p_valid == TRUE) %>% select(plotID, treeID, p_BA, p_height, p_volume)
 
 
-  #####################
-  # 4 Volume for PISY #
-  #####################
-  df_PISY <- dplyr::filter(df, species == "PISY")
-  param_PISY <- dplyr::filter(data_volF_param, species == "PISY")
 
-  a = param_PISY$a
-  b = param_PISY$b
-  c = param_PISY$c
-  d = param_PISY$d
-  e = param_PISY$e
-  f = param_PISY$f
-  g = param_PISY$g
-
-  df_PISY <- mutate(df_PISY,
-
-                    D = sqrt(4*BA/pi) * 100/10, # cm -> dm
-                    p_D = sqrt(4*p_BA/pi) * 100/10, # cm -> dm
-
-                    H = height * 10, # m -> dm
-                    p_H = p_height * 10,
-
-                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*H)/1000,   # dm3 -> m3
-                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_H)/1000)   # dm3 -> m3
-
-
-  #####################
-  # 5 Volume for QUSP #
-  #####################
-  df_QUSP <- dplyr::filter(df, species %in% c("QUSP", "QUCE", "QUPE", "QUPU", "QURO", "QURU", "QUSP"))
-  param_QUSP <- dplyr::filter(data_volF_param, species == "QUSP")
-
-  a = param_QUSP$a
-  b = param_QUSP$b
-  c = param_QUSP$c
-  d = param_QUSP$d
-  e = param_QUSP$e
-  f = param_QUSP$f
-  g = param_QUSP$g
-
-  df_QUSP <- mutate(df_QUSP,
-                    D = sqrt(4*BA/pi) * 100/10, #cm -> dm
-                    p_D = sqrt(4*p_BA/pi) * 100/10, #cm -> dm
-
-                    H = height * 10, # m -> dm
-                    p_H = p_height * 10,
-
-                    volume = (pi/4)*(a*D^2*H+b*D^2+c*D*H+d*H+e*D+f) / 1000,   # dm3 -> m3
-                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2+c*p_D*p_H+d*p_H+e*p_D+f) / 1000)   # dm3 -> m3
-
-  #####################
-  # 4 Volume for Rest #
-  #####################
-
-  df_REST <- dplyr::filter(df, !(species %in% c("PCAB", "ABAL", "FASY", "PISY",
-                                         "QUSP", "QUCE", "QUPE", "QUPU", "QURO", "QURU", "QUSP")))
-
-  param_REST <- dplyr::filter(data_volF_param, species == "REST") # is this the best option?
-
-  a = param_REST$a
-  b = param_REST$b
-  c = param_REST$c
-  d = param_REST$d
-  e = param_REST$e
-  f = param_REST$f
-  g = param_REST$g
-
-  df_REST <- mutate(df_REST,
-                    D = sqrt(4*BA/pi) * 100/10, #cm -> dm
-                    p_D = sqrt(4*p_BA/pi) * 100/10, #cm -> dm
-
-                    H = height * 10, # m -> dm
-                    p_H = p_height * 10,
-
-                    volume = (pi/4)*(a*D^2*H+b*D^2*H*log(D)^2+c*D^2+d*D*H+e*H+f*D) / 1000,   # dm3 -> m3
-                    p_volume = (pi/4)*(a*p_D^2*p_H+b*p_D^2*p_H*log(p_D)^2+c*p_D^2+d*p_D*p_H+e*p_H+f*p_D) / 1000)   # dm3 -> m3
-
-  ########
-  # Join #
-  ########
-
-  df <- rbind(df_PCAB,
-              df_ABAL,
-              df_FASY,
-              df_PISY,
-              df_QUSP,
-              df_REST)
+  df <- merge(df_current, df_previous, by = c("plotID", "treeID"))
 
   df <- dplyr::select(df, all_of(initial_colnames)) %>% arrange(plotID, treeID)
+
+  df <- data.frame(df)
 
   return(df)
 }

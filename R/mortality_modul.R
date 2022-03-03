@@ -8,7 +8,7 @@
 predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = NA,
                               mortality_share_type = "volume",
                               include_climate, site_vars, select_months_climate = c(1:12),
-                              mortality_model = "rf", nb_laplace = 0,
+                              mortality_model = "rf", nb_laplace = 0, sim_crownHeight = FALSE,
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL,
                               df_max_size = NULL){
@@ -64,13 +64,28 @@ if (sim_mortality == TRUE){
   }
 
   df_predict <- dplyr::filter(df_predict, code %in% c(0,3,15))
-  df_fit <- mutate(df_fit, mortality = ifelse(code == 2, 1, 0),
-                   BA_mid = BA,
-                   BAL_mid = BAL,
-                   height_mid = height,
-                   crownHeight_mid = crownHeight,
-                   stand_BA_mid = stand_BA,
-                   stand_n_mid = stand_n)
+
+  if (sim_crownHeight == TRUE){
+
+    df_fit <- mutate(df_fit, mortality = ifelse(code == 2, 1, 0),
+                     BA_mid = BA,
+                     BAL_mid = BAL,
+                     height_mid = height,
+                     crownHeight_mid = crownHeight,
+                     stand_BA_mid = stand_BA,
+                     stand_n_mid = stand_n)
+
+  } else {
+
+    df_fit <- mutate(df_fit, mortality = ifelse(code == 2, 1, 0),
+                     BA_mid = BA,
+                     BAL_mid = BAL,
+                     height_mid = height,
+                     # crownHeight_mid = crownHeight,
+                     stand_BA_mid = stand_BA,
+                     stand_n_mid = stand_n)
+
+  }
 
   # YOU CAN MANUALLY SET THE MORTALITY SHARE
   if (is.na(mortality_share)){
@@ -81,8 +96,19 @@ if (sim_mortality == TRUE){
 
   }
 
-  formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
-                               paste(all_of(site_vars), collapse = "+")))
+  if (sim_crownHeight == TRUE){
+
+    formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
+                                 paste(all_of(site_vars), collapse = "+")))
+
+  } else {
+
+    formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
+                                 paste(all_of(site_vars), collapse = "+")))
+
+  }
+
+
 
   ##############
   # Eval phase #

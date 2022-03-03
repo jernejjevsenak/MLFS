@@ -31,6 +31,10 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   # Ingrowth #
   ############
 
+  max(df_fit$ingrowth_15)
+
+  length(unique(df_fit$plotID))
+
   df_before <- df_predict
 
   if (include_climate == TRUE){
@@ -47,10 +51,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   df_predict <- dplyr::select(df_predict, year, plotID, stand_BA, stand_n, BAL, all_of(site_vars_A)) %>%
     group_by(plotID) %>% summarise_all(.funs = mean, na.rm = TRUE)
-
-
-
-
 
 
   # extract the
@@ -91,7 +91,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
       if (ingrowth_model == "glm"){
 
-
         for (i_codes in ing_codes){
 
          assign(paste0("mod_ing_", i_codes), eval(parse(text = paste0("glm(formula_ing_", i_codes, ", data = train, family = 'poisson')"))))
@@ -112,7 +111,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
           colnames(test)[ncol(test)] <- paste0("ingrowth_",i_codes,"_pred")
 
         }
-
 
       } else if (ingrowth_model == "rf"){
 
@@ -190,7 +188,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
  } else if(ingrowth_model == "rf") {
 
-
    for (i_codes in ing_codes){
 
      if (is.null(rf_mtry)){
@@ -219,7 +216,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   }
 
   # Creating the DBH distributions of new trees
-
   new_trees_list_bind <- list()
   b = 1
 
@@ -234,7 +230,10 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
       temp <- new_trees_temp[i,]
 
-      for (j in 1:as.numeric(get("temp")[paste0("ingrowth_", i_codes)])){
+      row_n <- as.numeric(get("temp")[paste0("ingrowth_", i_codes)])
+      row_n <- ifelse(row_n > 150, 150, row_n)
+
+      for (j in 1:row_n){
 
         list_new_trees[[b]] <- temp
         b = b +1

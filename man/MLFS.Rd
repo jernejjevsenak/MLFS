@@ -23,6 +23,7 @@ MLFS(
   sim_harvesting = TRUE,
   sim_mortality = TRUE,
   sim_ingrowth = TRUE,
+  sim_crownHeight = TRUE,
   harvesting_sum,
   forest_area_ha,
   harvest_sum_level = 1,
@@ -54,8 +55,12 @@ MLFS(
   blocked_cv = TRUE,
   max_size = NULL,
   max_size_increase_factor = 1,
-  ingrowth_codes = NULL,
-  ingrowth_max_DBH_percentile = 0.9
+  ingrowth_codes = c(3),
+  ingrowth_max_DBH_percentile = 0.9,
+  measurement_thresholds = NULL,
+  area_correction = NULL,
+  export_csv = FALSE,
+  sim_export_mode = TRUE
 )
 }
 \arguments{
@@ -111,6 +116,9 @@ only for volume calculation using the 'slo_2p_volume_functions'.}
 \item{sim_mortality}{logical, should mortality be simulated?}
 
 \item{sim_ingrowth}{logical, should ingrowth be simulated?}
+
+\item{sim_crownHeight}{logical, should crown heights be simulated? If TRUE,
+a crownHeight column is expected in data_NFI}
 
 \item{harvesting_sum}{a value, or a vector of values defining the harvesting
 sums through the simulation stage. If a single value, then it is used in all
@@ -222,7 +230,7 @@ returned as the output}
 \item{max_size}{a data frame with the maximum values of DBH for each species.
 If a tree exceeds this value, it dies. If not provided, the maximum is
 estimated from the input data. Two columns must be present, i.e. 'species'
-and 'DBH_max'.}
+and 'DBH_max'}
 
 \item{max_size_increase_factor}{numeric value, which will be used to increase
 the max DBH for each species, when the maximum is estimated from the input
@@ -234,6 +242,25 @@ ingrowth trees}
 
 \item{ingrowth_max_DBH_percentile}{which percentile should be used to estimate
 the maximum simulated value of ingrowth trees?}
+
+\item{measurement_thresholds}{data frame with two variables: 1) DBH_threshold
+and 2) weight. This information is used to assign the correct weights in BAI
+increment sub-model}
+
+\item{area_correction}{optional data frame with three variables: 1) plotID and
+2) DBH_threshold and 3) the correction factor to be multiplied by weight for
+this particular category.}
+
+\item{export_csv}{logical, if TRUE, at each simulation step, the results are
+saved in the current working directory as csv file}
+
+\item{sim_export_mode}{logical, if FALSE, the results of the individual
+simulation steps are not merged into the final export table. Therefore,
+output element 1 ($sim_results) will be empty. This was introduced to allow
+simulations when using larger data sets and long term simulations that might
+exceed the available RAM. In such cases, we recommend setting the argument
+export_csv = TRUE, which will export each simulation step to the current
+working directory.}
 }
 \description{
 Machine Learning Forest Simulator

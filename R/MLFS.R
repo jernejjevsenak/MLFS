@@ -22,6 +22,8 @@
 #' to plot IDs, used for final cut
 #' @param sim_mortality logical, should mortality be simulated?
 #' @param sim_ingrowth logical, should ingrowth be simulated?
+#' @param sim_crownHeight logical, should crown heights be simulated? If TRUE,
+#' a crownHeight column is expected in data_NFI
 #' @param data_volF_param optional, data frame with species-specific volume
 #' function parameters
 #' @param form_factors optional, data frame with species-specific form factors
@@ -119,7 +121,7 @@
 #' @param max_size a data frame with the maximum values of DBH for each species.
 #' If a tree exceeds this value, it dies. If not provided, the maximum is
 #' estimated from the input data. Two columns must be present, i.e. 'species'
-#' and 'DBH_max'.
+#' and 'DBH_max'
 #' @param max_size_increase_factor numeric value, which will be used to increase
 #' the max DBH for each species, when the maximum is estimated from the input
 #' data. If the argument 'max_size' is provided, the 'max_size_increase_factor'
@@ -128,7 +130,21 @@
 #' ingrowth trees
 #' @param ingrowth_max_DBH_percentile which percentile should be used to estimate
 #' the maximum simulated value of ingrowth trees?
-
+#' @param measurement_thresholds data frame with two variables: 1) DBH_threshold
+#' and 2) weight. This information is used to assign the correct weights in BAI
+#' increment sub-model
+#' @param area_correction optional data frame with three variables: 1) plotID and
+#' 2) DBH_threshold and 3) the correction factor to be multiplied by weight for
+#' this particular category.
+#' @param export_csv logical, if TRUE, at each simulation step, the results are
+#' saved in the current working directory as csv file
+#' @param sim_export_mode logical, if FALSE, the results of the individual
+#' simulation steps are not merged into the final export table. Therefore,
+#' output element 1 ($sim_results) will be empty. This was introduced to allow
+#' simulations when using larger data sets and long term simulations that might
+#' exceed the available RAM. In such cases, we recommend setting the argument
+#' export_csv = TRUE, which will export each simulation step to the current
+#' working directory.
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -150,6 +166,7 @@ MLFS <- function(data_NFI, data_site,
                  sim_harvesting = TRUE,
                  sim_mortality = TRUE,
                  sim_ingrowth = TRUE,
+                 sim_crownHeight = TRUE,
 
                  harvesting_sum,
                  forest_area_ha,
@@ -183,10 +200,12 @@ MLFS <- function(data_NFI, data_site,
                  k = 10, blocked_cv = TRUE,
                  max_size = NULL,
                  max_size_increase_factor = 1.0,
-
-                 ingrowth_codes = NULL,
-                 ingrowth_max_DBH_percentile = 0.90
-
+                 ingrowth_codes = c(3),
+                 ingrowth_max_DBH_percentile = 0.90,
+                 measurement_thresholds = NULL,
+                 area_correction = NULL,
+                 export_csv = FALSE,
+                 sim_export_mode = TRUE
                  ){
 
   # Define global variables
@@ -210,6 +229,7 @@ MLFS <- function(data_NFI, data_site,
   max_size_DBH_joint <- NULL
   DBH_max_data <- NULL
   weight <- NULL
+  area_factor <- NULL
 
   # NFI codes
   ## 0  (normal)
@@ -281,11 +301,43 @@ MLFS <- function(data_NFI, data_site,
   # merge NFI and site descriptors
   data <- merge(data_NFI, data_site, by = "plotID")
 
+  # remove the objects to make free space
+  rm(data_NFI)
+  rm(data_site)
+
   # Function to calculate the most common value in a vector
   # source: https://stackoverflow.com/questions/29255473/most-frequent-value-mode-by-group
   Mode <- function(x) {
     ux <- unique(x)
     ux[which.max(tabulate(match(x, ux)))]
+  }
+
+  # 1 Calculate basal area and remove DBH, we don't need it anymore
+  data <- dplyr::mutate(data, BA = ((DBH/2)^2 * pi)/10000)
+
+  # Calculate measurement thresholds in terms of basal area
+  measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)^2 * pi)/10000
+
+  data <- data %>% mutate(weight = ifelse(BA >= max(measurement_thresholds$BA_threshold),
+                                          measurement_thresholds[, "weight"][which.max(measurement_thresholds$BA_threshold)],
+                                          measurement_thresholds[, "weight"][which.min(measurement_thresholds$BA_threshold)]),
+
+                          DBH_threshold = ifelse(BA >= max(measurement_thresholds$BA_threshold),
+                                                 measurement_thresholds[, "DBH_threshold"][which.max(measurement_thresholds$BA_threshold)],
+                                                 measurement_thresholds[, "DBH_threshold"][which.min(measurement_thresholds$BA_threshold)]))
+
+  # In case area correction factors are provided we use them to correct plot weights
+  if (!is.null(area_correction)){
+
+    data <- merge(data, area_correction, by = c("plotID", "DBH_threshold"), all.x = TRUE)
+
+    data <- dplyr::mutate(data, area_factor = ifelse(is.na(area_factor), 1, area_factor),
+                          weight = weight*area_factor, area_factor = NULL, DBH_threshold = NULL)
+  } else {
+
+    area_correction <- NULL
+    data$DBH_threshold <- NULL
+
   }
 
   if (sim_ingrowth == TRUE){
@@ -316,13 +368,9 @@ MLFS <- function(data_NFI, data_site,
     ipl_holder <- ipl_holder + 1
 
   }
+}
 
-  }
-
-  # 1 Calculate basal area and remove DBH, we don't need it anymore
-  data <- dplyr::mutate(data,
-                        BA = ((DBH/2)^2 * pi)/10000,
-                        DBH = NULL)
+  data$DBH <- NULL
 
   data <- calculate_standVars(df = data)
 
@@ -330,9 +378,26 @@ MLFS <- function(data_NFI, data_site,
   data$BAL <- NA
   data <- calculate_BAL(df = data)
 
+
+  if (sim_crownHeight == TRUE){
+
+    # If crown heights will be simulated, the crownHeight column is expected in data_NFI
+    if (!("crownHeight" %in% colnames(data))){
+
+      stop("crownHeight variable must be present in data_NFI")
+
+    }
+
+  } else {
+
+    data$crownHeight <- NA
+
+  }
+
   # 3 Transform data, where yield is properly expressed
   data <- transform_data(df = data, include_climate = include_climate,
-                         df_climate = data_climate, select_months_climate = select_months_climate)
+                         df_climate = data_climate, select_months_climate = select_months_climate
+                         )
 
   ######################################################
   # create fitting data frames for
@@ -340,7 +405,9 @@ MLFS <- function(data_NFI, data_site,
   data_height <- dplyr::filter(data, !is.na(height))
 
   # 2) crown height
-  data_crownHeight <- dplyr::filter(data, !is.na(crownHeight))
+  if (sim_crownHeight == TRUE){
+    data_crownHeight <- dplyr::filter(data, !is.na(crownHeight))
+  }
 
   # 3) BAI
   data_BAI <- dplyr::filter(data, !is.na(BAI))
@@ -348,27 +415,40 @@ MLFS <- function(data_NFI, data_site,
   # 4) mortality
   data_mortality <- data
 
+
+  # This part needs to be run to get the elevation results
   h_predictions <- height_prediction(df_fit = data_mortality,
-                                      df_predict = data_mortality,
-                                      species_n_threshold = species_n_threshold,
-                                      height_pred_level = height_pred_level,
-                                      height_model = height_model,
-                                      BRNN_neurons = BRNN_neurons,
-                                      eval_model_height = set_eval_height,
-                                      blocked_cv = blocked_cv, k = k)
+                                   df_predict = data_mortality,
+                                   species_n_threshold = species_n_threshold,
+                                   height_pred_level = height_pred_level,
+                                   height_model = height_model,
+                                   BRNN_neurons = BRNN_neurons,
+                                   eval_model_height = set_eval_height,
+                                   blocked_cv = blocked_cv, k = k)
 
   data_mortality <- h_predictions$data_height_predictions
 
-  Crown_h_predictions <- crownHeight_prediction(df_fit = data_mortality,
-                                           df_predict = data_mortality,
-                                           site_vars = site_vars,
-                                           crownHeight_model = crownHeight_model,
-                                           BRNN_neurons = BRNN_neurons,
-                                           species_n_threshold = species_n_threshold,
-                                           k = k, blocked_cv = blocked_cv,
-                                           eval_model_crownHeight = set_eval_crownHeight)
+  if (sim_crownHeight == TRUE & sum(is.na(data_mortality$crownHeight)) > 0){
 
-  data_mortality <- Crown_h_predictions$predicted_crownHeight
+    Crown_h_predictions <- crownHeight_prediction(df_fit = data_mortality,
+                                                  df_predict = data_mortality,
+                                                  site_vars = site_vars,
+                                                  crownHeight_model = crownHeight_model,
+                                                  BRNN_neurons = BRNN_neurons,
+                                                  species_n_threshold = species_n_threshold,
+                                                  k = k, blocked_cv = blocked_cv,
+                                                  eval_model_crownHeight = set_eval_crownHeight)
+
+    data_mortality <- Crown_h_predictions$predicted_crownHeight
+
+  } else {
+
+    Crown_h_predictions <- list()
+    Crown_h_predictions$eval_crownHeight <- "crownHeight is not simulated"
+    Crown_h_predictions$model_species <- "crownHeight is not simulated"
+    Crown_h_predictions$model_speciesGroups <- "crownHeight is not simulated"
+
+  }
 
   data_mortality <- dplyr::filter(data_mortality, !is.na(BA))
 
@@ -407,7 +487,12 @@ MLFS <- function(data_NFI, data_site,
 
   initial_df <- data
 
+  # remove data
+  rm(data)
+
   # 1 Calculate heights
+  if (sum(is.na(initial_df$height)) > 0){
+
   initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                   species_n_threshold = species_n_threshold,
                                   height_model = height_model,
@@ -415,7 +500,12 @@ MLFS <- function(data_NFI, data_site,
                                   height_pred_level = height_pred_level,
                                   eval_model_height = FALSE)$data_height_predictions
 
+  }
+
+
   # 2 Calculate CrownHeights
+  if (sim_crownHeight == TRUE & sum(is.na(initial_df$crownHeight)) > 0){
+
   initial_df <- crownHeight_prediction(df_fit = data_crownHeight,
                                        df_predict = initial_df,
                                        site_vars = site_vars,
@@ -424,6 +514,7 @@ MLFS <- function(data_NFI, data_site,
                                        species_n_threshold = species_n_threshold,
                                        k = k,
                                        eval_model_crownHeight = FALSE)$predicted_crownHeight
+  }
 
   # 3 calculate volume
   if (volume_calculation == "form_factors"){
@@ -482,17 +573,22 @@ MLFS <- function(data_NFI, data_site,
   # This is crucial in terms of correct harvesting and mortality estimates
 
   # Simulate BAI for halfPeriod
+
+  # sort(table(initial_df$species))
+
   initial_df <- BAI_prediction_halfPeriod(df_fit = data_BAI,
                                           df_predict = initial_df,
                                           site_vars = site_vars,
                                           rf_mtry = rf_mtry,
                                           species_n_threshold = species_n_threshold,
-                                          include_climate = include_climate)
+                                          include_climate = include_climate,
+                                          measurement_thresholds = measurement_thresholds,
+                                          area_correction = area_correction
+                                          )
 
   # Next, we simulate height and crownHeight based on half period attributes
-
-
   # Calculate tree heights - half Period
+
   initial_df <- height_prediction_halfPeriod(df_fit = data_height, df_predict = initial_df,
                                              species_n_threshold = species_n_threshold,
                                              height_model = height_model,
@@ -500,12 +596,20 @@ MLFS <- function(data_NFI, data_site,
                                              height_pred_level = height_pred_level)
 
   # Calculate tree crownHeights half Period
+
+ if (sim_crownHeight == TRUE ){
+
   initial_df <- crownHeight_prediction_halfPeriod(df_fit = data_crownHeight,
                                                   df_predict = initial_df,
                                                   site_vars = site_vars,
                                                   crownHeight_model = crownHeight_model,
                                                   BRNN_neurons = BRNN_neurons,
                                                   species_n_threshold = species_n_threshold)
+ } else {
+
+   initial_df$crownHeight_mid <- NA
+
+ }
 
   # Calculate Volume
   if (volume_calculation == "form_factors"){
@@ -553,8 +657,6 @@ MLFS <- function(data_NFI, data_site,
 
   }
 
-
-
   # Ingrowth is now added, BAL and stand variables have changed. We therefore
   # update all variables
   initial_df <- calculate_BAL_halfPeriod(df = initial_df)
@@ -569,7 +671,17 @@ MLFS <- function(data_NFI, data_site,
   initial_df$p_volume_mid <- NA
 
   # Simulation starts and we save initial_df (without dead and harvested trees)
-  list_results[[1]] <- initial_df
+
+  if (sim_export_mode == TRUE){
+
+    list_results[[1]] <- initial_df
+
+  }
+
+  if (export_csv == TRUE){
+    write.csv(initial_df, paste0("output_step_0.csv"), row.names = FALSE)
+  }
+
 
   # I create this empty objects in case of no evaluation
   eval_mortality_output <- "the argument set_eval_mortality is set to FALSE"
@@ -585,8 +697,6 @@ MLFS <- function(data_NFI, data_site,
     }
 
   }
-
-
 
   # If the length of share_thinning is 1, we replicate the value using the sim_steps
   if (length(share_thinning) == 1){
@@ -607,8 +717,6 @@ MLFS <- function(data_NFI, data_site,
   if (length(final_cut_weight) == 1){
     final_cut_weight <- rep(final_cut_weight, sim_steps)
   }
-
-
 
   # If the length of harvesting_sum is 1, we replicate the value using the sim_steps
   if (length(harvesting_sum)== 1){
@@ -671,7 +779,6 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
-
   if (length(mortality_share) < sim_steps && length(mortality_share) > 1){
 
     n_missing <- sim_steps - length(mortality_share)
@@ -694,7 +801,6 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
-
   if (length(final_cut_weight) < sim_steps && length(final_cut_weight) > 1){
 
     n_missing <- sim_steps - length(final_cut_weight)
@@ -706,12 +812,6 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
-
-
-
-
-
-
   if (length(harvesting_sum) < sim_steps && length(harvesting_sum) > 1){
 
     n_missing <- sim_steps - length(harvesting_sum)
@@ -722,7 +822,6 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
-
   if (length(share_thinning) < sim_steps && length(share_thinning) > 1){
 
     n_missing <- sim_steps - length(share_thinning)
@@ -732,7 +831,6 @@ MLFS <- function(data_NFI, data_site,
       warning("The last value in share_thinning vector is used for undefined simulation years.")
     }
   }
-
 
   # If the ncol of thinning_weights_species is > 2, we replicate the column using the sim_steps
   if (!is.null(thinning_weights_species)){
@@ -762,9 +860,6 @@ MLFS <- function(data_NFI, data_site,
     }
   }
 
-
-
-
   # If the ncol of final_cut_weights_plot is > 2, we replicate the column using the sim_steps
   if (!is.null(final_cut_weights_plot)){
     if (ncol(final_cut_weights_plot) > 2 && ncol(final_cut_weights_plot) < (sim_steps + 1)){
@@ -778,8 +873,6 @@ MLFS <- function(data_NFI, data_site,
       }
     }
   }
-
-
 
   # If the ncol of thinning_weights_plot is > 2, we replicate the column using the sim_steps
   if (!is.null(thinning_weights_plot)){
@@ -795,14 +888,6 @@ MLFS <- function(data_NFI, data_site,
       }
     }
   }
-
-
-
-
-
-
-
-
 
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
@@ -820,7 +905,7 @@ MLFS <- function(data_NFI, data_site,
                                            sim_mortality = sim_mortality,
                                            mortality_model = mortality_model,
                                            nb_laplace = nb_laplace,
-                                           rf_mtry = rf_mtry,
+                                           rf_mtry = rf_mtry, sim_crownHeight = sim_crownHeight,
                                            mortality_share = mortality_share[sim-1],
                                            include_climate = include_climate,
                                            select_months_climate = select_months_climate,
@@ -832,6 +917,9 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df <- mortality_outputs$predicted_mortality
 
+    # Save the model for the final list
+    mortality_output_model <- mortality_outputs$model_output
+
     if (set_eval_mortality == TRUE){
 
       eval_mortality_output <- mortality_outputs$eval_mortality
@@ -840,6 +928,8 @@ MLFS <- function(data_NFI, data_site,
 
     }
 
+    #remove mortality outputs to clear space
+    rm(mortality_outputs)
 
     # Simulate harvesting
     if (sim_harvesting == TRUE){
@@ -872,10 +962,14 @@ MLFS <- function(data_NFI, data_site,
                                  species_n_threshold = species_n_threshold,
                                  include_climate = include_climate,
                                  eval_model_BAI = set_eval_BAI,
-                                 k = k, blocked_cv = blocked_cv)
+                                 k = k, blocked_cv = blocked_cv,
+                                 measurement_thresholds = measurement_thresholds,
+                                 area_correction = area_correction)
+
+    BAI_outputs_model_species <- BAI_outputs$rf_model_species
+    BAI_outputs_model_groups <- BAI_outputs$rf_model_speciesGroups
 
     # You might lose trees without BAI measurements! Be aware. Include warning!
-
     initial_df <- BAI_outputs$predicted_BAI
 
     if (set_eval_BAI == TRUE){
@@ -885,6 +979,9 @@ MLFS <- function(data_NFI, data_site,
       set_eval_BAI <- FALSE
 
     }
+
+    # remove the object to save space
+    remove(BAI_outputs)
 
     # Calculate BAL
     initial_df <- calculate_BAL(initial_df)
@@ -919,6 +1016,8 @@ MLFS <- function(data_NFI, data_site,
 
     }
 
+    # remove the ingrowth_outputs to save space
+    rm(ingrowth_outputs)
 
     # Ingrowth is now added, BAL and stand variables have changed. We therefore
     # update all variables
@@ -936,6 +1035,7 @@ MLFS <- function(data_NFI, data_site,
                                     eval_model_height = FALSE)$data_height_predictions
 
     # Calculate tree crownHeights
+    if (sim_crownHeight == TRUE){
     initial_df <- crownHeight_prediction(df_fit = data_crownHeight,
                                          df_predict = initial_df,
                                          site_vars = site_vars,
@@ -944,6 +1044,7 @@ MLFS <- function(data_NFI, data_site,
                                          species_n_threshold = species_n_threshold,
                                          k = k,
                                          eval_model_crownHeight = FALSE)$predicted_crownHeight
+    }
 
     # Calculate Volume
     if (volume_calculation == "form_factors"){
@@ -994,11 +1095,8 @@ MLFS <- function(data_NFI, data_site,
 
     }
 
-
-
     # For all trees, simulated BAI for half of the period
     # This is crucial in terms of correct harvesting and mortality estimates
-
 
     # Simulate BAI for halfPeriod
     initial_df <- BAI_prediction_halfPeriod(df_fit = data_BAI,
@@ -1006,10 +1104,11 @@ MLFS <- function(data_NFI, data_site,
                                             site_vars = site_vars,
                                             rf_mtry = rf_mtry,
                                             species_n_threshold = species_n_threshold,
-                                            include_climate = include_climate)
+                                            include_climate = include_climate,
+                                            measurement_thresholds = measurement_thresholds,
+                                            area_correction = area_correction)
 
     # Next, we simulate height and crownHeight based on half period attributes
-
 
     # Calculate tree heights - half Period
     initial_df <- height_prediction_halfPeriod(df_fit = data_height, df_predict = initial_df,
@@ -1019,12 +1118,19 @@ MLFS <- function(data_NFI, data_site,
                                                height_pred_level = height_pred_level)
 
     # Calculate tree crownHeights half Period
-    initial_df <- crownHeight_prediction_halfPeriod(df_fit = data_crownHeight,
-                                                    df_predict = initial_df,
-                                                    site_vars = site_vars,
-                                                    crownHeight_model = crownHeight_model,
-                                                    BRNN_neurons = BRNN_neurons,
-                                                    species_n_threshold = species_n_threshold)
+    if (sim_crownHeight == TRUE){
+
+      initial_df <- crownHeight_prediction_halfPeriod(df_fit = data_crownHeight,
+                                                      df_predict = initial_df,
+                                                      site_vars = site_vars,
+                                                      crownHeight_model = crownHeight_model,
+                                                      BRNN_neurons = BRNN_neurons,
+                                                      species_n_threshold = species_n_threshold)
+    } else {
+
+      initial_df$crownHeight_mid <- NA
+
+    }
 
     # Calculate Volume
     if (volume_calculation == "form_factors"){
@@ -1079,11 +1185,25 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- calculate_standVars_halfPeriod(df = initial_df)
 
     # Save results
-    list_results[[sim]] <- initial_df
+
+    if (sim_export_mode == TRUE){
+
+      list_results[[sim]] <- initial_df
+
+    }
+
+    if (export_csv == TRUE){
+
+      write.csv(initial_df, paste0("output_step_", sim-1, ".csv"), row.names = FALSE)
+
+    }
 
     setTxtProgressBar(pb,sim) # progress bar
 
   }
+
+  # remove data climate to save space
+  rm(data_climate)
 
   # Select columns for the output
   final_calculations <- dplyr::select(do.call(bind_rows, list_results),
@@ -1111,11 +1231,9 @@ MLFS <- function(data_NFI, data_site,
     height_model_speciesGroups = h_predictions$model_speciesGroups,
     crownHeight_model_species = Crown_h_predictions$model_species,
     crownHeight_model_speciesGroups = Crown_h_predictions$model_speciesGroups,
-    mortality_model = mortality_outputs$model_output,
-    BAI_model_species = BAI_outputs$rf_model_species,
-    BAI_model_speciesGroups = BAI_outputs$rf_model_speciesGroups,
-    # ingrowth_model_small = ing_model_output_small,
-    # ingrowth_model_big = ing_model_output_big,
+    mortality_model = mortality_output_model,
+    BAI_model_species = BAI_outputs_model_species,
+    BAI_model_speciesGroups = BAI_outputs_model_groups,
     max_size = max_size
 
   )

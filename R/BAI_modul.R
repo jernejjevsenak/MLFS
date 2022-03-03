@@ -7,7 +7,9 @@ BAI_prediction <- function(df_fit, df_predict,
                            species_n_threshold = 100,
                            site_vars, include_climate,
                            eval_model_BAI = TRUE, rf_mtry = NULL,
-                           k = 10, blocked_cv = TRUE
+                           k = 10, blocked_cv = TRUE,
+                           measurement_thresholds = NULL,
+                           area_correction = NULL
 
                            ){
 
@@ -31,6 +33,8 @@ BAI_prediction <- function(df_fit, df_predict,
   height_mid <- NULL
   weight <- NULL
   weight_mid <- NULL
+  area_factor <- NULL
+  ranger <- NULL
 
 #####################################
 # 2 Predict BAI for next NFI period #
@@ -112,6 +116,8 @@ m_holder = 1
 
 for (M in unique_dv){
 
+  print(M)
+
   # select species
   dv_temporal_fit <- subset(df_fit, subset = df_fit$species %in% M)
 
@@ -145,15 +151,18 @@ for (M in unique_dv){
 
       if (is.null(rf_mtry)){
 
-        rf_mod_species <- randomForest(formula, data = train)
+        # rf_mod_species <- randomForest(formula, data = train)
+        rf_mod_species <- ranger(formula, data = train)
 
       } else {
 
-        rf_mod_species <- randomForest(formula, data = train, mtry = rf_mtry)
+        # rf_mod_species <- randomForest(formula, data = train, mtry = rf_mtry)
+        rf_mod_species <- ranger(formula, data = train, mtry = rf_mtry)
 
       }
 
-      test$BAI_pred <- predict(rf_mod_species, test)
+
+      test$BAI_pred <- predict(rf_mod_species, test)$predictions
 
       eval_list[[m_holder]] <- test
       m_holder = m_holder + 1
@@ -167,17 +176,19 @@ for (M in unique_dv){
 
   if (is.null(rf_mtry)){
 
-    rf_mod_species <- randomForest(formula, data = dv_temporal_fit)
+    # rf_mod_species <- randomForest(formula, data = dv_temporal_fit)
+    rf_mod_species <- ranger(formula, data = dv_temporal_fit)
 
   } else {
 
-    rf_mod_species <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
+    # rf_mod_species <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
+    rf_mod_species <- ranger(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
   }
 
   # Do the same for initial data
   dv_temporal_predict <- subset(df_predict, subset = df_predict$species %in% M)
-  dv_temporal_predict$BAI_new <- predict(rf_mod_species, dv_temporal_predict)
+  dv_temporal_predict$BAI_new <- predict(rf_mod_species, dv_temporal_predict)$predictions
 
   # predicted BAI can't be less than 0
   dv_temporal_predict$BAI_new <- ifelse(dv_temporal_predict$BAI_new < 0, 0, dv_temporal_predict$BAI_new)
@@ -202,13 +213,12 @@ for (M in unique_dv){
                                        height_mid = NA,
                                        crownHeight_mid = NA,
 
-
                                        BA = BA + BAI_new, year = year,
                                        height = NA,
                                        crownHeight = NA,
                                        stand_BA = NA, stand_n = NA, BAL = NA, BAI = BAI_new,
                                        BAI_new = NULL, BA_new = NULL,
-                                       weight = ifelse(BA > 0.07068583, 16.67, 50))
+                                       weight = NA)
 
   list_predictions[[p]] <- dv_temporal_predict
   p = p + 1
@@ -229,6 +239,8 @@ eval_list <- list()
 m_holder = 1
 
 for (M in uniq_tSk){
+
+  print(M)
 
   dv_temporal_fit <- subset(df_fit, subset = df_fit$speciesGroup %in% M)
 
@@ -262,15 +274,18 @@ for (M in uniq_tSk){
 
       if (is.null(rf_mtry)){
 
-        rf_mod_speciesGroups <- randomForest(formula, data = train)
+        # rf_mod_speciesGroups <- randomForest(formula, data = train)
+
+        rf_mod_speciesGroups <- ranger(formula, data = train)
 
       } else {
 
-        rf_mod_speciesGroups <- randomForest(formula, data = train, mtry = rf_mtry)
+        # rf_mod_speciesGroups <- randomForest(formula, data = train, mtry = rf_mtry)
+        rf_mod_speciesGroups <- ranger(formula, data = train, mtry = rf_mtry)
 
       }
 
-      test$BAI_pred <- predict(rf_mod_speciesGroups, test)
+      test$BAI_pred <- predict(rf_mod_speciesGroups, test)$predictions
 
       eval_list[[m_holder]] <- test
       m_holder = m_holder + 1
@@ -284,17 +299,20 @@ for (M in uniq_tSk){
 
   if (is.null(rf_mtry)){
 
-    rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit)
+    # rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit)
+
+    rf_mod_speciesGroups <- ranger(formula, data = dv_temporal_fit)
 
   } else {
 
-    rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
+    # rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
+    rf_mod_speciesGroups <- ranger(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
   }
 
   dv_temporal_predict <- subset(df_predict, subset = df_predict$speciesGroup %in% M)
 
-  dv_temporal_predict$BAI_new <- predict(rf_mod_speciesGroups, dv_temporal_predict)
+  dv_temporal_predict$BAI_new <- predict(rf_mod_speciesGroups, dv_temporal_predict)$predictions
   # predicted BAI can't be less than 0
   dv_temporal_predict$BAI_new <- ifelse(dv_temporal_predict$BAI_new < 0, 0, dv_temporal_predict$BAI_new)
 
@@ -321,7 +339,8 @@ for (M in uniq_tSk){
                                 height = NA, crownHeight = NA,
                                 stand_BA = NA, stand_n = NA, BAL = NA, BAI = BAI_new,
                                 BAI_new = NULL, BA_new = NULL,
-                                weight = ifelse(BA > 0.07068583, 16.67, 50))
+                                weight = NA) %>%
+    filter(!(species %in% unique_dv))
 
   list_predictions[[p]] <- dv_temporal_predict
   p = p + 1
@@ -331,7 +350,8 @@ for (M in uniq_tSk){
 if (eval_model_BAI == TRUE){
 
 DF_evaluation_sGroups <- do.call(rbind, eval_list)
-DF_evaluation_sGroups <- dplyr::filter(DF_evaluation_sGroups, !(species %in% unique_dv))
+
+# DF_evaluation_sGroups <- dplyr::filter(DF_evaluation_sGroups, !(species %in% unique_dv))
 
 data_eval_BAI <- rbind(DF_evaluation_species, DF_evaluation_sGroups)
 
@@ -350,6 +370,34 @@ DF_predictions_sGroups <- dplyr::filter(DF_predictions_sGroups, !(species %in% u
 # rbind predictions
 dead_trees <- dplyr::select(dead_trees, colnames(DF_predictions_species))
 DF_predictions <- rbind(dead_trees, DF_predictions_species, DF_predictions_sGroups)
+
+
+# Assign the correct weight to
+
+# In case area correction factors are provided we use them to correct plot weights
+measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)^2 * pi)/10000
+
+if (!is.null(area_correction)){
+
+  DF_predictions <- DF_predictions %>% mutate(weight = ifelse(BA >= max(measurement_thresholds$BA_threshold),
+                                                                  measurement_thresholds[, "weight"][which.max(measurement_thresholds$BA_threshold)],
+                                                                  measurement_thresholds[, "weight"][which.min(measurement_thresholds$BA_threshold)]),
+
+                                              DBH_threshold = ifelse(BA >= max(measurement_thresholds$BA_threshold),
+                                                                     measurement_thresholds[, "DBH_threshold"][which.max(measurement_thresholds$BA_threshold)],
+                                                                     measurement_thresholds[, "DBH_threshold"][which.min(measurement_thresholds$BA_threshold)]))
+
+  DF_predictions <- merge(DF_predictions, area_correction, by = c("plotID", "DBH_threshold"), all.x = TRUE)
+
+  DF_predictions <- dplyr::mutate(DF_predictions, area_factor = ifelse(is.na(area_factor), 1, area_factor),
+                                  weight = weight*area_factor, area_factor = NULL, DBH_threshold = NULL)
+
+} else {
+
+  DF_predictions <- DF_predictions %>% mutate(weight = ifelse(BA >= max(measurement_thresholds$BA_threshold),
+                                                                  measurement_thresholds[, "weight"][which.max(measurement_thresholds$BA_threshold)],
+                                                                  measurement_thresholds[, "weight"][which.min(measurement_thresholds$BA_threshold)]))
+}
 
 final_output_list <- list(
 

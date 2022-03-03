@@ -15,6 +15,7 @@ predict_mortality(
   select_months_climate = c(1:12),
   mortality_model = "rf",
   nb_laplace = 0,
+  sim_crownHeight = FALSE,
   k = 10,
   eval_model_mortality = TRUE,
   blocked_cv = TRUE,

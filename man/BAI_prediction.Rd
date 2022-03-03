@@ -13,7 +13,9 @@ BAI_prediction(
   eval_model_BAI = TRUE,
   rf_mtry = NULL,
   k = 10,
-  blocked_cv = TRUE
+  blocked_cv = TRUE,
+  measurement_thresholds = NULL,
+  area_correction = NULL
 )
 }
 \description{

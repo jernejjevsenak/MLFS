@@ -10,7 +10,9 @@ BAI_prediction_halfPeriod(
   species_n_threshold = 100,
   site_vars,
   include_climate,
-  rf_mtry = NULL
+  rf_mtry = NULL,
+  measurement_thresholds = NULL,
+  area_correction = NULL
 )
 }
 \description{
