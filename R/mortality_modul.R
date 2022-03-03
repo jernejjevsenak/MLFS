@@ -38,6 +38,7 @@ col_sum <- NULL
 vol_ha_mid <- NULL
 BA_mid <- NULL
 BA_max <- NULL
+randomForest <- NULL
 
 if (sim_mortality == TRUE){
 
