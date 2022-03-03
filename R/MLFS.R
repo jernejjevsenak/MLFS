@@ -539,6 +539,7 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df <- V_general(df = initial_df, data_volF_param = data_volF_param)
 
+
   } else if (volume_calculation == "tariffs"){
 
     if (is.null(data_tariffs)){
@@ -912,7 +913,8 @@ MLFS <- function(data_NFI, data_site,
                                            eval_model_mortality = set_eval_mortality,
                                            k = k, blocked_cv = blocked_cv,
                                            sim_step_years = sim_step_years,
-                                           df_max_size = max_size_data
+                                           df_max_size = max_size_data,
+                                           ingrowth_codes = ingrowth_codes
                                            )
 
     initial_df <- mortality_outputs$predicted_mortality

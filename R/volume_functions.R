@@ -26,6 +26,8 @@ V_general = function(df, data_volF_param = data_volF_param){
   valid <- NULL
   p_volume <- NULL
   p_valid <- NULL
+  d_factor <- NULL
+  h_factor <- NULL
 
   initial_colnames <- colnames(df)
 
@@ -62,8 +64,8 @@ V_general = function(df, data_volF_param = data_volF_param){
          BA_min = ((DBH_min/2)^2 * pi)/10000,
          BA_max = ((DBH_max/2)^2 * pi)/10000,
 
-         D = sqrt(4*BA/pi) * 100,
-         H = height,
+         D = sqrt(4*BA/pi) * 100/d_factor,
+         H = height*h_factor,
          volume = eval(parse(text=equation))/vol_factor,
 
          valid = ifelse(is.na(DBH_min), TRUE,
@@ -77,16 +79,14 @@ df_previous <- df %>%
       BA_min = ((DBH_min/2)^2 * pi)/10000,
       BA_max = ((DBH_max/2)^2 * pi)/10000,
 
-      p_D = sqrt(4*p_BA/pi) * 100,
-      p_H = p_height,
+      p_D = sqrt(4*p_BA/pi) * 100/d_factor,
+      p_H = p_height * h_factor,
       p_equation = gsub("H", "p_H", gsub("D", "p_D", equation)),
       p_volume = eval(parse(text=p_equation))/vol_factor,
       p_valid = ifelse(is.na(DBH_min), TRUE,
                        ifelse(p_BA >= BA_min &  p_BA <= BA_max, TRUE, FALSE))
 
     ) %>% filter(p_valid == TRUE) %>% select(plotID, treeID, p_BA, p_height, p_volume)
-
-
 
   df <- merge(df_current, df_previous, by = c("plotID", "treeID"))
 

@@ -25,6 +25,8 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
   BA_min <- NULL
   BA_max <- NULL
   valid <- NULL
+  d_factor <- NULL
+  h_factor <- NULL
 
   initial_colnames <- colnames(df)
 
@@ -59,17 +61,19 @@ V_general_halfPeriod = function(df, data_volF_param = data_volF_param){
 
       mutate(
 
-      BA_min = ((DBH_min/2)^2 * pi)/10000,
-      BA_max = ((DBH_max/2)^2 * pi)/10000,
+        BA_min = ((DBH_min/2)^2 * pi)/10000,
+        BA_max = ((DBH_max/2)^2 * pi)/10000,
 
-      D_mid = sqrt(4*BA_mid/pi) * 100, #cm
-      H_mid = height_mid, # m
+        D_mid = sqrt(4*BA_mid/pi) * 100/d_factor,
+        H_mid = height_mid * h_factor,
 
-      equation_mid = gsub("H", "H_mid", gsub("D", "D_mid", equation)),
-      volume_mid = eval(parse(text=equation_mid))/vol_factor,
+        equation_mid = gsub("H", "H_mid", gsub("D", "D_mid", equation)),
 
-      valid = ifelse(is.na(DBH_min), TRUE,
-                     ifelse(BA >= BA_min &  BA <= BA_max, TRUE, FALSE))
+        volume_mid = eval(parse(text=equation_mid))/vol_factor,
+
+        valid = ifelse(is.na(DBH_min), TRUE,
+                       ifelse(BA_mid >= BA_min &  BA_mid <= BA_max, TRUE, FALSE))
+
       ) %>% filter(valid == TRUE)
 
   df <- dplyr::select(df, all_of(initial_colnames)) %>% arrange(plotID, treeID)

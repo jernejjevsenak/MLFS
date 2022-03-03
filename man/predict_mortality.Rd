@@ -22,7 +22,8 @@ predict_mortality(
   sim_mortality = TRUE,
   sim_step_years = 5,
   rf_mtry = NULL,
-  df_max_size = NULL
+  df_max_size = NULL,
+  ingrowth_codes = 3
 )
 }
 \description{

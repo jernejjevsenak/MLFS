@@ -11,7 +11,7 @@ predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = 
                               mortality_model = "rf", nb_laplace = 0, sim_crownHeight = FALSE,
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL,
-                              df_max_size = NULL){
+                              df_max_size = NULL, ingrowth_codes = 3){
 
 
 
@@ -64,7 +64,7 @@ if (sim_mortality == TRUE){
 
   }
 
-  df_predict <- dplyr::filter(df_predict, code %in% c(0,3,15))
+  df_predict <- dplyr::filter(df_predict, code %in% c(0,ingrowth_codes))
 
   if (sim_crownHeight == TRUE){
 
