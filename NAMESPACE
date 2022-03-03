@@ -23,7 +23,7 @@ importFrom("stats", "D", "as.formula", "glm", "lm", "quantile",
                "na.pass", "predict", "runif", "median")
 importFrom("utils", "capture.output", "setTxtProgressBar", "txtProgressBar", "write.csv")
 importFrom("magrittr", "%>%")
-importFrom("randomForest", "randomForest")
+importFrom("ranger", "ranger")
 importFrom("dplyr", "summarise", "group_by", "filter", "select", "mutate",
            "arrange", "rename", "summarise_all", "distinct", "row_number",
            "bind_rows", "rowwise")
