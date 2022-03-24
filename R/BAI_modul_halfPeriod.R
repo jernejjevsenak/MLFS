@@ -91,13 +91,9 @@ for (M in unique_dv){
 
   if (is.null(rf_mtry)){
 
-    # rf_mod <- randomForest(formula, data = dv_temporal_fit)
-
     rf_mod <- ranger(formula, data = dv_temporal_fit)
 
   } else {
-
-    # rf_mod <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
     rf_mod <- ranger(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
@@ -175,13 +171,9 @@ for (M in uniq_tSk){
 
   if (is.null(rf_mtry)){
 
-    # rf_mod <- randomForest(formula, data = dv_temporal_fit)
-
     rf_mod <- ranger(formula, data = dv_temporal_fit)
 
   } else {
-
-    # rf_mod <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
     rf_mod <- ranger(formula, data = dv_temporal_fit, mtry = rf_mtry)
   }

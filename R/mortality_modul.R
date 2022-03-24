@@ -38,7 +38,7 @@ col_sum <- NULL
 vol_ha_mid <- NULL
 BA_mid <- NULL
 BA_max <- NULL
-randomForest <- NULL
+ranger <- NULL
 
 if (sim_mortality == TRUE){
 
@@ -147,11 +147,11 @@ if (sim_mortality == TRUE){
 
         if (is.null(rf_mtry)){
 
-          model_mortality <- randomForest(formula, data = train)
+          model_mortality <- ranger(formula, data = train)
 
         } else {
 
-          model_mortality <- randomForest(formula, data = train, mtry = rf_mtry)
+          model_mortality <- ranger(formula, data = train, mtry = rf_mtry)
 
         }
 
@@ -196,11 +196,11 @@ if (sim_mortality == TRUE){
 
     if (is.null(rf_mtry)){
 
-      model_mortality <- randomForest(formula, data = df_fit)
+      model_mortality <- ranger(formula, data = df_fit)
 
     } else {
 
-      model_mortality <- randomForest(formula, data = df_fit, mtry = rf_mtry)
+      model_mortality <- ranger(formula, data = df_fit, mtry = rf_mtry)
 
     }
 

@@ -151,12 +151,10 @@ for (M in unique_dv){
 
       if (is.null(rf_mtry)){
 
-        # rf_mod_species <- randomForest(formula, data = train)
         rf_mod_species <- ranger(formula, data = train)
 
       } else {
 
-        # rf_mod_species <- randomForest(formula, data = train, mtry = rf_mtry)
         rf_mod_species <- ranger(formula, data = train, mtry = rf_mtry)
 
       }
@@ -176,12 +174,10 @@ for (M in unique_dv){
 
   if (is.null(rf_mtry)){
 
-    # rf_mod_species <- randomForest(formula, data = dv_temporal_fit)
     rf_mod_species <- ranger(formula, data = dv_temporal_fit)
 
   } else {
 
-    # rf_mod_species <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
     rf_mod_species <- ranger(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
   }
@@ -274,13 +270,10 @@ for (M in uniq_tSk){
 
       if (is.null(rf_mtry)){
 
-        # rf_mod_speciesGroups <- randomForest(formula, data = train)
-
         rf_mod_speciesGroups <- ranger(formula, data = train)
 
       } else {
 
-        # rf_mod_speciesGroups <- randomForest(formula, data = train, mtry = rf_mtry)
         rf_mod_speciesGroups <- ranger(formula, data = train, mtry = rf_mtry)
 
       }
@@ -299,13 +292,10 @@ for (M in uniq_tSk){
 
   if (is.null(rf_mtry)){
 
-    # rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit)
-
     rf_mod_speciesGroups <- ranger(formula, data = dv_temporal_fit)
 
   } else {
 
-    # rf_mod_speciesGroups <- randomForest(formula, data = dv_temporal_fit, mtry = rf_mtry)
     rf_mod_speciesGroups <- ranger(formula, data = dv_temporal_fit, mtry = rf_mtry)
 
   }
