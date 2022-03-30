@@ -23,7 +23,8 @@ predict_mortality(
   sim_step_years = 5,
   rf_mtry = NULL,
   df_max_size = NULL,
-  ingrowth_codes = 3
+  ingrowth_codes = 3,
+  include_mortality_BAI = TRUE
 )
 }
 \description{

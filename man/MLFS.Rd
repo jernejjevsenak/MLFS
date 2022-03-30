@@ -60,7 +60,8 @@ MLFS(
   measurement_thresholds = NULL,
   area_correction = NULL,
   export_csv = FALSE,
-  sim_export_mode = TRUE
+  sim_export_mode = TRUE,
+  include_mortality_BAI = TRUE
 )
 }
 \arguments{
@@ -261,6 +262,9 @@ simulations when using larger data sets and long term simulations that might
 exceed the available RAM. In such cases, we recommend setting the argument
 export_csv = TRUE, which will export each simulation step to the current
 working directory.}
+
+\item{include_mortality_BAI}{logical, should basal area increments (BAI) be
+used as independent variable for predicting individual tree morality?}
 }
 \description{
 Machine Learning Forest Simulator

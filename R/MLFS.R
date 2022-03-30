@@ -145,6 +145,8 @@
 #' exceed the available RAM. In such cases, we recommend setting the argument
 #' export_csv = TRUE, which will export each simulation step to the current
 #' working directory.
+#' @param include_mortality_BAI logical, should basal area increments (BAI) be
+#' used as independent variable for predicting individual tree morality?
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -205,7 +207,8 @@ MLFS <- function(data_NFI, data_site,
                  measurement_thresholds = NULL,
                  area_correction = NULL,
                  export_csv = FALSE,
-                 sim_export_mode = TRUE
+                 sim_export_mode = TRUE,
+                 include_mortality_BAI = TRUE
                  ){
 
   # Define global variables
@@ -914,7 +917,8 @@ MLFS <- function(data_NFI, data_site,
                                            k = k, blocked_cv = blocked_cv,
                                            sim_step_years = sim_step_years,
                                            df_max_size = max_size_data,
-                                           ingrowth_codes = ingrowth_codes
+                                           ingrowth_codes = ingrowth_codes,
+                                           include_mortality_BAI = include_mortality_BAI
                                            )
 
     initial_df <- mortality_outputs$predicted_mortality

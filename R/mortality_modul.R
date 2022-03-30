@@ -11,7 +11,7 @@ predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = 
                               mortality_model = "rf", nb_laplace = 0, sim_crownHeight = FALSE,
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL,
-                              df_max_size = NULL, ingrowth_codes = 3){
+                              df_max_size = NULL, ingrowth_codes = 3, include_mortality_BAI = TRUE){
 
 
 
@@ -39,6 +39,8 @@ vol_ha_mid <- NULL
 BA_mid <- NULL
 BA_max <- NULL
 ranger <- NULL
+BAI <- NULL
+BAI_mid <- NULL
 
 if (sim_mortality == TRUE){
 
@@ -71,6 +73,7 @@ if (sim_mortality == TRUE){
     df_fit <- mutate(df_fit, mortality = ifelse(code == 2, 1, 0),
                      BA_mid = BA,
                      BAL_mid = BAL,
+                     BAI_mid = BAI,
                      height_mid = height,
                      crownHeight_mid = crownHeight,
                      stand_BA_mid = stand_BA,
@@ -99,16 +102,40 @@ if (sim_mortality == TRUE){
 
   if (sim_crownHeight == TRUE){
 
-    formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
-                                 paste(all_of(site_vars), collapse = "+")))
+    if (include_mortality_BAI == TRUE){
+
+      formula <- as.formula(paste0("mortality ~ BA_mid + BAI_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
+                                   paste(all_of(site_vars), collapse = "+")))
+
+      df_fit <- filter(df_fit, !is.na(BAI_mid))
+
+    } else {
+
+      formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + crownHeight_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
+                                   paste(all_of(site_vars), collapse = "+")))
+
+    }
 
   } else {
 
-    formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
+    if (include_mortality_BAI == TRUE){
+
+    formula <- as.formula(paste0("mortality ~ BA_mid + BAI_mid + height_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
                                  paste(all_of(site_vars), collapse = "+")))
 
-  }
+    df_fit <- filter(df_fit, !is.na(BAI_mid))
 
+    summary(df_fit)
+
+    } else {
+
+      formula <- as.formula(paste0("mortality ~ BA_mid + height_mid + BAL_mid + stand_BA_mid + stand_n_mid + speciesGroup +",
+                                   paste(all_of(site_vars), collapse = "+")))
+
+
+    }
+
+  }
 
 
   ##############
