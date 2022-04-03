@@ -132,7 +132,7 @@
 #' the maximum simulated value of ingrowth trees?
 #' @param measurement_thresholds data frame with two variables: 1) DBH_threshold
 #' and 2) weight. This information is used to assign the correct weights in BAI
-#' increment sub-model
+#' and increment sub-model; and to upscale plot-level data to hectares.
 #' @param area_correction optional data frame with three variables: 1) plotID and
 #' 2) DBH_threshold and 3) the correction factor to be multiplied by weight for
 #' this particular category.
@@ -170,7 +170,7 @@
 #'  harvest_sum_level = 1,
 #'  plot_upscale_type = "factor",
 #'  plot_upscale_factor = 1600,
-#'  measurement_thresholds = measurement_thresholds,
+#'  #measurement_thresholds = measurement_thresholds,
 #'  ingrowth_codes = c(3,15),
 #'  volume_calculation = "volume_functions",
 #'  select_months_climate = seq(6,8))
@@ -280,6 +280,18 @@ MLFS <- function(data_NFI, data_site,
 
   # Increase
   max_size_data$DBH_max_data <- max_size_data$DBH_max_data * max_size_increase_factor
+
+  # The measurement_threshold table must be specified
+  if (is.null(measurement_thresholds)){
+
+    stop(paste0("measurement_thresholds table is missing. This is a data frame ",
+                "with two variables: 1) DBH_threshold and 2) weight. This " ,
+                "information is used to assign the correct weights in BAI and ",
+                "increment sub-model; and to upscale plot-level data to hectares."))
+
+  }
+
+
 
   # If not provided by user, we use the calculations
   if (!is.null(max_size)){
