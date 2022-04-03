@@ -31,10 +31,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   # Ingrowth #
   ############
 
-  max(df_fit$ingrowth_15)
-
-  length(unique(df_fit$plotID))
-
   df_before <- df_predict
 
   if (include_climate == TRUE){

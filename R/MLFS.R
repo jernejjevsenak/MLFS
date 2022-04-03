@@ -147,6 +147,34 @@
 #' working directory.
 #' @param include_mortality_BAI logical, should basal area increments (BAI) be
 #' used as independent variable for predicting individual tree morality?
+#'
+#' @examples
+#' \dontrun{
+#' library(MLFS)
+#'
+#' # open example data
+#' data(data_NFI)
+#' data(data_site)
+#' data(data_climate)
+#' data(data_volF_param)
+#' data(measurement_thresholds)
+#'
+#' test_simulation <- MLFS(data_NFI = data_NFI,
+#'  data_site = data_site,
+#'  data_climate = data_climate,
+#'  data_volF_param = data_volF_param,
+#'  form_factors = form_factors,
+#'  sim_steps = 1,
+#'  sim_harvesting = TRUE,
+#'  harvesting_sum = 100000,
+#'  harvest_sum_level = 1,
+#'  plot_upscale_type = "factor",
+#'  plot_upscale_factor = 1600,
+#'  measurement_thresholds = measurement_thresholds,
+#'  ingrowth_codes = c(3,15),
+#'  volume_calculation = "volume_functions",
+#'  select_months_climate = seq(6,8))
+#' }
 
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
@@ -170,11 +198,11 @@ MLFS <- function(data_NFI, data_site,
                  sim_ingrowth = TRUE,
                  sim_crownHeight = TRUE,
 
-                 harvesting_sum,
-                 forest_area_ha,
-                 harvest_sum_level = 1,
-                 plot_upscale_type,
-                 plot_upscale_factor,
+                 harvesting_sum = NULL,
+                 forest_area_ha = NULL,
+                 harvest_sum_level = NULL,
+                 plot_upscale_type = NULL,
+                 plot_upscale_factor = NULL,
 
                  mortality_share = NA,
                  mortality_share_type = "volume",
@@ -193,7 +221,7 @@ MLFS <- function(data_NFI, data_site,
                  BRNN_neurons = 3,
                  height_pred_level = 0, # prediction level for lmfor (0 regional, 1 plot level)
                  include_climate = FALSE,
-                 select_months_climate = c(1:12),
+                 select_months_climate = c(1,12),
                  set_eval_mortality = TRUE,
                  set_eval_crownHeight = TRUE,
                  set_eval_height = TRUE,
@@ -479,7 +507,7 @@ MLFS <- function(data_NFI, data_site,
      data_ingrowth_stand <- dplyr::select(data_ingrowth, plotID, year, stand_BA, stand_n, BAL, all_of(site_vars)) %>%
        group_by(plotID, year) %>% summarise_all(.funs = mean, na.rm = TRUE)
 
-     data_ingrowth_ingrowth <- dplyr::select(data_ingrowth, plotID, year, ing_code_var) %>%
+     data_ingrowth_ingrowth <- dplyr::select(data_ingrowth, plotID, year, all_of(ing_code_var)) %>%
        group_by(plotID, year) %>% summarise_all(.funs = sum, na.rm = TRUE)
 
      data_ingrowth <- merge(data_ingrowth_stand, data_ingrowth_ingrowth, by = c("plotID", "year"))
@@ -891,6 +919,57 @@ MLFS <- function(data_NFI, data_site,
 
       }
     }
+  }
+
+  # If sim_harvesting = TRUE, harvesting_sum, harvest_sum_level, plot_upscale_tpye
+  # and plot_upscale factor must be defined
+
+  if (sim_harvesting == TRUE){
+
+    if (is.null(harvesting_sum)){
+
+      stop(paste0("The sim_harvesting is set to TRUE, but the harvesting volume is not specified.",
+                 " Define the harveting volume with the harvesting_sum argument."))
+
+    }
+
+
+    if (is.null(harvesting_sum)){
+
+      stop(paste0("The argument sim_harvesting is set to TRUE, but the harvesting_sum is not specified.",
+                  "Please define the amount of harvested volume for each simulation step."))
+      }
+
+    if (is.null(harvest_sum_level)){
+
+      stop(paste0("The argument sim_harvesting is set to TRUE, and the harvesting_sum is specified. ",
+           "However, you should also specify the argument harvest_sum_level. ",
+           "If the amount of harvested volume is defined on a plot level, set harvest_sum_level = 0, ",
+           " If the amount of harvested volume is defined on a regional level, i.e. for all plots using the ",
+           "upscale factor, set harvest_sum_level = 1."))
+
+    }
+
+    if ((harvest_sum_level == 1) & is.null(plot_upscale_type)){
+
+      stop(paste0("The harvest_sum_level = 1 (harvesting is defined on regional level), ",
+                  "but the plot_upscale_type is not defined. Please define the plot_upscale_type. ",
+                  "It can be 'area' or 'upscale factor'." ))
+    }
+
+
+    if ((plot_upscale_type == 'area') &  is.null(forest_area_ha)){
+
+      stop(paste0("plot_upscale_type is set to 'area', but the forest_area_ha is not defined. ",
+                  "forest_area_ha is the total area of all forest which are subject of a simulation."))
+    }
+
+    if ((plot_upscale_type == 'factor') &  is.null(plot_upscale_factor)){
+
+      stop(paste0("plot_upscale_type is set to 'factor', but the plot_upscale_factor is not defined. ",
+                  "plot_upscale_factor is a value to be used to upscale area from plot to regional level."))
+    }
+
   }
 
   # This is only due to organization of the next for loop

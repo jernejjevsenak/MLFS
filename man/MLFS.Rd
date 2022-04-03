@@ -24,11 +24,11 @@ MLFS(
   sim_mortality = TRUE,
   sim_ingrowth = TRUE,
   sim_crownHeight = TRUE,
-  harvesting_sum,
-  forest_area_ha,
-  harvest_sum_level = 1,
-  plot_upscale_type,
-  plot_upscale_factor,
+  harvesting_sum = NULL,
+  forest_area_ha = NULL,
+  harvest_sum_level = NULL,
+  plot_upscale_type = NULL,
+  plot_upscale_factor = NULL,
   mortality_share = NA,
   mortality_share_type = "volume",
   mortality_model = "glm",
@@ -45,7 +45,7 @@ MLFS(
   BRNN_neurons = 3,
   height_pred_level = 0,
   include_climate = FALSE,
-  select_months_climate = c(1:12),
+  select_months_climate = c(1, 12),
   set_eval_mortality = TRUE,
   set_eval_crownHeight = TRUE,
   set_eval_height = TRUE,
@@ -268,4 +268,32 @@ used as independent variable for predicting individual tree morality?}
 }
 \description{
 Machine Learning Forest Simulator
+}
+\examples{
+\dontrun{
+library(MLFS)
+
+# open example data
+data(data_NFI)
+data(data_site)
+data(data_climate)
+data(data_volF_param)
+data(measurement_thresholds)
+
+test_simulation <- MLFS(data_NFI = data_NFI,
+ data_site = data_site,
+ data_climate = data_climate,
+ data_volF_param = data_volF_param,
+ form_factors = form_factors,
+ sim_steps = 1,
+ sim_harvesting = TRUE,
+ harvesting_sum = 100000,
+ harvest_sum_level = 1,
+ plot_upscale_type = "factor",
+ plot_upscale_factor = 1600,
+ measurement_thresholds = measurement_thresholds,
+ ingrowth_codes = c(3,15),
+ volume_calculation = "volume_functions",
+ select_months_climate = seq(6,8))
+}
 }
