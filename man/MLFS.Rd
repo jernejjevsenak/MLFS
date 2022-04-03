@@ -61,7 +61,8 @@ MLFS(
   area_correction = NULL,
   export_csv = FALSE,
   sim_export_mode = TRUE,
-  include_mortality_BAI = TRUE
+  include_mortality_BAI = TRUE,
+  intermediate_print = FALSE
 )
 }
 \arguments{
@@ -246,7 +247,7 @@ the maximum simulated value of ingrowth trees?}
 
 \item{measurement_thresholds}{data frame with two variables: 1) DBH_threshold
 and 2) weight. This information is used to assign the correct weights in BAI
-increment sub-model}
+and increment sub-model; and to upscale plot-level data to hectares.}
 
 \item{area_correction}{optional data frame with three variables: 1) plotID and
 2) DBH_threshold and 3) the correction factor to be multiplied by weight for
@@ -265,6 +266,9 @@ working directory.}
 
 \item{include_mortality_BAI}{logical, should basal area increments (BAI) be
 used as independent variable for predicting individual tree morality?}
+
+\item{intermediate_print}{logical, if TRUE intermediate steps will be printed
+while MLFS is running}
 }
 \description{
 Machine Learning Forest Simulator

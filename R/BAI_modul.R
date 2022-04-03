@@ -116,8 +116,6 @@ m_holder = 1
 
 for (M in unique_dv){
 
-  print(M)
-
   # select species
   dv_temporal_fit <- subset(df_fit, subset = df_fit$species %in% M)
 
@@ -235,8 +233,6 @@ eval_list <- list()
 m_holder = 1
 
 for (M in uniq_tSk){
-
-  print(M)
 
   dv_temporal_fit <- subset(df_fit, subset = df_fit$speciesGroup %in% M)
 

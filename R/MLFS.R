@@ -147,6 +147,8 @@
 #' working directory.
 #' @param include_mortality_BAI logical, should basal area increments (BAI) be
 #' used as independent variable for predicting individual tree morality?
+#' @param intermediate_print logical, if TRUE intermediate steps will be printed
+#' while MLFS is running
 #'
 #' @examples
 #' \dontrun{
@@ -170,7 +172,7 @@
 #'  harvest_sum_level = 1,
 #'  plot_upscale_type = "factor",
 #'  plot_upscale_factor = 1600,
-#'  #measurement_thresholds = measurement_thresholds,
+#'  measurement_thresholds = measurement_thresholds,
 #'  ingrowth_codes = c(3,15),
 #'  volume_calculation = "volume_functions",
 #'  select_months_climate = seq(6,8))
@@ -236,7 +238,8 @@ MLFS <- function(data_NFI, data_site,
                  area_correction = NULL,
                  export_csv = FALSE,
                  sim_export_mode = TRUE,
-                 include_mortality_BAI = TRUE
+                 include_mortality_BAI = TRUE,
+                 intermediate_print = FALSE
                  ){
 
   # Define global variables
@@ -290,8 +293,6 @@ MLFS <- function(data_NFI, data_site,
                 "increment sub-model; and to upscale plot-level data to hectares."))
 
   }
-
-
 
   # If not provided by user, we use the calculations
   if (!is.null(max_size)){
@@ -987,9 +988,13 @@ MLFS <- function(data_NFI, data_site,
   # This is only due to organization of the next for loop
   sim_steps <- sim_steps + 1
 
-  sim = 2 # at some point, delete this
-
   for (sim in 2:sim_steps){
+
+    if (intermediate_print == TRUE){
+
+      print(paste0("simulating mortality in step ", sim - 1))
+
+    }
 
     # Simulate mortality
     mortality_outputs <- predict_mortality(df_fit = data_mortality,
@@ -1031,6 +1036,14 @@ MLFS <- function(data_NFI, data_site,
     # Simulate harvesting
     if (sim_harvesting == TRUE){
 
+      if (intermediate_print == TRUE){
+
+        print(paste0("simulating harvesting in step ", sim - 1))
+
+      }
+
+
+
       initial_df <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
@@ -1052,6 +1065,13 @@ MLFS <- function(data_NFI, data_site,
     }
 
     # Simulate BAI
+
+    if (intermediate_print == TRUE){
+
+      print(paste0("simulating BAI in step ", sim - 1))
+
+    }
+
     BAI_outputs <- BAI_prediction(df_fit = data_BAI,
                                  df_predict = initial_df,
                                  site_vars = site_vars,
@@ -1089,6 +1109,12 @@ MLFS <- function(data_NFI, data_site,
     # Simulate Ingrowth
     if (sim_ingrowth == TRUE){
 
+      if (intermediate_print == TRUE){
+
+        print(paste0("simulating ingrowth in step ", sim - 1))
+
+      }
+
     ingrowth_outputs <- predict_ingrowth(df_fit = data_ingrowth, df_predict = initial_df,
                                    site_vars = site_vars, include_climate = include_climate,
                                    eval_model_ingrowth = set_eval_ingrowth,
@@ -1124,6 +1150,13 @@ MLFS <- function(data_NFI, data_site,
     }
 
     # Calculate tree heights
+
+    if (intermediate_print == TRUE){
+
+      print(paste0("updating tree heights in step ", sim - 1))
+
+    }
+
     initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                     species_n_threshold = species_n_threshold,
                                     height_model = height_model,
@@ -1133,6 +1166,13 @@ MLFS <- function(data_NFI, data_site,
 
     # Calculate tree crownHeights
     if (sim_crownHeight == TRUE){
+
+      if (intermediate_print == TRUE){
+
+        print(paste0("updating crown heights in step ", sim - 1))
+
+      }
+
     initial_df <- crownHeight_prediction(df_fit = data_crownHeight,
                                          df_predict = initial_df,
                                          site_vars = site_vars,
@@ -1141,6 +1181,13 @@ MLFS <- function(data_NFI, data_site,
                                          species_n_threshold = species_n_threshold,
                                          k = k,
                                          eval_model_crownHeight = FALSE)$predicted_crownHeight
+    }
+
+
+    if (intermediate_print == TRUE){
+
+      print(paste0("calculating tree volume in step ", sim - 1))
+
     }
 
     # Calculate Volume
