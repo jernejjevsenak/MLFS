@@ -24,7 +24,8 @@ predict_mortality(
   rf_mtry = NULL,
   df_max_size = NULL,
   ingrowth_codes = 3,
-  include_mortality_BAI = TRUE
+  include_mortality_BAI = TRUE,
+  intermediate_print = FALSE
 )
 }
 \description{

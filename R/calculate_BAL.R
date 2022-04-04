@@ -1,11 +1,18 @@
 #' calculate_BAL
 #'
-#' Function for the calculation of competition index BAL (Basal area in larger
-#' trees)
+#' This function calculates the competition index BAL (Basal Area in Large trees)
+#' and adds it to the table of individual tree measurements that include basal
+#' area and the upscale factors. All trees should also be described with plotID
+#' and year variables
 #'
-#' @keywords internal
+#' @param df a data frame with individual tree measurements that include basal
+#' area and the upscale factors. All trees should also be described with plotID
+#' and year variables
 #'
-
+#' @examples
+#' data(data_v1)
+#' data_v1 <- calculate_BAL(df = data_v1)
+#'
 calculate_BAL <- function(df){
 
   # Define global variables
@@ -29,7 +36,7 @@ calculate_BAL <- function(df){
 
   temp <- dplyr::select(temp, year, plotID, treeID, BA_ha)
 
-  temp <- temp %>% group_by(year, plotID) %>% mutate(count = row_number(plotID)) # %>% arrange(year, plotID, count)
+  temp <- temp %>% group_by(year, plotID) %>% mutate(count = row_number(plotID))
 
   temp_sum <- reshape2::dcast(data = temp, formula = year + plotID ~ count, value.var = "BA_ha")
 
@@ -45,11 +52,7 @@ calculate_BAL <- function(df){
 
   joined$BAL <- joined_BAL$BAL
 
-  # final <- cbind(joined, joined_BAL[,"BAL"])
-
   final <- dplyr::select(joined, year, plotID, treeID, BAL)
-
-  # summary(final)
 
   df1 <- merge(df, final, by = c("year", "plotID", "treeID"))
 

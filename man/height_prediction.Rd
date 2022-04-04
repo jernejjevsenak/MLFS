@@ -17,9 +17,66 @@ height_prediction(
 )
 }
 \arguments{
-\item{df_fit}{data frame with data being used for model fit}
+\item{df_fit}{data frame with tree heights and basal areas for individual trees}
+
+\item{df_predict}{data frame which will be used for predictions}
+
+\item{species_n_threshold}{a positive integer defining the minimum number of
+observations required to treat a species as an independent group}
+
+\item{height_model}{character string defining the model to be used for height
+prediction. If 'brnn', then ANN method with Bayesian Regularization is applied.
+In addition, all 2- and 3- parametric H-D models from lmfor R package are
+available.}
+
+\item{BRNN_neurons}{positive integer defining the number of neurons to bo
+used in the brnn method.}
+
+\item{height_pred_level}{integer with value 0 or 1 defining the level of
+prediction for height-diameter (H-D) models. The value 1 defines a plot-level
+prediction, while the value 0 defines regional-level predictions. Default is
+0. If using 1, make sure to have representative plot-level data for each
+species.}
+
+\item{eval_model_height}{logical, should the height model be evaluated and
+returned as the output}
+
+\item{blocked_cv}{logical, should the blocked cross-validation be used in the
+evaluation phase?}
+
+\item{k}{the number of folds to be used in the k fold cross-validation}
 }
 \description{
 Height model
 }
-\keyword{internal}
+\examples{
+library(MLFS)
+data(data_tree_heights)
+data(data_v2)
+
+# A) Example with the BRNN method
+h_predictions <- height_prediction(df_fit = data_tree_heights,
+                                   df_predict = data_v2,
+                                   species_n_threshold = 100,
+                                   height_pred_level = 0,
+                                   height_model = "brnn",
+                                   BRNN_neurons = 3,
+                                   eval_model_height = TRUE,
+                                   blocked_cv = TRUE, k = 10
+                                   )
+
+predicted_df <- h_predictions$data_height_predictions # df with imputed heights
+evaluation_df <- h_predictions$data_height_eval # df with evaluation results
+
+# B) Example with lmfor
+library(lmfor)
+h_predictions <- height_prediction(df_fit = data_tree_heights,
+                                   df_predict = data_v2,
+                                   species_n_threshold = 100,
+                                   height_pred_level = 0,
+                                   height_model = "naslund",
+                                   eval_model_height = FALSE,
+                                   blocked_cv = FALSE, k = 10
+                                   )
+
+}

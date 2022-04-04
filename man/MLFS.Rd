@@ -227,7 +227,8 @@ returned as the output}
 
 \item{k}{the number of folds to be used in the k fold cross-validation}
 
-\item{blocked_cv}{logical, should the blocked cross-validation be used}
+\item{blocked_cv}{logical, should the blocked cross-validation be used in the
+evaluation phase?}
 
 \item{max_size}{a data frame with the maximum values of DBH for each species.
 If a tree exceeds this value, it dies. If not provided, the maximum is
@@ -289,7 +290,7 @@ test_simulation <- MLFS(data_NFI = data_NFI,
  data_climate = data_climate,
  data_volF_param = data_volF_param,
  form_factors = form_factors,
- sim_steps = 1,
+ sim_steps = 2,
  sim_harvesting = TRUE,
  harvesting_sum = 100000,
  harvest_sum_level = 1,
@@ -298,6 +299,8 @@ test_simulation <- MLFS(data_NFI = data_NFI,
  measurement_thresholds = measurement_thresholds,
  ingrowth_codes = c(3,15),
  volume_calculation = "volume_functions",
- select_months_climate = seq(6,8))
+ select_months_climate = seq(6,8),
+ intermediate_print = FALSE
+ )
 }
 }

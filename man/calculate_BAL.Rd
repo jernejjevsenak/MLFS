@@ -6,8 +6,19 @@
 \usage{
 calculate_BAL(df)
 }
-\description{
-Function for the calculation of competition index BAL (Basal area in larger
-trees)
+\arguments{
+\item{df}{a data frame with individual tree measurements that include basal
+area and the upscale factors. All trees should also be described with plotID
+and year variables}
 }
-\keyword{internal}
+\description{
+This function calculates the competition index BAL (Basal Area in Large trees)
+and adds it to the table of individual tree measurements that include basal
+area and the upscale factors. All trees should also be described with plotID
+and year variables
+}
+\examples{
+data(data_v1)
+data_v1 <- calculate_BAL(df = data_v1)
+
+}

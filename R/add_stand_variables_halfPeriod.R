@@ -1,4 +1,4 @@
-#' calculate_standVars_halfPeriod
+#' add_stand_variables_halfPeriod
 #'
 #' Function for the calculation of stand variables: stand basal area and the
 #' number of trees
@@ -6,7 +6,7 @@
 #' @keywords internal
 #'
 
-calculate_standVars_halfPeriod <- function(df){
+add_stand_variables_halfPeriod <- function(df){
 
   # Define global variables
   year <- NULL

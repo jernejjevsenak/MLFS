@@ -11,7 +11,8 @@ predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = 
                               mortality_model = "rf", nb_laplace = 0, sim_crownHeight = FALSE,
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL,
-                              df_max_size = NULL, ingrowth_codes = 3, include_mortality_BAI = TRUE){
+                              df_max_size = NULL, ingrowth_codes = 3, include_mortality_BAI = TRUE,
+                              intermediate_print = FALSE){
 
 
 
@@ -96,7 +97,11 @@ if (sim_mortality == TRUE){
 
     mortality_share <- sum(df_fit$code == 2)/nrow(df_fit)
 
-    print(paste0("Estimated moratlity share is ", round(mortality_share, 2)))
+    if (intermediate_print == TRUE){
+
+      print(paste0("Estimated moratlity share is ", round(mortality_share, 2)))
+
+    }
 
   }
 

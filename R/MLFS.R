@@ -49,7 +49,7 @@
 #' sums through the simulation stage. If a single value, then it is used in all
 #' simulation steps. If a vector of values, the first value is used in the first
 #' step, the second in the second step, etc.
-#' @sim_mortality logical, should mortality be simulated?
+#' @param sim_mortality logical, should mortality be simulated?
 #' @param mortality_share a value, or a vector of values defining the proportion
 #' of the volume which is to be the subject of mortality. If a single value,
 #' then it is used in all simulation steps. If a vector of values, the first
@@ -73,7 +73,8 @@
 #' distribution of harvested trees. Greater value increases the share of
 #' harvested trees having smaller DBH. Default is 1.
 #' @param k the number of folds to be used in the k fold cross-validation
-#' @param blocked_cv logical, should the blocked cross-validation be used
+#' @param blocked_cv logical, should the blocked cross-validation be used in the
+#' evaluation phase?
 #' @param species_n_threshold a positive integer defining the minimum number of
 #' observations required to treat a species as an independent group
 #' @param height_model character string defining the model to be used for height
@@ -166,7 +167,7 @@
 #'  data_climate = data_climate,
 #'  data_volF_param = data_volF_param,
 #'  form_factors = form_factors,
-#'  sim_steps = 1,
+#'  sim_steps = 2,
 #'  sim_harvesting = TRUE,
 #'  harvesting_sum = 100000,
 #'  harvest_sum_level = 1,
@@ -175,7 +176,9 @@
 #'  measurement_thresholds = measurement_thresholds,
 #'  ingrowth_codes = c(3,15),
 #'  volume_calculation = "volume_functions",
-#'  select_months_climate = seq(6,8))
+#'  select_months_climate = seq(6,8),
+#'  intermediate_print = FALSE
+#'  )
 #' }
 
 MLFS <- function(data_NFI, data_site,
@@ -415,8 +418,7 @@ MLFS <- function(data_NFI, data_site,
 }
 
   data$DBH <- NULL
-
-  data <- calculate_standVars(df = data)
+  data <- add_stand_variables(df = data)
 
   # 2 Calculate BAL
   data$BAL <- NA
@@ -458,7 +460,6 @@ MLFS <- function(data_NFI, data_site,
 
   # 4) mortality
   data_mortality <- data
-
 
   # This part needs to be run to get the elevation results
   h_predictions <- height_prediction(df_fit = data_mortality,
@@ -705,7 +706,7 @@ MLFS <- function(data_NFI, data_site,
   # Ingrowth is now added, BAL and stand variables have changed. We therefore
   # update all variables
   initial_df <- calculate_BAL_halfPeriod(df = initial_df)
-  initial_df <- calculate_standVars_halfPeriod(df = initial_df)
+  initial_df <- add_stand_variables_halfPeriod(df = initial_df)
 
   list_results <- list()
 
@@ -1014,7 +1015,8 @@ MLFS <- function(data_NFI, data_site,
                                            sim_step_years = sim_step_years,
                                            df_max_size = max_size_data,
                                            ingrowth_codes = ingrowth_codes,
-                                           include_mortality_BAI = include_mortality_BAI
+                                           include_mortality_BAI = include_mortality_BAI,
+                                           intermediate_print = intermediate_print
                                            )
 
     initial_df <- mortality_outputs$predicted_mortality
@@ -1104,7 +1106,7 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- calculate_BAL(initial_df)
 
     # Calculate stand variables
-    initial_df <- calculate_standVars(df = initial_df)
+    initial_df <- add_stand_variables(df = initial_df)
 
     # Simulate Ingrowth
     if (sim_ingrowth == TRUE){
@@ -1145,7 +1147,7 @@ MLFS <- function(data_NFI, data_site,
     # Ingrowth is now added, BAL and stand variables have changed. We therefore
     # update all variables
     initial_df <- calculate_BAL(initial_df)
-    initial_df <- calculate_standVars(df = initial_df)
+    initial_df <- add_stand_variables(df = initial_df)
 
     }
 
@@ -1326,7 +1328,7 @@ MLFS <- function(data_NFI, data_site,
     # Ingrowth is now added, BAL and stand variables have changed. We therefore
     # update all variables
     initial_df <- calculate_BAL_halfPeriod(df = initial_df)
-    initial_df <- calculate_standVars_halfPeriod(df = initial_df)
+    initial_df <- add_stand_variables_halfPeriod(df = initial_df)
 
     # Save results
 

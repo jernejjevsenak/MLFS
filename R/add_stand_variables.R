@@ -1,12 +1,18 @@
-#' calculate_standVars
+#' add_stand_variables
 #'
-#' Function for the calculation of stand variables: stand basal area and the
-#' number of trees
+#' This function adds two variables to existing data frame of individual tree
+#' measurements: 1) stand basal area and 2) the number of trees per hectare
 #'
-#' @keywords internal
+#' @param df a data frame with individual tree measurements that include basal
+#' area and the upscale factors. All trees should also be described with plotID
+#' and year variables
+#'
+#' @examples
+#' data(data_v1)
+#' data_v1 <- add_stand_variables(df = data_v1)
 #'
 
-calculate_standVars <- function(df){
+add_stand_variables <- function(df){
 
   # Define global variables
   year <- NULL

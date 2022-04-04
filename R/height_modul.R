@@ -2,8 +2,56 @@
 #'
 #' Height model
 #'
-#' @param df_fit data frame with data being used for model fit
-#' @keywords internal
+#' @param df_fit data frame with tree heights and basal areas for individual trees
+#' @param df_predict data frame which will be used for predictions
+#' @param species_n_threshold a positive integer defining the minimum number of
+#' observations required to treat a species as an independent group
+#' @param height_model character string defining the model to be used for height
+#' prediction. If 'brnn', then ANN method with Bayesian Regularization is applied.
+#' In addition, all 2- and 3- parametric H-D models from lmfor R package are
+#' available.
+#' @param height_pred_level integer with value 0 or 1 defining the level of
+#' prediction for height-diameter (H-D) models. The value 1 defines a plot-level
+#' prediction, while the value 0 defines regional-level predictions. Default is
+#' 0. If using 1, make sure to have representative plot-level data for each
+#' species.
+#' @param BRNN_neurons positive integer defining the number of neurons to bo
+#' used in the brnn method.
+#' @param eval_model_height logical, should the height model be evaluated and
+#' returned as the output
+#' @param blocked_cv logical, should the blocked cross-validation be used in the
+#' evaluation phase?
+#' @param k the number of folds to be used in the k fold cross-validation
+#'
+#' @examples
+#' library(MLFS)
+#' data(data_tree_heights)
+#' data(data_v2)
+#'
+#' # A) Example with the BRNN method
+#' h_predictions <- height_prediction(df_fit = data_tree_heights,
+#'                                    df_predict = data_v2,
+#'                                    species_n_threshold = 100,
+#'                                    height_pred_level = 0,
+#'                                    height_model = "brnn",
+#'                                    BRNN_neurons = 3,
+#'                                    eval_model_height = TRUE,
+#'                                    blocked_cv = TRUE, k = 10
+#'                                    )
+#'
+#' predicted_df <- h_predictions$data_height_predictions # df with imputed heights
+#' evaluation_df <- h_predictions$data_height_eval # df with evaluation results
+#'
+#' # B) Example with lmfor
+#' library(lmfor)
+#' h_predictions <- height_prediction(df_fit = data_tree_heights,
+#'                                    df_predict = data_v2,
+#'                                    species_n_threshold = 100,
+#'                                    height_pred_level = 0,
+#'                                    height_model = "naslund",
+#'                                    eval_model_height = FALSE,
+#'                                    blocked_cv = FALSE, k = 10
+#'                                    )
 #'
 
 height_prediction <- function(df_fit,  df_predict,
@@ -28,6 +76,8 @@ height_prediction <- function(df_fit,  df_predict,
   code <- NULL
   species <- NULL
   h_pred <- NULL
+
+  height_model <- tolower(height_model)
 
   df_fit <- mutate(df_fit, key = paste0(plotID, "_", treeID, "_", year))
   df_predict <- mutate(df_predict, key = paste0(plotID, "_", treeID, "_", year))
@@ -86,12 +136,6 @@ height_prediction <- function(df_fit,  df_predict,
     dv_temporal_fit <- dplyr::filter(dv_temporal_fit, !is.na(BA))
 
     dv_temporal_predict <- dplyr::filter(df_predict, species %in% M)
-
-    unique(dv_temporal_predict$species)
-
-
-
-
 
     if (height_model == "brnn"){
 
@@ -167,7 +211,7 @@ height_prediction <- function(df_fit,  df_predict,
 
       eval_step <- dv_temporal_fit
 
-      eval_step$h_pred <- predict(mod_species, newdata = rename(dv_temporal_predict, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
+      eval_step$h_pred <- predict(mod_species, newdata = rename(dv_temporal_fit, "d" = "BA", "plot" = "plotID"), level = height_pred_level, na.action = na.pass)
 
       eval_list[[p]] <- eval_step
 
