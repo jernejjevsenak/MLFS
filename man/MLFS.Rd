@@ -208,7 +208,7 @@ species.}
 predictors}
 
 \item{select_months_climate}{vector of subset months to be considered.
-Default is c(1:12), which uses all months.}
+Default is c(1,12), which uses all months.}
 
 \item{set_eval_mortality}{logical, should the mortality model be evaluated
 and returned as the output}

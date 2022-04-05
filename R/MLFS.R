@@ -108,7 +108,7 @@
 #' @param include_climate logical, should climate variables be included as
 #' predictors
 #' @param select_months_climate vector of subset months to be considered.
-#' Default is c(1:12), which uses all months.
+#' Default is c(1,12), which uses all months.
 #' @param set_eval_mortality logical, should the mortality model be evaluated
 #' and returned as the output
 #' @param set_eval_crownHeight logical, should the crownHeight model be
@@ -996,6 +996,7 @@ MLFS <- function(data_NFI, data_site,
       print(paste0("simulating mortality in step ", sim - 1))
 
     }
+
 
     # Simulate mortality
     mortality_outputs <- predict_mortality(df_fit = data_mortality,

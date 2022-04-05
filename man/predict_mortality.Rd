@@ -12,7 +12,7 @@ predict_mortality(
   mortality_share_type = "volume",
   include_climate,
   site_vars,
-  select_months_climate = c(1:12),
+  select_months_climate = c(6, 8),
   mortality_model = "rf",
   nb_laplace = 0,
   sim_crownHeight = FALSE,
@@ -28,7 +28,100 @@ predict_mortality(
   intermediate_print = FALSE
 )
 }
-\description{
-Mortality model
+\arguments{
+\item{df_fit}{a data frame with individual tree data and site descriptors
+where code is used to specify a status of each tree}
+
+\item{df_predict}{data frame which will be used for mortality predictions}
+
+\item{df_climate}{data frame with monthly climate data}
+
+\item{mortality_share}{a value defining the proportion of the volume which is
+to be the subject of mortality}
+
+\item{mortality_share_type}{character, it can be 'volume' or 'n_trees'. If
+'volume' then the mortality share relates to total standing volume, if
+'n_trees' then mortality share relates to the total number of standing trees}
+
+\item{include_climate}{logical, should climate variables be included as
+predictors}
+
+\item{site_vars}{a character vector of variable names which are used as site
+descriptors}
+
+\item{select_months_climate}{vector of subset months to be considered.
+Default is c(1,12), which uses all months.}
+
+\item{mortality_model}{logical, should the mortality model be evaluated
+and returned as the output}
+
+\item{nb_laplace}{value used for Laplace smoothing (additive smoothing) in
+naive Bayes algorithm. Defaults to 0 (no Laplace smoothing).}
+
+\item{sim_crownHeight}{logical, should crown heights be considered as a
+predictor variable? If TRUE, a crownHeight column is expected in data_NFI}
+
+\item{k}{the number of folds to be used in the k fold cross-validation}
+
+\item{eval_model_mortality}{logical, should the mortality model be evaluated
+and returned as the output}
+
+\item{blocked_cv}{logical, should the blocked cross-validation be used in the
+evaluation phase?}
+
+\item{sim_mortality}{logical, should mortality be simulated?}
+
+\item{sim_step_years}{the simulation step in years}
+
+\item{rf_mtry}{number of variables randomly sampled as candidates at each
+split of a random forest model. If NULL, default settings are applied.}
+
+\item{df_max_size}{a data frame with the maximum BA values for each species.
+If a tree exceeds this value, it dies.}
+
+\item{ingrowth_codes}{numeric value or a vector of codes which refer to
+ingrowth trees}
+
+\item{include_mortality_BAI}{logical, should basal area increments (BAI) be
+used as independent variable for predicting individual tree morality?}
+
+\item{intermediate_print}{logical, if TRUE intermediate steps will be printed
+while the mortality sub model is running}
 }
-\keyword{internal}
+\description{
+This sub model first fits a binary model to derive the effects of individual
+tree, site and climate variables on mortality; and afterwards predict the
+probability of dying for each tree from df_predict
+}
+\examples{
+data("data_v4")
+data("data_mortality")
+data("max_size_data")
+
+mortality_outputs <- predict_mortality(
+ df_fit = data_mortality,
+ df_predict = data_v4,
+ mortality_share_type = 'volume',
+ df_climate = data_climate,
+ site_vars = c("slope", "elevation", "northness", "siteIndex"),
+ sim_mortality = TRUE,
+ mortality_model = 'naiveBayes',
+ nb_laplace = 0,
+ sim_crownHeight = TRUE,
+ mortality_share = 0.02,
+ include_climate = TRUE,
+ select_months_climate = c(6,7,8),
+ eval_model_mortality = TRUE,
+ k = 10, blocked_cv = TRUE,
+ sim_step_years = 6,
+ df_max_size = max_size_data,
+ ingrowth_codes = c(3,15),
+ include_mortality_BAI = TRUE)
+
+ df_predicted <- mortality_outputs$predicted_mortality
+ df_evaluation <- mortality_outputs$eval_mortality
+
+ # confusion matrix
+ table(df_evaluation$mortality, round(df_evaluation$mortality_pred, 0))
+
+}

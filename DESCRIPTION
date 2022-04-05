@@ -1,7 +1,7 @@
 Package: MLFS
 Type: Package
 Title: Machine Learning Forest Simulator
-Version: 0.3.1
+Version: 0.3.2
 Author: Jernej Jevsenak
 Maintainer: Jernej Jevsenak <jernej.jevsenak@gmail.com>
 Description: Climate-sensitive forest simulator based on the principles of 

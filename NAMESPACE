@@ -12,6 +12,7 @@ export(transform_data)
 export(BAI_prediction_halfPeriod)
 export(calculate_BAL_halfPeriod)
 export(add_stand_variables)
+export(add_stand_variables_halfPeriod)
 export(crownHeight_prediction_halfPeriod)
 export(height_prediction_halfPeriod)
 
