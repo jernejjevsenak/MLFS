@@ -23,7 +23,6 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
   DBH <- NULL
   protected <- NULL
   code <- NULL
-  mtry <- NULL
   threshold <- NULL
   weight <- NULL
 
@@ -122,7 +121,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
         } else {
 
-          assign(paste0("mod_ing_", i_codes), eval(parse(text = paste0("ranger(formula_ing_", i_codes, ", data = train, mtry = ",mtry,")"))))
+          assign(paste0("mod_ing_", i_codes), eval(parse(text = paste0("ranger(formula_ing_", i_codes, ", data = train, mtry = ",rf_mtry,")"))))
           assign("new_temp_var", eval(parse(text = paste0("round(predict(mod_ing_", i_codes, ", test, type = 'response'), 0)"))))
           new_temp_var <- ifelse(new_temp_var < 0, 0, new_temp_var) # In case of negative predictions
           test$new_temp_var  <- new_temp_var
@@ -196,7 +195,7 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
      } else {
 
-       assign(paste0("mod_ing_", i_codes), eval(parse(text = paste0("ranger(formula_ing_", i_codes, ", data = df_fit, mtry = ",mtry,")"))))
+       assign(paste0("mod_ing_", i_codes), eval(parse(text = paste0("ranger(formula_ing_", i_codes, ", data = df_fit, mtry = ",rf_mtry,")"))))
        assign("new_temp_var", eval(parse(text = paste0("round(predict(mod_ing_", i_codes, ", df_predict, type = 'response'), 0)"))))
        new_temp_var <- ifelse(new_temp_var < 0, 0, new_temp_var) # In case of negative predictions
        df_predict$new_temp_var  <- new_temp_var

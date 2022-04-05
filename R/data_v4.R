@@ -2,9 +2,9 @@
 #' within the MLFS
 #'
 #' This is simulated data that reassemble the national forest inventory data.
-#' We use it to show how to run examples for predicting tree mortality- Mortality
-#' occurs in the middle of a simulation step, so all variables have prepositions
-#' 'mid'
+#' We use it to show how to run examples for predicting tree mortality.
+#' Mortality occurs in the middle of a simulation step, so all variables have
+#' the preposition 'mid'
 #'
 #' @format A data frame with 6855 rows and 41 variables:
 #' \describe{

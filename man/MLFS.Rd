@@ -33,7 +33,9 @@ MLFS(
   mortality_share_type = "volume",
   mortality_model = "glm",
   ingrowth_model = "ZIF_poiss",
-  rf_mtry = NULL,
+  BAI_rf_mtry = NULL,
+  ingrowth_rf_mtry = NULL,
+  mortality_rf_mtry = NULL,
   nb_laplace = 0,
   harvesting_type = "final_cut",
   share_thinning = 0.8,
@@ -128,13 +130,13 @@ simulation steps. If a vector of values, the first value is used in the first
 step, the second in the second step, etc.}
 
 \item{forest_area_ha}{the total area of all forest which are subject of the
-simulation.}
+simulation}
 
 \item{harvest_sum_level}{integer with value 0 or 1 defining the level of
-specified harvesting sum: 0 for plot level and 1 for regional level.}
+specified harvesting sum: 0 for plot level and 1 for regional level}
 
 \item{plot_upscale_type}{character defining the upscale method of plot level
-area. It can be 'area' or 'upscale factor'. If 'area', provide the forest
+values. It can be 'area' or 'upscale factor'. If 'area', provide the forest
 area represented by all plots in hectares (forest_area_ha argument). If
 'factor', provide the fixed factor to upscale the area of all plots. Please
 note: forest_area_ha/plot_upscale_factor = number of unique plots. This
@@ -160,18 +162,27 @@ Naive Bayes algorithm}
 generalized linear models (Poisson regression), 'ZIF_poiss' for zero inflated
 Poisson regression and 'rf' for random forest}
 
-\item{rf_mtry}{number of variables randomly sampled as candidates at each
-split of a random forest model. If NULL, default settings are applied.}
+\item{BAI_rf_mtry}{a number of variables randomly sampled as candidates at
+each split of a random forest model for predicting basal area increments
+(BAI). If NULL, default settings are applied.}
+
+\item{ingrowth_rf_mtry}{a number of variables randomly sampled as candidates
+at each split of a random forest model for predicting ingrowth. If NULL,
+default settings are applied}
+
+\item{mortality_rf_mtry}{a number of variables randomly sampled as candidates
+at each split of a random forest model for predicting mortality. If NULL,
+default settings are applied}
 
 \item{nb_laplace}{value used for Laplace smoothing (additive smoothing) in
-naive Bayes algorithm. Defaults to 0 (no Laplace smoothing).}
+naive Bayes algorithm. Defaults to 0 (no Laplace smoothing)}
 
 \item{harvesting_type}{character, it could be 'random', 'final_cut',
 'thinning' or 'combined'. The latter combines 'final_cut' and 'thinning'
 options, where the share of each is specified with the argument
 'share_thinning'}
 
-\item{share_thinning}{numeric, a number oa a vector of numbers between 0 and
+\item{share_thinning}{numeric, a number or a vector of numbers between 0 and
 1 that specifies the share of thinning in comparison to final_cut. Only used
 if harvesting_type is 'combined'}
 

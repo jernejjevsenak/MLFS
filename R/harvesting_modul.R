@@ -1,7 +1,67 @@
-#' simulate_harvesting
+#' A sub model to simulate harvesting within the MLFS
 #'
-#' Harvesting model for the MLFS
-#' @keywords internal
+#' Harvesting is based on probability sampling, which depends on the selected
+#' parameters and the seize of a tree. Bigger trees have higher probability of
+#' being harvested when final cut is applied, while smaller trees have higher
+#' probability of being sampled in the case of thinning.
+#'
+#' @param df a data frame with individual tree data, which include basal areas
+#' in the middle of a simulation step, species name and code
+#' @param harvesting_sum a value, or a vector of values defining the harvesting
+#' sums through the simulation stage. If a single value, then it is used in all
+#' simulation steps. If a vector of values, the first value is used in the first
+#' step, the second in the second step, etc.
+#' @param df_thinning_weights_species data frame with thinning weights for each
+#' species. The first column represents species code, each next column consists
+#' of species-specific thinning weights
+#' @param df_final_cut_weights_species data frame with final cut weights for each
+#' species. The first column represents species code, each next column consists
+#' of species-specific final cut weights
+#' @param df_thinning_weights_plot data frame with harvesting weights related
+#' to plot IDs, used for thinning
+#' @param df_final_cut_weights_plot data frame with harvesting weights related
+#' to plot IDs, used for final cut
+#' @param harvesting_type character, it could be 'random', 'final_cut',
+#' 'thinning' or 'combined'. The latter combines 'final_cut' and 'thinning'
+#' options, where the share of each is specified with the argument
+#' 'share_thinning'
+#' @param share_thinning numeric, a number between 0 and 1 that specifies the
+#' share of thinning in comparison to final_cut. Only used if harvesting_type
+#' is 'combined'
+#' @param final_cut_weight numeric value affecting the probability distribution
+#' of harvested trees. Greater value increases the share of harvested trees
+#' having larger DBH. Default is 10.
+#' @param thinning_small_weight numeric value affecting the probability
+#' distribution of harvested trees. Greater value increases the share of
+#' harvested trees having smaller DBH. Default is 1.
+#' @param harvest_sum_level integer with value 0 or 1 defining the level of
+#' specified harvesting sum: 0 for plot level and 1 for regional level
+#' @param plot_upscale_type character defining the upscale method of plot level
+#' values. It can be 'area' or 'upscale factor'. If 'area', provide the forest
+#' area represented by all plots in hectares (forest_area_ha argument). If
+#' 'factor', provide the fixed factor to upscale the area of all plots. Please
+#' note: forest_area_ha/plot_upscale_factor = number of unique plots. This
+#' argument is important when harvesting sum is defined on regional level.
+#' @param plot_upscale_factor numeric value to be used to upscale area of each
+#' plot
+#' @param forest_area_ha the total area of all forest which are subject of the
+#' simulation
+#'
+#' @examples
+#'
+#' library(MLFS)
+#' data(data_v5)
+#'
+#' data_v5 <- simulate_harvesting(df = data_v5,
+#'             harvesting_sum = 5500000,
+#'             harvesting_type = "combined",
+#'             share_thinning = 0.50,
+#'             harvest_sum_level = 1,
+#'             plot_upscale_type = "factor",
+#'             plot_upscale_factor = 1600,
+#'             final_cut_weight = 5,
+#'             thinning_small_weight = 1)
+#'
 
 simulate_harvesting <- function(df, harvesting_sum,
 

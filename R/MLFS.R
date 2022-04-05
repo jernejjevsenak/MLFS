@@ -36,9 +36,9 @@
 #' 'slo_2p_volume_functions'
 #' @param sim_harvesting logical, should harvesting be simulated?
 #' @param harvest_sum_level integer with value 0 or 1 defining the level of
-#' specified harvesting sum: 0 for plot level and 1 for regional level.
+#' specified harvesting sum: 0 for plot level and 1 for regional level
 #' @param plot_upscale_type character defining the upscale method of plot level
-#' area. It can be 'area' or 'upscale factor'. If 'area', provide the forest
+#' values. It can be 'area' or 'upscale factor'. If 'area', provide the forest
 #' area represented by all plots in hectares (forest_area_ha argument). If
 #' 'factor', provide the fixed factor to upscale the area of all plots. Please
 #' note: forest_area_ha/plot_upscale_factor = number of unique plots. This
@@ -58,12 +58,12 @@
 #' 'volume' then the mortality share relates to total standing volume, if
 #' 'n_trees' then mortality share relates to the total number of standing trees
 #' @param forest_area_ha the total area of all forest which are subject of the
-#' simulation.
+#' simulation
 #' @param harvesting_type character, it could be 'random', 'final_cut',
 #' 'thinning' or 'combined'. The latter combines 'final_cut' and 'thinning'
 #' options, where the share of each is specified with the argument
 #' 'share_thinning'
-#' @param share_thinning numeric, a number oa a vector of numbers between 0 and
+#' @param share_thinning numeric, a number or a vector of numbers between 0 and
 #' 1 that specifies the share of thinning in comparison to final_cut. Only used
 #' if harvesting_type is 'combined'
 #' @param final_cut_weight numeric value affecting the probability distribution
@@ -90,9 +90,16 @@
 #' generalized linear models; 'rf' for random forest algorithm; 'naiveBayes' for
 #' Naive Bayes algorithm
 #' @param nb_laplace value used for Laplace smoothing (additive smoothing) in
-#' naive Bayes algorithm. Defaults to 0 (no Laplace smoothing).
-#' @param rf_mtry number of variables randomly sampled as candidates at each
-#' split of a random forest model. If NULL, default settings are applied.
+#' naive Bayes algorithm. Defaults to 0 (no Laplace smoothing)
+#' @param BAI_rf_mtry a number of variables randomly sampled as candidates at
+#' each split of a random forest model for predicting basal area increments
+#' (BAI). If NULL, default settings are applied.
+#' @param ingrowth_rf_mtry a number of variables randomly sampled as candidates
+#' at each split of a random forest model for predicting ingrowth. If NULL,
+#' default settings are applied
+#' @param mortality_rf_mtry a number of variables randomly sampled as candidates
+#' at each split of a random forest model for predicting mortality. If NULL,
+#' default settings are applied
 #' @param ingrowth_model model to be used for ingrowth predictions. 'glm' for
 #' generalized linear models (Poisson regression), 'ZIF_poiss' for zero inflated
 #' Poisson regression and 'rf' for random forest
@@ -213,7 +220,11 @@ MLFS <- function(data_NFI, data_site,
                  mortality_share_type = "volume",
                  mortality_model = "glm",
                  ingrowth_model = "ZIF_poiss",
-                 rf_mtry = NULL,
+
+                 BAI_rf_mtry = NULL,
+                 ingrowth_rf_mtry = NULL,
+                 mortality_rf_mtry = NULL,
+
                  nb_laplace = 0,
                  harvesting_type = "final_cut",
                  share_thinning = 0.80,
@@ -625,7 +636,7 @@ MLFS <- function(data_NFI, data_site,
   initial_df <- BAI_prediction_halfPeriod(df_fit = data_BAI,
                                           df_predict = initial_df,
                                           site_vars = site_vars,
-                                          rf_mtry = rf_mtry,
+                                          rf_mtry = BAI_rf_mtry,
                                           species_n_threshold = species_n_threshold,
                                           include_climate = include_climate,
                                           measurement_thresholds = measurement_thresholds,
@@ -1007,7 +1018,7 @@ MLFS <- function(data_NFI, data_site,
                                            sim_mortality = sim_mortality,
                                            mortality_model = mortality_model,
                                            nb_laplace = nb_laplace,
-                                           rf_mtry = rf_mtry, sim_crownHeight = sim_crownHeight,
+                                           rf_mtry = mortality_rf_mtry, sim_crownHeight = sim_crownHeight,
                                            mortality_share = mortality_share[sim-1],
                                            include_climate = include_climate,
                                            select_months_climate = select_months_climate,
@@ -1076,7 +1087,7 @@ MLFS <- function(data_NFI, data_site,
     BAI_outputs <- BAI_prediction(df_fit = data_BAI,
                                  df_predict = initial_df,
                                  site_vars = site_vars,
-                                 rf_mtry = rf_mtry,
+                                 rf_mtry = BAI_rf_mtry,
                                  species_n_threshold = species_n_threshold,
                                  include_climate = include_climate,
                                  eval_model_BAI = set_eval_BAI,
@@ -1108,6 +1119,7 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- add_stand_variables(df = initial_df)
 
     # Simulate Ingrowth
+
     if (sim_ingrowth == TRUE){
 
       if (intermediate_print == TRUE){
@@ -1119,6 +1131,7 @@ MLFS <- function(data_NFI, data_site,
     ingrowth_outputs <- predict_ingrowth(df_fit = data_ingrowth, df_predict = initial_df,
                                    site_vars = site_vars, include_climate = include_climate,
                                    eval_model_ingrowth = set_eval_ingrowth,
+                                   rf_mtry = ingrowth_rf_mtry,
                                    k = k, blocked_cv = blocked_cv, ingrowth_model = ingrowth_model,
                                    ingrowth_table = ingrowth_table,
                                    DBH_distribution_parameters = ing_param_list)
@@ -1247,7 +1260,7 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- BAI_prediction_halfPeriod(df_fit = data_BAI,
                                             df_predict = initial_df,
                                             site_vars = site_vars,
-                                            rf_mtry = rf_mtry,
+                                            rf_mtry = BAI_rf_mtry,
                                             species_n_threshold = species_n_threshold,
                                             include_climate = include_climate,
                                             measurement_thresholds = measurement_thresholds,
