@@ -21,4 +21,4 @@
 #'   \item{g}{parameter g for volume equation}
 #' }
 #' @export
-"data_volF_param"
+"df_volume_parameters"

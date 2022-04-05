@@ -24,7 +24,7 @@
 #' @param sim_ingrowth logical, should ingrowth be simulated?
 #' @param sim_crownHeight logical, should crown heights be simulated? If TRUE,
 #' a crownHeight column is expected in data_NFI
-#' @param data_volF_param optional, data frame with species-specific volume
+#' @param df_volumeF_parameters optional, data frame with species-specific volume
 #' function parameters
 #' @param form_factors optional, data frame with species-specific form factors
 #' @param form_factors_level character, the level of specified form factors. It
@@ -159,14 +159,14 @@
 #' data(data_NFI)
 #' data(data_site)
 #' data(data_climate)
-#' data(data_volF_param)
+#' data(df_volume_parameters)
 #' data(measurement_thresholds)
 #'
 #' test_simulation <- MLFS(data_NFI = data_NFI,
 #'  data_site = data_site,
 #'  data_climate = data_climate,
-#'  data_volF_param = data_volF_param,
-#'  form_factors = form_factors,
+#'  df_volumeF_parameters = df_volume_parameters,
+#'  form_factors = volume_functions,
 #'  sim_steps = 2,
 #'  sim_harvesting = TRUE,
 #'  harvesting_sum = 100000,
@@ -184,7 +184,7 @@
 MLFS <- function(data_NFI, data_site,
                  data_tariffs = NULL,
                  data_climate = NULL,
-                 data_volF_param = NULL,
+                 df_volumeF_parameters = NULL,
 
                  thinning_weights_species = NULL,
                  final_cut_weights_species = NULL,
@@ -567,23 +567,23 @@ MLFS <- function(data_NFI, data_site,
     initial_df$volume <- NA
     initial_df$p_volume <- NA
 
-    initial_df <- vol_form_factors(df = initial_df, form_factors = form_factors,
+    initial_df <- volume_form_factors(df = initial_df, form_factors = form_factors,
                                    form_factors_level = form_factors_level,
                                    uniform_form_factor = uniform_form_factor)
+
 
   } else if (volume_calculation == "volume_functions"){
 
     initial_df$volume <- NA
     initial_df$p_volume <- NA
 
-    if (is.null(data_volF_param)){
+    if (is.null(df_volumeF_parameters)){
 
-      stop("data_volF_param is not provided")
+      stop("df_volumeF_parameters is not provided")
 
     }
 
-    initial_df <- V_general(df = initial_df, data_volF_param = data_volF_param)
-
+    initial_df <- volume_functions(df = initial_df, df_volumeF_parameters = df_volumeF_parameters)
 
   } else if (volume_calculation == "tariffs"){
 
@@ -595,7 +595,7 @@ MLFS <- function(data_NFI, data_site,
     initial_df$volume <- NA
     initial_df$p_volume <- NA
 
-    initial_df <- vol_tariffs(df = initial_df, data_tariffs = data_tariffs)
+    initial_df <- volume_tariffs(df = initial_df, data_tariffs = data_tariffs)
 
   } else if(volume_calculation == "slo_2p_volume_functions"){
 
@@ -660,7 +660,7 @@ MLFS <- function(data_NFI, data_site,
   # Calculate Volume
   if (volume_calculation == "form_factors"){
 
-    initial_df <- vol_form_factors_halfPeriod(df = initial_df, form_factors = form_factors,
+    initial_df <- volume_form_factors_halfPeriod(df = initial_df, form_factors = form_factors,
                                               form_factors_level = form_factors_level,
                                               uniform_form_factor = uniform_form_factor)
 
@@ -668,13 +668,13 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df$volume_mid <- NA
 
-    if (is.null(data_volF_param)){
+    if (is.null(df_volumeF_parameters)){
 
-      stop("data_volF_param is not provided")
+      stop("df_volumeF_parameters is not provided")
 
     }
 
-    initial_df <- V_general_halfPeriod(df = initial_df, data_volF_param)
+    initial_df <- volume_functions_halfPeriod(df = initial_df, df_volumeF_parameters)
 
   } else if (volume_calculation == "tariffs"){
 
@@ -685,7 +685,7 @@ MLFS <- function(data_NFI, data_site,
 
     initial_df$volume_mid <- NA
 
-    initial_df <- vol_tariffs_halfPeriod(df = initial_df, data_tariffs = data_tariffs)
+    initial_df <- volume_tariffs_halfPeriod(df = initial_df, data_tariffs = data_tariffs)
 
   } else if(volume_calculation == "slo_2p_volume_functions"){
 
@@ -1044,8 +1044,6 @@ MLFS <- function(data_NFI, data_site,
 
       }
 
-
-
       initial_df <- simulate_harvesting(df = initial_df,
                                         harvesting_sum = harvesting_sum[sim-1],
                                         forest_area_ha = forest_area_ha,
@@ -1195,7 +1193,7 @@ MLFS <- function(data_NFI, data_site,
     # Calculate Volume
     if (volume_calculation == "form_factors"){
 
-      initial_df <- vol_form_factors(df = initial_df, form_factors = form_factors,
+      initial_df <- volume_form_factors(df = initial_df, form_factors = form_factors,
                                      form_factors_level = form_factors_level,
                                      uniform_form_factor = uniform_form_factor)
 
@@ -1204,13 +1202,13 @@ MLFS <- function(data_NFI, data_site,
       initial_df$volume <- NA
       initial_df$p_volume <- NA
 
-      if (is.null(data_volF_param)){
+      if (is.null(df_volumeF_parameters)){
 
-        stop("data_volF_param is not provided")
+        stop("df_volumeF_parameters is not provided")
 
       }
 
-      initial_df <- V_general(df = initial_df, data_volF_param)
+      initial_df <- volume_functions(df = initial_df, df_volumeF_parameters)
 
     } else if (volume_calculation == "tariffs"){
 
@@ -1222,7 +1220,7 @@ MLFS <- function(data_NFI, data_site,
       initial_df$volume <- NA
       initial_df$p_volume <- NA
 
-      initial_df <- vol_tariffs(df = initial_df, data_tariffs = data_tariffs)
+      initial_df <- volume_tariffs(df = initial_df, data_tariffs = data_tariffs)
 
     } else if(volume_calculation == "slo_2p_volume_functions"){
 
@@ -1281,7 +1279,7 @@ MLFS <- function(data_NFI, data_site,
     # Calculate Volume
     if (volume_calculation == "form_factors"){
 
-      initial_df <- vol_form_factors_halfPeriod(df = initial_df, form_factors = form_factors,
+      initial_df <- volume_form_factors_halfPeriod(df = initial_df, form_factors = form_factors,
                                                 form_factors_level = form_factors_level,
                                                 uniform_form_factor = uniform_form_factor)
 
@@ -1289,13 +1287,13 @@ MLFS <- function(data_NFI, data_site,
 
       initial_df$volume_mid <- NA
 
-      if (is.null(data_volF_param)){
+      if (is.null(df_volumeF_parameters)){
 
-        stop("data_volF_param is not provided")
+        stop("df_volumeF_parameters is not provided")
 
       }
 
-      initial_df <- V_general_halfPeriod(df = initial_df, data_volF_param)
+      initial_df <- volume_functions_halfPeriod(df = initial_df, df_volumeF_parameters)
 
     } else if (volume_calculation == "tariffs"){
 
@@ -1306,7 +1304,7 @@ MLFS <- function(data_NFI, data_site,
 
       initial_df$volume_mid <- NA
 
-      initial_df <- vol_tariffs_halfPeriod(df = initial_df, data_tariffs = data_tariffs)
+      initial_df <- volume_tariffs_halfPeriod(df = initial_df, data_tariffs = data_tariffs)
 
     } else if(volume_calculation == "slo_2p_volume_functions"){
 

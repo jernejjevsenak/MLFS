@@ -1,9 +1,22 @@
-#' V_general
+#' volume_functions
 #'
-#' three-parameter volume functions for the MLFS
-#' @keywords internal
+#' The calculation of individual tree volume using the n-parameter volume
+#' functions for the MLFS
+#'
+#' @param df data frame with tree heights and basal areas for individual trees
+#' @param df_volumeF_parameters data frame with equations and parameters for
+#' n-parametric volume functions
+#'
+#' @examples
+#' library(MLFS)
+#' data(data_v3)
+#' data(df_volume_parameters)
+#'
+#' data_v3 <- volume_functions(df = data_v3,
+#'   df_volumeF_parameters = df_volume_parameters)
+#'
 
-V_general = function(df, data_volF_param = data_volF_param){
+volume_functions = function(df, df_volumeF_parameters = NULL){
 
   species <- NULL
   BA <- NULL
@@ -32,28 +45,28 @@ V_general = function(df, data_volF_param = data_volF_param){
   initial_colnames <- colnames(df)
 
   # I create new variable 'species temp', which is used to merge with volume functions
-  df <- dplyr::mutate(df, species_temp = ifelse(species %in% unique(data_volF_param$species), species, "REST"))
-  data_volF_param <- dplyr::rename(data_volF_param, 'species_temp' = 'species')
+  df <- dplyr::mutate(df, species_temp = ifelse(species %in% unique(df_volumeF_parameters$species), species, "REST"))
+  df_volumeF_parameters <- dplyr::rename(df_volumeF_parameters, 'species_temp' = 'species')
 
   # Check that we have all equations or, that we have the REST equation available
-  if (sum(!(unique(df$species) %in% unique(data_volF_param$species_temp))) > 1){
+  if (sum(!(unique(df$species) %in% unique(df_volumeF_parameters$species_temp))) > 1){
 
-    if (!("REST" %in% unique(data_volF_param$species_temp))){
+    if (!("REST" %in% unique(df_volumeF_parameters$species_temp))){
 
       stop(paste0("The equations and parameters for volume functions are missing for the following species:",
-                  paste0(unique(df$species)[!(unique(df$species) %in% unique(data_volF_param$species_temp))], collapse=", "),
+                  paste0(unique(df$species)[!(unique(df$species) %in% unique(df_volumeF_parameters$species_temp))], collapse=", "),
                   ". Alternatively, provide the equation for the 'REST' category"))
     }
   }
 
   # If volume functions are provided per plot and species, we do merge using both variables, otherwise only species (species_temp)
-  if ("plotID" %in% colnames(data_volF_param)){
+  if ("plotID" %in% colnames(df_volumeF_parameters)){
 
-    df <- merge(df, data_volF_param, by = c("plotID", "species_temp"), all.x = TRUE)
+    df <- merge(df, df_volumeF_parameters, by = c("plotID", "species_temp"), all.x = TRUE)
 
   } else {
 
-    df <- merge(df, data_volF_param, by = "species_temp", all.x = TRUE)
+    df <- merge(df, df_volumeF_parameters, by = "species_temp", all.x = TRUE)
 
   }
 

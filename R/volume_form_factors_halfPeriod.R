@@ -1,9 +1,11 @@
-#' vol_form_factors_halfPeriod
+#' volume_form_factors_halfPeriod
 #'
-#' two-parameter volume functions for the MLFS
+#' The calculation of individual tree volume using form factors, which can be
+#' defined per species, per plot, or per species and per plot
+#'
 #' @keywords internal
 
-vol_form_factors_halfPeriod <- function(df, form_factors = NULL, form_factors_level = "species",
+volume_form_factors_halfPeriod <- function(df, form_factors = NULL, form_factors_level = "species",
                              uniform_form_factor = 0.42){
 
   volume_mid <- NULL

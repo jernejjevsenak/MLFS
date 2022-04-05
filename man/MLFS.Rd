@@ -9,7 +9,7 @@ MLFS(
   data_site,
   data_tariffs = NULL,
   data_climate = NULL,
-  data_volF_param = NULL,
+  df_volumeF_parameters = NULL,
   thinning_weights_species = NULL,
   final_cut_weights_species = NULL,
   thinning_weights_plot = NULL,
@@ -78,7 +78,7 @@ details.}
 \item{data_climate}{data frame with climate data, covering the initial
 calibration period and all the years which will be included in the simulation}
 
-\item{data_volF_param}{optional, data frame with species-specific volume
+\item{df_volumeF_parameters}{optional, data frame with species-specific volume
 function parameters}
 
 \item{thinning_weights_species}{data frame with thinning weights for each
@@ -282,14 +282,14 @@ library(MLFS)
 data(data_NFI)
 data(data_site)
 data(data_climate)
-data(data_volF_param)
+data(df_volume_parameters)
 data(measurement_thresholds)
 
 test_simulation <- MLFS(data_NFI = data_NFI,
  data_site = data_site,
  data_climate = data_climate,
- data_volF_param = data_volF_param,
- form_factors = form_factors,
+ df_volumeF_parameters = df_volume_parameters,
+ form_factors = volume_functions,
  sim_steps = 2,
  sim_harvesting = TRUE,
  harvesting_sum = 100000,

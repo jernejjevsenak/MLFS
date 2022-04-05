@@ -22,6 +22,9 @@
 #'   \item{p_height}{tree height in meteres from previous simulation step}
 #'   \item{p_crownHeight}{crown height in meters from previous simulation step}
 #'   \item{p_weight}{upscale weight to calculate hectare values from previous simulation step}
+#'   \item{volume}{tree volume in m3}
+#'   \item{p_volume}{tree volume in m3 from previous simulation step}
+#'
 #' }
 #' @export
 "data_v3"

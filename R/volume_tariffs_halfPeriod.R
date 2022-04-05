@@ -1,9 +1,10 @@
-#' vol_tariffs_halfPeriod
+#' volume_tariffs_halfPeriod
 #'
 #' One-parameter volume functions (tariffs) for the MLFS (half period)
+#'
 #' @keywords internal
 
-vol_tariffs_halfPeriod <- function(df, data_tariffs){
+volume_tariffs_halfPeriod <- function(df, data_tariffs){
 
 # Define global variables
 BA_mid <- NULL

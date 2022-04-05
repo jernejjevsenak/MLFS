@@ -1,9 +1,17 @@
-#' vol_tariffs
+#' volume_tariffs
 #'
-#' One-parameter volume functions (tariffs) for the MLFS
-#' @keywords internal
+#' One-parameter volume functions (tariffs) for the MLFS.
+#'
+#' @param df data frame with tree heights and basal areas for individual trees
+#' @param data_tariffs data frame with plot- and species-specific parameters for
+#' the calculations of tree volume
+#'
+#' @examples
+#' data(data_v3)
+#' data(data_tariffs)
+#' data_v3 <- volume_tariffs(df = data_v3, data_tariffs = data_tariffs)
 
-vol_tariffs <- function(df, data_tariffs){
+volume_tariffs <- function(df, data_tariffs){
 
 # Define global variables
 BA <- NULL
