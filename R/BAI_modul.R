@@ -1,7 +1,54 @@
 #' BAI_prediction
 #'
-#' BAI model for the MLFS
-#' @keywords internal
+#' The Basal Area Increment BAI sub model that is run within the MLFS
+#'
+#' @param df_fit a data frame with Basal Area Increments (BAI) and all
+#' independent variables as specified with the formula
+#' @param df_predict data frame which will be used for BAI predictions
+#' @param species_n_threshold a positive integer defining the minimum number of
+#' observations required to treat a species as an independent group
+#' @param site_vars a character vector of variable names which are used as site
+#' descriptors
+#' @param include_climate logical, should climate variables be included as
+#' predictors
+#' @param eval_model_BAI logical, should the the BAI model be evaluated and
+#' returned as the output
+#' @param rf_mtry a number of variables randomly sampled as candidates at
+#' each split of a random forest model for predicting basal area increments
+#' (BAI). If NULL, default settings are applied.
+#' @param k the number of folds to be used in the k fold cross-validation
+#' @param blocked_cv logical, should the blocked cross-validation be used in the
+#' evaluation phase?
+#' @param measurement_thresholds data frame with two variables: 1) DBH_threshold
+#' and 2) weight. This information is used to assign the correct weights in BAI
+#' and increment sub-model; and to upscale plot-level data to hectares.
+#' @param area_correction an optional data frame with three variables: 1) plotID
+#' and 2) DBH_threshold and 3) the correction factor to be multiplied by weight
+#' for this particular category
+#'
+#' @examples
+#' library(MLFS)
+#' data(data_BAI)
+#' data(data_v6)
+#' data(measurement_thresholds)
+#'
+#' # add BA to measurement thresholds
+#' measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)^2 * pi)/10000
+#'
+#' BAI_outputs <- BAI_prediction(df_fit = data_BAI,
+#'   df_predict = data_v6,
+#'   site_vars = c("slope", "elevation", "northness", "siteIndex"),
+#'   rf_mtry = 3,
+#'   species_n_threshold = 100,
+#'   include_climate = TRUE,
+#'   eval_model_BAI = TRUE,
+#'   k = 10, blocked_cv = TRUE,
+#'   measurement_thresholds = measurement_thresholds)
+#'
+#' # get the ranger objects
+#' BAI_outputs_model_species <- BAI_outputs$rf_model_species
+#' BAI_outputs_model_groups <- BAI_outputs$rf_model_speciesGroups
+#'
 
 BAI_prediction <- function(df_fit, df_predict,
                            species_n_threshold = 100,
@@ -92,7 +139,7 @@ unique_dv <- unique(data_above_threshold$species)
 if (any(!(unique(df_predict$speciesGroup)%in% uniq_tSk))){
 
   missing_spG <-  unique(df_predict$speciesGroup)[!(unique(df_predict$speciesGroup)%in% uniq_tSk)]
-  unique_species_missing_spG <- unique(df_predict[df_predict$speciesGroup==missing_spG,"species"])
+  unique_species_missing_spG <- unique(df_predict[df_predict$speciesGroup %in% missing_spG,"species"])
 
   # are these already in unique_dv?
   if (any(!(missing_spG %in% unique_dv))){

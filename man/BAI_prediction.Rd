@@ -18,7 +18,65 @@ BAI_prediction(
   area_correction = NULL
 )
 }
-\description{
-BAI model for the MLFS
+\arguments{
+\item{df_fit}{a data frame with Basal Area Increments (BAI) and all
+independent variables as specified with the formula}
+
+\item{df_predict}{data frame which will be used for BAI predictions}
+
+\item{species_n_threshold}{a positive integer defining the minimum number of
+observations required to treat a species as an independent group}
+
+\item{site_vars}{a character vector of variable names which are used as site
+descriptors}
+
+\item{include_climate}{logical, should climate variables be included as
+predictors}
+
+\item{eval_model_BAI}{logical, should the the BAI model be evaluated and
+returned as the output}
+
+\item{rf_mtry}{a number of variables randomly sampled as candidates at
+each split of a random forest model for predicting basal area increments
+(BAI). If NULL, default settings are applied.}
+
+\item{k}{the number of folds to be used in the k fold cross-validation}
+
+\item{blocked_cv}{logical, should the blocked cross-validation be used in the
+evaluation phase?}
+
+\item{measurement_thresholds}{data frame with two variables: 1) DBH_threshold
+and 2) weight. This information is used to assign the correct weights in BAI
+and increment sub-model; and to upscale plot-level data to hectares.}
+
+\item{area_correction}{an optional data frame with three variables: 1) plotID
+and 2) DBH_threshold and 3) the correction factor to be multiplied by weight
+for this particular category}
 }
-\keyword{internal}
+\description{
+The Basal Area Increment BAI sub model that is run within the MLFS
+}
+\examples{
+library(MLFS)
+data(data_BAI)
+data(data_v6)
+data(measurement_thresholds)
+
+# add BA to measurement thresholds
+measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)^2 * pi)/10000
+
+BAI_outputs <- BAI_prediction(df_fit = data_BAI,
+  df_predict = data_v6,
+  site_vars = c("slope", "elevation", "northness", "siteIndex"),
+  rf_mtry = 3,
+  species_n_threshold = 100,
+  include_climate = TRUE,
+  eval_model_BAI = TRUE,
+  k = 10, blocked_cv = TRUE,
+  measurement_thresholds = measurement_thresholds)
+
+# get the ranger objects
+BAI_outputs_model_species <- BAI_outputs$rf_model_species
+BAI_outputs_model_groups <- BAI_outputs$rf_model_speciesGroups
+
+}

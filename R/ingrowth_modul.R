@@ -1,9 +1,56 @@
 #' predict_ingrowth
 #'
-#' Ingrowth model
+#' Ingrowth model for predicting new trees witihn the MLFS
 #'
-#' @keywords internal
+#' @param df_fit a plot-level data with plotID, stand variables and site
+#' descriptors, and the two target variables describing the number of ingrowth
+#' trees for inner (ingrowth_3) and outer (ingrowth_15) circles
+#' @param df_predict data frame which will be used for ingrowth predictions
+#' @param site_vars a character vector of variable names which are used as site
+#' descriptors
+#' @param include_climate logical, should climate variables be included as
+#' predictors
+#' @param eval_model_ingrowth logical, should the the ingrowth model be
+#' evaluated and returned as the output
+#' @param rf_mtry a number of variables randomly sampled as candidates at
+#' each split of a random forest model for predicting ingrowth. If NULL, default
+#' settings are applied.
+#' @param k the number of folds to be used in the k fold cross-validation
+#' @param blocked_cv logical, should the blocked cross-validation be used in the
+#' evaluation phase?
+#' @param ingrowth_model model to be used for ingrowth predictions. 'glm' for
+#' generalized linear models (Poisson regression), 'ZIF_poiss' for zero inflated
+#' Poisson regression and 'rf' for random forest
+#' @param ingrowth_table a data frame with 4 variables: (ingrowth) code,
+#' DBH_threshold, DBH_max and weight. Ingrowth table is used within the ingrowth
+#' sub model to correctly simulate different ingrowth levels and associated
+#' upscale weights
+#' @param DBH_distribution_parameters A list with deciles of DBH distributions
+#' that are used to simulate DBH for new trees, seperately for each ingrowth
+#' category
 #'
+#' @examples
+#'
+#' library(MLFS)
+#'
+#' data(data_v6)
+#' data(data_ingrowth)
+#' data(ingrowth_table)
+#' data(ingrowth_parameter_list)
+#'
+#' ingrowth_outputs <- predict_ingrowth(
+#'    df_fit = data_ingrowth,
+#'    df_predict = data_v6,
+#'    site_vars = c("slope", "elevation", "northness", "siteIndex"),
+#'    include_climate = TRUE,
+#'    eval_model_ingrowth = TRUE,
+#'    rf_mtry = 3,
+#'    k = 10, blocked_cv = TRUE,
+#'    ingrowth_model = 'ZIF_poiss',
+#'    ingrowth_table = ingrowth_table,
+#'    DBH_distribution_parameters = ingrowth_parameter_list)
+#'
+
 predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
                              include_climate = include_climate,
                              eval_model_ingrowth = TRUE, k = 10, blocked_cv = TRUE,

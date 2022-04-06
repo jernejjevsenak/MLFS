@@ -1076,6 +1076,7 @@ MLFS <- function(data_NFI, data_site,
                                         thinning_small_weight = thinning_small_weight[sim-1])
     }
 
+
     # Simulate BAI
 
     if (intermediate_print == TRUE){

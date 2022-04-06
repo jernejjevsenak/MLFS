@@ -18,7 +18,66 @@ predict_ingrowth(
   DBH_distribution_parameters = NULL
 )
 }
-\description{
-Ingrowth model
+\arguments{
+\item{df_fit}{a plot-level data with plotID, stand variables and site
+descriptors, and the two target variables describing the number of ingrowth
+trees for inner (ingrowth_3) and outer (ingrowth_15) circles}
+
+\item{df_predict}{data frame which will be used for ingrowth predictions}
+
+\item{site_vars}{a character vector of variable names which are used as site
+descriptors}
+
+\item{include_climate}{logical, should climate variables be included as
+predictors}
+
+\item{eval_model_ingrowth}{logical, should the the ingrowth model be
+evaluated and returned as the output}
+
+\item{k}{the number of folds to be used in the k fold cross-validation}
+
+\item{blocked_cv}{logical, should the blocked cross-validation be used in the
+evaluation phase?}
+
+\item{ingrowth_model}{model to be used for ingrowth predictions. 'glm' for
+generalized linear models (Poisson regression), 'ZIF_poiss' for zero inflated
+Poisson regression and 'rf' for random forest}
+
+\item{rf_mtry}{a number of variables randomly sampled as candidates at
+each split of a random forest model for predicting ingrowth. If NULL, default
+settings are applied.}
+
+\item{ingrowth_table}{a data frame with 4 variables: (ingrowth) code,
+DBH_threshold, DBH_max and weight. Ingrowth table is used within the ingrowth
+sub model to correctly simulate different ingrowth levels and associated
+upscale weights}
+
+\item{DBH_distribution_parameters}{A list with deciles of DBH distributions
+that are used to simulate DBH for new trees, seperately for each ingrowth
+category}
 }
-\keyword{internal}
+\description{
+Ingrowth model for predicting new trees witihn the MLFS
+}
+\examples{
+
+library(MLFS)
+
+data(data_v6)
+data(data_ingrowth)
+data(ingrowth_table)
+data(ingrowth_parameter_list)
+
+ingrowth_outputs <- predict_ingrowth(
+   df_fit = data_ingrowth,
+   df_predict = data_v6,
+   site_vars = c("slope", "elevation", "northness", "siteIndex"),
+   include_climate = TRUE,
+   eval_model_ingrowth = TRUE,
+   rf_mtry = 3,
+   k = 10, blocked_cv = TRUE,
+   ingrowth_model = 'ZIF_poiss',
+   ingrowth_table = ingrowth_table,
+   DBH_distribution_parameters = ingrowth_parameter_list)
+
+}
