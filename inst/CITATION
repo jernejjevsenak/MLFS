@@ -1,0 +1,17 @@
+citHeader("To cite MLFS in publications, please use:")
+
+citEntry(entry = "Article",
+title        = "MLFS R package: The simulations of future forests based on data-driven approach",
+author       = personList(as.person("Jevsenak J."), as.person("Arnic D."), as.person("Krajnc L."), as.person("Skudnik M.")),
+journal      = "Environmental Modelling & Software",
+volume       = "",
+pages        = "",
+year         = "in preparation",
+doi          = "",
+
+textVersion  =
+paste("Jevšenak J., Arnič D., Krajnc L., and Skudnik M., in preparation.",
+    "MLFS R package: The simulations of future forests based on data-driven approach.",
+    "Environmental Modelling & Software.")
+)
+

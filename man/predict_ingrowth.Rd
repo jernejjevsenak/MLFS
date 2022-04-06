@@ -76,7 +76,7 @@ ingrowth_outputs <- predict_ingrowth(
    eval_model_ingrowth = TRUE,
    rf_mtry = 3,
    k = 10, blocked_cv = TRUE,
-   ingrowth_model = 'ZIF_poiss',
+   ingrowth_model = 'rf',
    ingrowth_table = ingrowth_table,
    DBH_distribution_parameters = ingrowth_parameter_list)
 

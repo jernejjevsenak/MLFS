@@ -16,16 +16,16 @@
 #' @param final_cut_weights_species data frame with final cut weights for each
 #' species. The first column represents species code, each next column consists
 #' of species-specific final cut weights applied in each simulation step
-#' @param thinning_weights_plot data frame with harvesting weights related to plot
-#' IDs, used for thinning
+#' @param thinning_weights_plot data frame with harvesting weights related to
+#' plot IDs, used for thinning
 #' @param final_cut_weights_plot data frame with harvesting weights related
 #' to plot IDs, used for final cut
 #' @param sim_mortality logical, should mortality be simulated?
 #' @param sim_ingrowth logical, should ingrowth be simulated?
 #' @param sim_crownHeight logical, should crown heights be simulated? If TRUE,
 #' a crownHeight column is expected in data_NFI
-#' @param df_volumeF_parameters optional, data frame with species-specific volume
-#' function parameters
+#' @param df_volumeF_parameters optional, data frame with species-specific
+#' volume function parameters
 #' @param form_factors optional, data frame with species-specific form factors
 #' @param form_factors_level character, the level of specified form factors. It
 #' can be 'species', 'plot' or 'species_plot'
@@ -84,8 +84,10 @@
 #' @param crownHeight_model character string defining the model to be used for
 #' crown heights. Available are ANN with Bayesian regularization (brnn) or
 #' linear regression (lm)
-#' @param BRNN_neurons positive integer defining the number of neurons to bo
-#' used in the brnn method.
+#' @param BRNN_neurons_crownHeight  a positive integer defining the number of
+#' neurons to be used in the brnn method for predicting crown heights
+#' @param BRNN_neurons_height a positive integer defining the number of neurons
+#' to be used in the brnn method for predicting tree heights
 #' @param mortality_model model to be used for mortality prediction: 'glm' for
 #' generalized linear models; 'rf' for random forest algorithm; 'naiveBayes' for
 #' Naive Bayes algorithm
@@ -136,14 +138,14 @@
 #' is ignored. Default is 1. To increase maximum for 10 percent, use 1.1.
 #' @param ingrowth_codes numeric value or a vector of codes which refer to
 #' ingrowth trees
-#' @param ingrowth_max_DBH_percentile which percentile should be used to estimate
-#' the maximum simulated value of ingrowth trees?
+#' @param ingrowth_max_DBH_percentile which percentile should be used to
+#' estimate the maximum simulated value of ingrowth trees?
 #' @param measurement_thresholds data frame with two variables: 1) DBH_threshold
 #' and 2) weight. This information is used to assign the correct weights in BAI
 #' and increment sub-model; and to upscale plot-level data to hectares.
-#' @param area_correction optional data frame with three variables: 1) plotID and
-#' 2) DBH_threshold and 3) the correction factor to be multiplied by weight for
-#' this particular category.
+#' @param area_correction optional data frame with three variables: 1) plotID
+#' and 2) DBH_threshold and 3) the correction factor to be multiplied by weight
+#' for this particular category.
 #' @param export_csv logical, if TRUE, at each simulation step, the results are
 #' saved in the current working directory as csv file
 #' @param sim_export_mode logical, if FALSE, the results of the individual
@@ -234,8 +236,11 @@ MLFS <- function(data_NFI, data_site,
                  species_n_threshold = 100,
                  height_model = "brnn",
                  crownHeight_model = "brnn",
-                 BRNN_neurons = 3,
-                 height_pred_level = 0, # prediction level for lmfor (0 regional, 1 plot level)
+
+                 BRNN_neurons_crownHeight = 1,
+                 BRNN_neurons_height = 3,
+
+                 height_pred_level = 0,
                  include_climate = FALSE,
                  select_months_climate = c(1,12),
                  set_eval_mortality = TRUE,
@@ -478,7 +483,7 @@ MLFS <- function(data_NFI, data_site,
                                    species_n_threshold = species_n_threshold,
                                    height_pred_level = height_pred_level,
                                    height_model = height_model,
-                                   BRNN_neurons = BRNN_neurons,
+                                   BRNN_neurons = BRNN_neurons_height,
                                    eval_model_height = set_eval_height,
                                    blocked_cv = blocked_cv, k = k)
 
@@ -490,7 +495,7 @@ MLFS <- function(data_NFI, data_site,
                                                   df_predict = data_mortality,
                                                   site_vars = site_vars,
                                                   crownHeight_model = crownHeight_model,
-                                                  BRNN_neurons = BRNN_neurons,
+                                                  BRNN_neurons = BRNN_neurons_crownHeight,
                                                   species_n_threshold = species_n_threshold,
                                                   k = k, blocked_cv = blocked_cv,
                                                   eval_model_crownHeight = set_eval_crownHeight)
@@ -552,7 +557,7 @@ MLFS <- function(data_NFI, data_site,
   initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                   species_n_threshold = species_n_threshold,
                                   height_model = height_model,
-                                  BRNN_neurons = BRNN_neurons,
+                                  BRNN_neurons = BRNN_neurons_height,
                                   height_pred_level = height_pred_level,
                                   eval_model_height = FALSE)$data_height_predictions
 
@@ -566,7 +571,7 @@ MLFS <- function(data_NFI, data_site,
                                        df_predict = initial_df,
                                        site_vars = site_vars,
                                        crownHeight_model = crownHeight_model,
-                                       BRNN_neurons = BRNN_neurons,
+                                       BRNN_neurons = BRNN_neurons_crownHeight,
                                        species_n_threshold = species_n_threshold,
                                        k = k,
                                        eval_model_crownHeight = FALSE)$predicted_crownHeight
@@ -649,7 +654,7 @@ MLFS <- function(data_NFI, data_site,
   initial_df <- height_prediction_halfPeriod(df_fit = data_height, df_predict = initial_df,
                                              species_n_threshold = species_n_threshold,
                                              height_model = height_model,
-                                             BRNN_neurons = BRNN_neurons,
+                                             BRNN_neurons = BRNN_neurons_height,
                                              height_pred_level = height_pred_level)
 
   # Calculate tree crownHeights half Period
@@ -660,7 +665,7 @@ MLFS <- function(data_NFI, data_site,
                                                   df_predict = initial_df,
                                                   site_vars = site_vars,
                                                   crownHeight_model = crownHeight_model,
-                                                  BRNN_neurons = BRNN_neurons,
+                                                  BRNN_neurons = BRNN_neurons_crownHeight,
                                                   species_n_threshold = species_n_threshold)
  } else {
 
@@ -1175,7 +1180,7 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- height_prediction(df_fit = data_height, df_predict = initial_df,
                                     species_n_threshold = species_n_threshold,
                                     height_model = height_model,
-                                    BRNN_neurons = BRNN_neurons,
+                                    BRNN_neurons = BRNN_neurons_height,
                                     height_pred_level = height_pred_level,
                                     eval_model_height = FALSE)$data_height_predictions
 
@@ -1192,7 +1197,7 @@ MLFS <- function(data_NFI, data_site,
                                          df_predict = initial_df,
                                          site_vars = site_vars,
                                          crownHeight_model = crownHeight_model,
-                                         BRNN_neurons = BRNN_neurons,
+                                         BRNN_neurons = BRNN_neurons_crownHeight,
                                          species_n_threshold = species_n_threshold,
                                          k = k,
                                          eval_model_crownHeight = FALSE)$predicted_crownHeight
@@ -1273,7 +1278,7 @@ MLFS <- function(data_NFI, data_site,
     initial_df <- height_prediction_halfPeriod(df_fit = data_height, df_predict = initial_df,
                                                species_n_threshold = species_n_threshold,
                                                height_model = height_model,
-                                               BRNN_neurons = BRNN_neurons,
+                                               BRNN_neurons = BRNN_neurons_height,
                                                height_pred_level = height_pred_level)
 
     # Calculate tree crownHeights half Period
@@ -1283,7 +1288,7 @@ MLFS <- function(data_NFI, data_site,
                                                       df_predict = initial_df,
                                                       site_vars = site_vars,
                                                       crownHeight_model = crownHeight_model,
-                                                      BRNN_neurons = BRNN_neurons,
+                                                      BRNN_neurons = BRNN_neurons_crownHeight,
                                                       species_n_threshold = species_n_threshold)
     } else {
 

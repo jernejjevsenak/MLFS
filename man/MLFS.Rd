@@ -44,7 +44,8 @@ MLFS(
   species_n_threshold = 100,
   height_model = "brnn",
   crownHeight_model = "brnn",
-  BRNN_neurons = 3,
+  BRNN_neurons_crownHeight = 1,
+  BRNN_neurons_height = 3,
   height_pred_level = 0,
   include_climate = FALSE,
   select_months_climate = c(1, 12),
@@ -206,8 +207,11 @@ available.}
 crown heights. Available are ANN with Bayesian regularization (brnn) or
 linear regression (lm)}
 
-\item{BRNN_neurons}{positive integer defining the number of neurons to bo
-used in the brnn method.}
+\item{BRNN_neurons_crownHeight}{a positive integer defining the number of
+neurons to be used in the brnn method for predicting crown heights}
+
+\item{BRNN_neurons_height}{a positive integer defining the number of neurons
+to be used in the brnn method for predicting tree heights}
 
 \item{height_pred_level}{integer with value 0 or 1 defining the level of
 prediction for height-diameter (H-D) models. The value 1 defines a plot-level
