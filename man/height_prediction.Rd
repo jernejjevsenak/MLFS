@@ -68,7 +68,11 @@ h_predictions <- height_prediction(df_fit = data_tree_heights,
 predicted_df <- h_predictions$data_height_predictions # df with imputed heights
 evaluation_df <- h_predictions$data_height_eval # df with evaluation results
 
+\dontrun{
 # B) Example with lmfor
+# Note: lmfor is currently removed from CRAN so it is also not available in
+# MLFS
+
 library(lmfor)
 h_predictions <- height_prediction(df_fit = data_tree_heights,
                                    df_predict = data_v2,
@@ -78,5 +82,5 @@ h_predictions <- height_prediction(df_fit = data_tree_heights,
                                    eval_model_height = FALSE,
                                    blocked_cv = FALSE, k = 10
                                    )
-
+}
 }

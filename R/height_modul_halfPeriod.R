@@ -29,6 +29,13 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
   species <- NULL
   h_pred <- NULL
 
+  if (height_model != "brnn"){
+
+    stop("For predicting tree heights, only brnn method is currently available")
+
+  }
+
+
   df_fit <- mutate(df_fit, key = paste0(plotID, "_", treeID, "_", year))
   df_predict <- mutate(df_predict, key = paste0(plotID, "_", treeID, "_", year))
 

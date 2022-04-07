@@ -79,8 +79,6 @@
 #' observations required to treat a species as an independent group
 #' @param height_model character string defining the model to be used for height
 #' prediction. If brnn, then ANN method with Bayesian Regularization is applied.
-#' In addition, all 2- and 3- parametric H-D models from lmfor R package are
-#' available.
 #' @param crownHeight_model character string defining the model to be used for
 #' crown heights. Available are ANN with Bayesian regularization (brnn) or
 #' linear regression (lm)

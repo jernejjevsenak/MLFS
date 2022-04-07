@@ -81,8 +81,8 @@ details.}
 \item{data_climate}{data frame with climate data, covering the initial
 calibration period and all the years which will be included in the simulation}
 
-\item{df_volumeF_parameters}{optional, data frame with species-specific volume
-function parameters}
+\item{df_volumeF_parameters}{optional, data frame with species-specific
+volume function parameters}
 
 \item{thinning_weights_species}{data frame with thinning weights for each
 species. The first column represents species code, each next column consists
@@ -92,8 +92,8 @@ of species-specific thinning weights applied in each simulation step}
 species. The first column represents species code, each next column consists
 of species-specific final cut weights applied in each simulation step}
 
-\item{thinning_weights_plot}{data frame with harvesting weights related to plot
-IDs, used for thinning}
+\item{thinning_weights_plot}{data frame with harvesting weights related to
+plot IDs, used for thinning}
 
 \item{final_cut_weights_plot}{data frame with harvesting weights related
 to plot IDs, used for final cut}
@@ -199,9 +199,7 @@ harvested trees having smaller DBH. Default is 1.}
 observations required to treat a species as an independent group}
 
 \item{height_model}{character string defining the model to be used for height
-prediction. If brnn, then ANN method with Bayesian Regularization is applied.
-In addition, all 2- and 3- parametric H-D models from lmfor R package are
-available.}
+prediction. If brnn, then ANN method with Bayesian Regularization is applied.}
 
 \item{crownHeight_model}{character string defining the model to be used for
 crown heights. Available are ANN with Bayesian regularization (brnn) or
@@ -258,16 +256,16 @@ is ignored. Default is 1. To increase maximum for 10 percent, use 1.1.}
 \item{ingrowth_codes}{numeric value or a vector of codes which refer to
 ingrowth trees}
 
-\item{ingrowth_max_DBH_percentile}{which percentile should be used to estimate
-the maximum simulated value of ingrowth trees?}
+\item{ingrowth_max_DBH_percentile}{which percentile should be used to
+estimate the maximum simulated value of ingrowth trees?}
 
 \item{measurement_thresholds}{data frame with two variables: 1) DBH_threshold
 and 2) weight. This information is used to assign the correct weights in BAI
 and increment sub-model; and to upscale plot-level data to hectares.}
 
-\item{area_correction}{optional data frame with three variables: 1) plotID and
-2) DBH_threshold and 3) the correction factor to be multiplied by weight for
-this particular category.}
+\item{area_correction}{optional data frame with three variables: 1) plotID
+and 2) DBH_threshold and 3) the correction factor to be multiplied by weight
+for this particular category.}
 
 \item{export_csv}{logical, if TRUE, at each simulation step, the results are
 saved in the current working directory as csv file}

@@ -27,8 +27,8 @@ export(volume_whole_tree_halfPeriod)
 export(volume_merchantable)
 export(volume_merchantable_halfPeriod)
 
-import("lmfor")
-importFrom("lmfor", "HDnaslund")
+# import("lmfor")
+# importFrom("lmfor", "HDnaslund")
 importFrom("stats", "D", "as.formula", "glm", "lm", "quantile",
                "na.pass", "predict", "runif", "median")
 importFrom("utils", "capture.output", "setTxtProgressBar", "txtProgressBar", "write.csv")

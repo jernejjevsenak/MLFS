@@ -42,7 +42,11 @@
 #' predicted_df <- h_predictions$data_height_predictions # df with imputed heights
 #' evaluation_df <- h_predictions$data_height_eval # df with evaluation results
 #'
+#' \dontrun{
 #' # B) Example with lmfor
+#' # Note: lmfor is currently removed from CRAN so it is also not available in
+#' # MLFS
+#'
 #' library(lmfor)
 #' h_predictions <- height_prediction(df_fit = data_tree_heights,
 #'                                    df_predict = data_v2,
@@ -52,7 +56,7 @@
 #'                                    eval_model_height = FALSE,
 #'                                    blocked_cv = FALSE, k = 10
 #'                                    )
-#'
+#' }
 
 height_prediction <- function(df_fit,  df_predict,
                               species_n_threshold = 100,
@@ -78,6 +82,13 @@ height_prediction <- function(df_fit,  df_predict,
   h_pred <- NULL
 
   height_model <- tolower(height_model)
+
+  if (height_model != "brnn"){
+
+    stop("For predicting tree heights, only brnn method is currently available")
+
+  }
+
 
   df_fit <- mutate(df_fit, key = paste0(plotID, "_", treeID, "_", year))
   df_predict <- mutate(df_predict, key = paste0(plotID, "_", treeID, "_", year))
