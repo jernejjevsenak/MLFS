@@ -4,9 +4,9 @@
 #' This is simulated data that reassemble the national forest inventory data.
 #' We use it to show how to run examples for simulating Basal Area Increments
 #' (BAI) and the ingrowth of new trees. To make examples running more quickly,
-#' we keep only three different tree species: PINI, QUCE and ACPS
+#' we keep only one tree species: PINI
 #'
-#' @format A data frame with 544 rows and 27 variables:
+#' @format A data frame with 186 rows and 27 variables:
 #' \describe{
 #'   \item{species}{species name}
 #'   \item{year}{year in which plot was visited}

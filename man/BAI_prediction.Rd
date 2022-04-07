@@ -71,7 +71,7 @@ BAI_outputs <- BAI_prediction(df_fit = data_BAI,
   rf_mtry = 3,
   species_n_threshold = 100,
   include_climate = TRUE,
-  eval_model_BAI = TRUE,
+  eval_model_BAI = FALSE,
   k = 10, blocked_cv = TRUE,
   measurement_thresholds = measurement_thresholds)
 

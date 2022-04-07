@@ -6,7 +6,7 @@ Author: Jernej Jevsenak
 Maintainer: Jernej Jevsenak <jernej.jevsenak@gmail.com>
 Description: Climate-sensitive forest simulator based on the principles of 
   machine learning. It stimulates all key processes in the forest: radial growth, 
-  height growth, mortality, crown recession, ingrowth and harvesting. 
+  height growth, mortality, crown recession, regeneration and harvesting. 
 License: GPL-3
 Imports: brnn(>= 0.6), ranger(>= 0.13.1), reshape2 (>= 1.4.4), pscl (>= 1.5.5),
    naivebayes(>= 0.9.7), magrittr(>= 1.5), dplyr(>= 0.7.0),tidyr (>= 1.1.3),

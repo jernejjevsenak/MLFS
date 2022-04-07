@@ -3,10 +3,9 @@
 #'
 #' This is simulated data that reassemble the national forest inventory data.
 #' We use it to show how to run examples for BAI sub model. To make examples
-#' running more quickly, we keep only three different tree species: PINI, QUCE
-#' and ACPS.
+#' running more quickly, we keep only one tree species: PINI.
 #'
-#' @format A data frame with 411 rows and 25 variables:
+#' @format A data frame with 135 rows and 25 variables:
 #' \describe{
 #'   \item{plotID}{a unique identifier for plot}
 #'   \item{treeID}{a unique identifier for tree}

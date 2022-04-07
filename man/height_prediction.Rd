@@ -61,7 +61,7 @@ h_predictions <- height_prediction(df_fit = data_tree_heights,
                                    height_pred_level = 0,
                                    height_model = "brnn",
                                    BRNN_neurons = 3,
-                                   eval_model_height = TRUE,
+                                   eval_model_height = FALSE,
                                    blocked_cv = TRUE, k = 10
                                    )
 
