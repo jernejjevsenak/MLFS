@@ -162,10 +162,10 @@ height_prediction <- function(df_fit,  df_predict,
 
     } else {
 
-      mod_species <- lmfor::fithd(dv_temporal_fit$BA,
-                    dv_temporal_fit$height,
-                    plot = dv_temporal_fit$plotID,
-                    modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
+      # mod_species <- lmfor::fithd(dv_temporal_fit$BA,
+      #              dv_temporal_fit$height,
+      #              plot = dv_temporal_fit$plotID,
+      #              modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
 
     }
 
@@ -349,10 +349,10 @@ height_prediction <- function(df_fit,  df_predict,
 
     } else {
 
-      mod_speciesGroups <- lmfor::fithd(dv_temporal_fit$BA,
-                    dv_temporal_fit$height,
-                    plot = dv_temporal_fit$plotID,
-                    modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
+      # mod_speciesGroups <- lmfor::fithd(dv_temporal_fit$BA,
+      #              dv_temporal_fit$height,
+      #              plot = dv_temporal_fit$plotID,
+      #              modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
 
     }
 

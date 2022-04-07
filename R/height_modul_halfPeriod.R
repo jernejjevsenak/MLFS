@@ -111,10 +111,10 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
 
     } else {
 
-      mod1 <- lmfor::fithd(dv_temporal_fit$BA_mid,
-                    dv_temporal_fit$height,
-                    plot = dv_temporal_fit$plotID,
-                    modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
+      # mod1 <- lmfor::fithd(dv_temporal_fit$BA_mid,
+      #              dv_temporal_fit$height,
+      #              plot = dv_temporal_fit$plotID,
+      #              modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
 
     }
 
@@ -203,10 +203,10 @@ height_prediction_halfPeriod <- function(df_fit,  df_predict,
 
     } else {
 
-      mod1 <- lmfor::fithd(dv_temporal_fit$BA_mid,
-                    dv_temporal_fit$height,
-                    plot = dv_temporal_fit$plotID,
-                    modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
+      #mod1 <- lmfor::fithd(dv_temporal_fit$BA_mid,
+      #              dv_temporal_fit$height,
+      #              plot = dv_temporal_fit$plotID,
+      #              modelName = height_model, control=list(maxIter = 1000, msmaxIter = 1000))
 
     }
 
