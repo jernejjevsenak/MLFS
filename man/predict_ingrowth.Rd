@@ -73,7 +73,7 @@ ingrowth_outputs <- predict_ingrowth(
    df_predict = data_v6,
    site_vars = c("slope", "elevation", "northness", "siteIndex"),
    include_climate = TRUE,
-   eval_model_ingrowth = TRUE,
+   eval_model_ingrowth = FALSE,
    rf_mtry = 3,
    k = 10, blocked_cv = TRUE,
    ingrowth_model = 'rf',
