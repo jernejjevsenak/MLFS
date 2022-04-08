@@ -29,7 +29,7 @@ prediction. If 'brnn', then ANN method with Bayesian Regularization is applied.
 In addition, all 2- and 3- parametric H-D models from lmfor R package are
 available.}
 
-\item{BRNN_neurons}{positive integer defining the number of neurons to bo
+\item{BRNN_neurons}{positive integer defining the number of neurons to be
 used in the brnn method.}
 
 \item{height_pred_level}{integer with value 0 or 1 defining the level of

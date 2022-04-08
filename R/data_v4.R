@@ -17,13 +17,13 @@
 #'   \item{slope}{slope on a plot}
 #'   \item{elevation}{plot elevation}
 #'   \item{northness}{plot northness, 1 is north, 0 is south}
-#'   \item{siteIndex}{a proxy for site index, higher value represents more productible sites}
+#'   \item{siteIndex}{a proxy for site index, higher value represents more productive sites}
 #'   \item{p_sum}{monthly precipitation sum}
 #'   \item{t_avg}{monthly mean temperature}
 #'   \item{BA_mid}{basal area of individual trees in m2 in the middle of a simulation step}
 #'   \item{BAI_mid}{basal area increment in the middle of a simulation step}
 #'   \item{weight_mid}{upscale weight to calculate hectare values in the middle of a simulation step}
-#'   \item{height_mid}{tree height in meteres in the middle of a simulation step}
+#'   \item{height_mid}{tree height in meters in the middle of a simulation step}
 #'   \item{crownHeight_mid}{crown height in meters in the middle of a simulation step}
 #'   \item{volume_mid}{tree volume in m3 in the middle of a simulation step}
 #'   \item{BAL_mid}{Basal Area in Large trees the middle of a simulation step}

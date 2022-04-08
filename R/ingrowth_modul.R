@@ -1,6 +1,6 @@
 #' predict_ingrowth
 #'
-#' Ingrowth model for predicting new trees witihn the MLFS
+#' Ingrowth model for predicting new trees within the MLFS
 #'
 #' @param df_fit a plot-level data with plotID, stand variables and site
 #' descriptors, and the two target variables describing the number of ingrowth
@@ -26,7 +26,7 @@
 #' sub model to correctly simulate different ingrowth levels and associated
 #' upscale weights
 #' @param DBH_distribution_parameters A list with deciles of DBH distributions
-#' that are used to simulate DBH for new trees, seperately for each ingrowth
+#' that are used to simulate DBH for new trees, separately for each ingrowth
 #' category
 #'
 #' @examples

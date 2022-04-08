@@ -12,8 +12,8 @@ A data frame with 6 rows and 14 variables:
   \item{vol_factor}{will be multiplied with the volume}
   \item{h_factor}{will be multiplied with tree height}
   \item{d_factor}{will be divided with tree DBH}
-  \item{DBH_min}{lower interval threshold for considred trees}
-  \item{DBH_max}{upper interval threshold for considred trees}
+  \item{DBH_min}{lower interval threshold for considered trees}
+  \item{DBH_max}{upper interval threshold for considered trees}
   \item{a}{parameter a for volume equation}
   \item{b}{parameter b for volume equation}
   \item{c}{parameter c for volume equation}

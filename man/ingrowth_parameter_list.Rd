@@ -17,6 +17,6 @@ ingrowth_parameter_list
 \description{
 This is a list with two ingrowth levels: 3 (inner circle) and 15 (outer
 circle). In each list there are deciles of DBH distributions that are used to
-simulate DBH for new trees, seperately for each ingrowth category
+simulate DBH for new trees, separately for each ingrowth category
 }
 \keyword{datasets}

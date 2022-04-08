@@ -11,7 +11,7 @@
 #' @param crownHeight_model character string defining the model to be used for
 #' crown heights. Available are ANN with Bayesian regularization (brnn) or
 #' linear regression (lm)
-#' @param BRNN_neurons positive integer defining the number of neurons to bo
+#' @param BRNN_neurons positive integer defining the number of neurons to be
 #' used in the brnn method.
 #' @param eval_model_crownHeight logical, should the crown height model be
 #' evaluated and returned as the output

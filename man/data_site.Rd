@@ -11,7 +11,7 @@ A data frame with 371 rows and 5 variables:
   \item{slope}{slope on a plot}
   \item{elevation}{plot elevation}
   \item{northness}{plot northness, 1 is north, 0 is south}
-  \item{siteIndex}{a proxy for site index, higher value represents more productible sites}
+  \item{siteIndex}{a proxy for site index, higher value represents more productive sites}
 }
 }
 \usage{

@@ -14,13 +14,13 @@ A data frame with 11984 rows and 15 variables:
   \item{speciesGroup}{identifier for species group}
   \item{code}{status of a tree: 0 (normal), 1(harvested), 2(dead), 3 (ingrowth)}
   \item{species}{species name}
-  \item{height}{tree height in meteres}
+  \item{height}{tree height in meters}
   \item{crownHeight}{crown height in meters}
   \item{protected}{logical, 1 if protected, otherwise 0}
   \item{slope}{slope on a plot}
   \item{elevation}{plot elevation}
   \item{northness}{plot northness, 1 is north, 0 is south}
-  \item{siteIndex}{a proxy for site index, higher value represents more productible sites}
+  \item{siteIndex}{a proxy for site index, higher value represents more productive sites}
   \item{BA}{basal area of individual trees in m2}
   \item{weight}{upscale weight to calculate hectare values}
 }

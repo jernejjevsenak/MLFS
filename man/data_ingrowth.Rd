@@ -14,7 +14,7 @@ A data frame with 365 rows and 11 variables:
   \item{BAL}{Basal Area in Large trees}
   \item{slope}{slope on a plot}
   \item{elevation}{plot elevation}
-  \item{siteIndex}{a proxy for site index, higher value represents more productible sites}
+  \item{siteIndex}{a proxy for site index, higher value represents more productive sites}
   \item{northness}{plot northness, 1 is north, 0 is south}
   \item{ingrowth_3}{the number of new trees in inner circle}
   \item{ingrowth_15}{the number of new trees in outer circle}

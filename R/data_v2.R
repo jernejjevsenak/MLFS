@@ -12,13 +12,13 @@
 #'   \item{speciesGroup}{identifier for species group}
 #'   \item{code}{status of a tree: 0 (normal), 1(harvested), 2(dead), 3 (ingrowth)}
 #'   \item{species}{species name}
-#'   \item{height}{tree height in meteres}
+#'   \item{height}{tree height in meters}
 #'   \item{crownHeight}{crown height in meters}
 #'   \item{BA}{basal area of individual trees in m2}
 #'   \item{weight}{upscale weight to calculate hectare values}
 #'   \item{p_BA}{basal area of individual trees in m2 from previous simulation step}
 #'   \item{p_weight}{upscale weight to calculate hectare values from previous simulation step}
-#'   \item{p_height}{tree height in meteres from previous simulation step}
+#'   \item{p_height}{tree height in meters from previous simulation step}
 #'   \item{p_crownHeight}{crown height in meters from previous simulation step}
 #' }
 #' @export

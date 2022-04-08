@@ -57,7 +57,7 @@ that are used to simulate DBH for new trees, seperately for each ingrowth
 category}
 }
 \description{
-Ingrowth model for predicting new trees witihn the MLFS
+Ingrowth model for predicting new trees within the MLFS
 }
 \examples{
 

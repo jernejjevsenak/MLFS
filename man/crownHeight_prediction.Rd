@@ -36,7 +36,7 @@ evaluated and returned as the output}
 crown heights. Available are ANN with Bayesian regularization (brnn) or
 linear regression (lm)}
 
-\item{BRNN_neurons}{positive integer defining the number of neurons to bo
+\item{BRNN_neurons}{positive integer defining the number of neurons to be
 used in the brnn method.}
 
 \item{blocked_cv}{logical, should the blocked cross-validation be used in the

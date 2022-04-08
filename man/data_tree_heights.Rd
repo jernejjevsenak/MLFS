@@ -13,7 +13,7 @@ A data frame with 2741 rows and 8 variables:
   \item{year}{year in which plot was visited}
   \item{speciesGroup}{identifier for species group}
   \item{species}{species name}
-  \item{height}{tree height in meteres}
+  \item{height}{tree height in meters}
   \item{crownHeight}{crown height in meters}
   \item{BA}{basal area of individual trees in m2}
 }

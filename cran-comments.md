@@ -18,15 +18,12 @@ Jernej
 * rhub Ubuntu (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-c4868e3e6b79456fb27d50facaf55c53)
 * rhub Fedora Linux (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-bf76c3f96b08429bb163f25b0e661ae7)
 
-* win-check oldrelease
-* win-check release
-* win-check devel
+* win-check oldrelease (https://win-builder.r-project.org/Ot2b4WJk8daC/00check.log)
+* win-check release (https://win-builder.r-project.org/kcU9eqG7W7h1/00check.log)
+* win-check devel (https://win-builder.r-project.org/SsmZKi7IB5I6/00check.log)
 
 ## R CMD check results
 There were 0 ERRORs, 0 WARNINGs and 0 NOTEs
 
 ## Downstream dependencies
-We have also run R CMD check on downstream dependencies of MLFS
-https://github.com/jernejjevsenak/MLFS/blob/master/revdep/checks.rds
-
-All packages that we could install passed. 
+* Will be checked in all future versions

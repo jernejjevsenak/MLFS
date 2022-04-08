@@ -11,7 +11,7 @@
 #'   \item{code}{status of a tree: 0 (normal), 1(harvested), 2(dead), 3 (ingrowth)}
 #'   \item{DBH}{diameter at breast height in cm}
 #'   \item{species}{species name}
-#'   \item{height}{tree height in meteres}
+#'   \item{height}{tree height in meters}
 #'   \item{crownHeight}{crown height in meters}
 #'   \item{protected}{logical, 1 if protected, otherwise 0}
 #' }

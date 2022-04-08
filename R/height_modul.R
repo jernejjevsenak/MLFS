@@ -15,7 +15,7 @@
 #' prediction, while the value 0 defines regional-level predictions. Default is
 #' 0. If using 1, make sure to have representative plot-level data for each
 #' species.
-#' @param BRNN_neurons positive integer defining the number of neurons to bo
+#' @param BRNN_neurons positive integer defining the number of neurons to be
 #' used in the brnn method.
 #' @param eval_model_height logical, should the height model be evaluated and
 #' returned as the output
