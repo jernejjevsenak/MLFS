@@ -1,2 +1,12 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^CRAN-RELEASE$
+^cran-comments\.md$
+^cran-comments\.MD$
+^README\.Rmd$
+^dendroTools\.Rproj$
+^\.travis\.yml$
+^README\.md$
+^README\.Rmd$
+^README-.*\.png$
+^revdep$

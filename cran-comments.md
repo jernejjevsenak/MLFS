@@ -14,13 +14,13 @@ Jernej
 ## Test environments
 * local OS X install, R 4.1.1
 
-* rhub Windows Server 2022 (https://builder.r-hub.io/status/original/MLFS_1.2.7.tar.gz-9a38a5c04747483dbd87c42b10ea73b5)
-* rhub Ubuntu (https://builder.r-hub.io/status/original/MLFS_1.2.7.tar.gz-91812ea7bef541a8aedc9f2906b0d553)
-* rhub Fedora Linux (https://builder.r-hub.io/status/original/MLFS_1.2.7.tar.gz-4f2ad668f9bd454ab2aac91736cf1fca)
+* rhub Windows Server 2022 (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-528bf27f02674d8396b073f911a356ad)
+* rhub Ubuntu (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-c4868e3e6b79456fb27d50facaf55c53)
+* rhub Fedora Linux (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-bf76c3f96b08429bb163f25b0e661ae7)
 
-* win-check oldrelease (https://win-builder.r-project.org/bE14YGPKjP0w/00check.log)
-* win-check release (https://win-builder.r-project.org/o4LbYroGIzo0/00check.log)
-* win-check devel (https://win-builder.r-project.org/AONlRRPVa49x/00check.log)
+* win-check oldrelease
+* win-check release
+* win-check devel
 
 ## R CMD check results
 There were 0 ERRORs, 0 WARNINGs and 0 NOTEs
