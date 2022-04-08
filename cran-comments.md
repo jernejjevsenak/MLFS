@@ -1,8 +1,10 @@
 Dear CRAN
 
-this is the first submission of the R package MLFS. MLFS is designed to enable simulations of future forests based on machine learning algorithms. It is fully data-driven and as such does not need to be parameterized. It is applicable to all types of forests and runs on forest inventory data collected in almost every country in the world. Therefore, we believe it can make a significant contribution to forest and environmental modelling.
+This is the first submission of the R package MLFS. MLFS is designed to enable simulations of future forests based on machine learning algorithms. It is fully data-driven and as such does not need to be parameterized. It is applicable to all types of forests and runs on forest inventory data collected in almost every country in the world. Therefore, we believe it can make a significant contribution to forest and environmental modelling.
 
 We are also preparing a publication to present our new model, which will be submitted in the next few days. Please note that some functions are very computationally intensive, so we have packaged them as 'dontrun', but they have all been tested in different environments and all examples have worked. We have also added some sample data that will be used to test different functions.
+
+Spell checking has been done and all misspelled words have been corrected. 
 
 Best, 
 Jernej
