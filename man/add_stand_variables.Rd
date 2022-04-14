@@ -11,6 +11,10 @@ add_stand_variables(df)
 area and the upscale factors. All trees should also be described with plotID
 and year variables}
 }
+\value{
+a data frame with added stand variables: total stand basal area and
+the number of trees per hectare
+}
 \description{
 This function adds two variables to existing data frame of individual tree
 measurements: 1) stand basal area and 2) the number of trees per hectare

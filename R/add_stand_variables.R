@@ -7,6 +7,9 @@
 #' area and the upscale factors. All trees should also be described with plotID
 #' and year variables
 #'
+#' @return a data frame with added stand variables: total stand basal area and
+#' the number of trees per hectare
+#'
 #' @examples
 #' data(data_v1)
 #' data_v1 <- add_stand_variables(df = data_v1)

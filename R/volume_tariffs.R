@@ -6,6 +6,8 @@
 #' @param data_tariffs data frame with plot- and species-specific parameters for
 #' the calculations of tree volume
 #'
+#' @return a data frame with calculated volume for all trees
+#'
 #' @examples
 #' data(data_v3)
 #' data(data_tariffs)

@@ -16,6 +16,9 @@ height_prediction_halfPeriod(
 \arguments{
 \item{df_fit}{data frame with data being used for model fit}
 }
+\value{
+a data frame with imputed tree heights in the middle of a simulation step
+}
 \description{
 Height model
 }

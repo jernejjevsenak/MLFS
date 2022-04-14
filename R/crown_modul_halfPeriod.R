@@ -2,6 +2,8 @@
 #'
 #' Models to predict crown height (half period)
 #'
+#' @return a data frame with imputed crown heights in the middle of a simulation step
+#'
 #' @keywords internal
 #'
 crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
@@ -170,13 +172,6 @@ crownHeight_prediction_halfPeriod <- function(df_fit,  df_predict,
     dv_temporal_predict_noNA <- dplyr::filter(dv_temporal_predict, !is.na(height_mid))
     dv_temporal_predict_yesNA <- dplyr::filter(dv_temporal_predict, is.na(height_mid))
     dv_temporal_predict_noNA$crownHeight_mid <- predict(mod1, newdata = dv_temporal_predict_noNA)
-
-
-
-
-
-
-
 
     if (sum(is.na(dv_temporal_predict$BA)) > 0){
 

@@ -1,6 +1,6 @@
 #' crownHeight_prediction
 #'
-#' Models to predict crown height
+#' Model for predicting crown height
 #'
 #' @param df_fit data frame with tree heights and basal areas for individual
 #' trees
@@ -18,6 +18,14 @@
 #' @param blocked_cv logical, should the blocked cross-validation be used in the
 #' evaluation phase?
 #' @param k the number of folds to be used in the k fold cross-validation
+#'
+#' @return a list with four elements:
+#' \enumerate{
+#'  \item $predicted_crownHeight - a data frame with imputed crown heights
+#'  \item $eval_crownHeight - a data frame with predicted and observed crown heights, or a character string indicating that crown height model was not evaluated
+#'  \item $model_species - the output model for crown heights (species level)
+#'  \item $model_speciesGroups - the output model for crown heights (species group level)
+#' }
 #'
 #' @examples
 #' library(MLFS)

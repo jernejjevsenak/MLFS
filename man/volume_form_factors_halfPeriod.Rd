@@ -11,6 +11,10 @@ volume_form_factors_halfPeriod(
   uniform_form_factor = 0.42
 )
 }
+\value{
+a data frame with calculated volume for all trees in the middle of
+a simulation step
+}
 \description{
 The calculation of individual tree volume using form factors, which can be
 defined per species, per plot, or per species and per plot

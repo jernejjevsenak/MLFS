@@ -22,6 +22,9 @@ can be 'species', 'plot' or 'species_plot'}
 \item{uniform_form_factor}{a uniform form factor to be applied to all trees.
 If specified, it overwrites the argument 'form_factors'}
 }
+\value{
+a data frame with calculated volume for all trees
+}
 \description{
 The calculation of individual tree volume using form factors, which can be
 defined per species, per plot, or per species and per plot

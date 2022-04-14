@@ -88,6 +88,14 @@ used as independent variable for predicting individual tree morality?}
 \item{intermediate_print}{logical, if TRUE intermediate steps will be printed
 while the mortality sub model is running}
 }
+\value{
+a list with three elements:
+\enumerate{
+ \item $predicted_mortality - a data frame with updated tree status (code) based on the predicted mortality
+ \item $eval_mortality - a data frame with predicted and observed probabilities of dying for all individual trees, or character string indicating that mortality sub-model was not evaluated
+ \item $model_output - the output model for mortality
+}
+}
 \description{
 This sub model first fits a binary model to derive the effects of individual
 tree, site and climate variables on mortality; and afterwards predict the

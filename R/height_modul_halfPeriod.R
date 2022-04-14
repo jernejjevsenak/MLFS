@@ -3,6 +3,9 @@
 #' Height model
 #'
 #' @param df_fit data frame with data being used for model fit
+#'
+#' @return a data frame with imputed tree heights in the middle of a simulation step
+#'
 #' @keywords internal
 #'
 

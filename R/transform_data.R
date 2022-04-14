@@ -2,6 +2,9 @@
 #'
 #' Initial data transformation
 #'
+#' @return a data frame with transformed data, which is used in the next steps
+#' of the MLFS
+#'
 #' @keywords internal
 
 transform_data <- function(df, include_climate, df_climate, select_months_climate){

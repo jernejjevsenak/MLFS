@@ -6,6 +6,10 @@
 \usage{
 add_stand_variables_halfPeriod(df)
 }
+\value{
+a data frame with added stand variables: total stand basal area and
+the number of trees per hectare in the middle of a simulation step
+}
 \description{
 Function for the calculation of stand variables: stand basal area and the
 number of trees

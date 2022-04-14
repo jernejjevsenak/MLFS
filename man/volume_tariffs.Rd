@@ -12,6 +12,9 @@ volume_tariffs(df, data_tariffs)
 \item{data_tariffs}{data frame with plot- and species-specific parameters for
 the calculations of tree volume}
 }
+\value{
+a data frame with calculated volume for all trees
+}
 \description{
 One-parameter volume functions (tariffs) for the MLFS.
 }

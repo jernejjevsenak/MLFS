@@ -23,6 +23,15 @@
 #' evaluation phase?
 #' @param k the number of folds to be used in the k fold cross-validation
 #'
+#' @return a list with four elements:
+#' \enumerate{
+#'  \item $data_height_predictions - a data frame with imputed tree heights
+#'  \item $data_height_eval - a data frame with predicted and observed tree heights, or a character string indicating that tree heights were not evaluated
+#'  \item $model_species - the output model for tree heights (species level)
+#'  \item $model_speciesGroups - the output model for tree heights (species group level)
+#' }
+#'
+#'
 #' @examples
 #' library(MLFS)
 #' data(data_tree_heights)
@@ -42,21 +51,6 @@
 #' predicted_df <- h_predictions$data_height_predictions # df with imputed heights
 #' evaluation_df <- h_predictions$data_height_eval # df with evaluation results
 #'
-#' \dontrun{
-#' # B) Example with lmfor
-#' # Note: lmfor is currently removed from CRAN so it is also not available in
-#' # MLFS
-#'
-#' library(lmfor)
-#' h_predictions <- height_prediction(df_fit = data_tree_heights,
-#'                                    df_predict = data_v2,
-#'                                    species_n_threshold = 100,
-#'                                    height_pred_level = 0,
-#'                                    height_model = "naslund",
-#'                                    eval_model_height = FALSE,
-#'                                    blocked_cv = FALSE, k = 10
-#'                                    )
-#' }
 
 height_prediction <- function(df_fit,  df_predict,
                               species_n_threshold = 100,

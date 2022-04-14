@@ -1,12 +1,16 @@
 Package: MLFS
 Type: Package
 Title: Machine Learning Forest Simulator
-Version: 0.4.0
+Version: 0.4.1
 Author: Jernej Jevsenak
 Maintainer: Jernej Jevsenak <jernej.jevsenak@gmail.com>
 Description: Climate-sensitive forest simulator based on the principles of 
   machine learning. It stimulates all key processes in the forest: radial growth, 
-  height growth, mortality, crown recession, regeneration and harvesting. 
+  height growth, mortality, crown recession, regeneration and harvesting. The 
+  method for predicting tree heights was described by Skudnik and Jevšenak
+  (2022) <doi.org/10.1016/j.foreco.2022.120017>, while the method for predicting
+  basal area increments (BAI) was described by Jevšenak and Skudnik (2021) 
+  <doi.org/10.1016/j.foreco.2020.118601>.
 License: GPL-3
 Imports: brnn(>= 0.6), ranger(>= 0.13.1), reshape2 (>= 1.4.4), pscl (>= 1.5.5),
    naivebayes(>= 0.9.7), magrittr(>= 1.5), dplyr(>= 0.7.0),tidyr (>= 1.1.3),

@@ -10,6 +10,8 @@
 #' @param uniform_form_factor a uniform form factor to be applied to all trees.
 #' If specified, it overwrites the argument 'form_factors'
 #'
+#' @return a data frame with calculated volume for all trees
+#'
 #' @examples
 #' library(MLFS)
 #' data(data_v3)

@@ -32,6 +32,14 @@
 #' data(data_v6)
 #' data(measurement_thresholds)
 #'
+#' @return a list with four elements:
+#' \enumerate{
+#'  \item $predicted_BAI - a data frame with calculated basal area increments (BAI)
+#'  \item $eval_BAI - a data frame with predicted and observed basal area increments (BAI), or a character string indicating that BAI model was not evaluated
+#'  \item $rf_model_species - the output model for BAI (species level)
+#'  \item $rf_model_speciesGroups - the output model for BAI (species group level)
+#' }
+#'
 #' # add BA to measurement thresholds
 #' measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)^2 * pi)/10000
 #'

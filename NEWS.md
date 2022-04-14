@@ -1,3 +1,7 @@
+# MLFS 0.4.1
+Updated documentation for all functions
+lmfor functionality was disabled, until the lmfor package is back on CRAN
+
 # MLFS 0.3.9
 
 This is the first submission of the MLFS R package. 

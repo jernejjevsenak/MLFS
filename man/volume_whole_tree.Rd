@@ -6,6 +6,9 @@
 \usage{
 volume_whole_tree(df)
 }
+\value{
+a data frame with calculated volume for all trees
+}
 \description{
 two-parameter volume functions for the MLFS
 }

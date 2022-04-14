@@ -77,6 +77,10 @@ plot}
 \item{forest_area_ha}{the total area of all forest which are subject of the
 simulation}
 }
+\value{
+a data frame with updated status (code) of all individual trees based
+on the simulation of harvesting
+}
 \description{
 Harvesting is based on probability sampling, which depends on the selected
 parameters and the seize of a tree. Bigger trees have higher probability of

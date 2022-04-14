@@ -1,6 +1,10 @@
 #' volume_merchantable_halfPeriod
 #'
 #' two-parameter volume functions for the MLFS
+#'
+#' @return a data frame with calculated volume for all trees in the middle of
+#' a simulation step
+#'
 #' @keywords internal
 
 volume_merchantable_halfPeriod <- function(df) {

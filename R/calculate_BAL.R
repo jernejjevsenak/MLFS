@@ -9,6 +9,8 @@
 #' area and the upscale factors. All trees should also be described with plotID
 #' and year variables
 #'
+#' @return a data frame with calculated basal area in large trees (BAL)
+#'
 #' @examples
 #' data(data_v1)
 #' data_v1 <- calculate_BAL(df = data_v1)

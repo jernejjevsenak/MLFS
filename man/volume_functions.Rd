@@ -12,6 +12,9 @@ volume_functions(df, df_volumeF_parameters = NULL)
 \item{df_volumeF_parameters}{data frame with equations and parameters for
 n-parametric volume functions}
 }
+\value{
+a data frame with calculated volume for all trees
+}
 \description{
 The calculation of individual tree volume using the n-parameter volume
 functions for the MLFS

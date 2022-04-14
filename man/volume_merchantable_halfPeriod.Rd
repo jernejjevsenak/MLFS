@@ -7,6 +7,10 @@
 \usage{
 volume_merchantable_halfPeriod(df)
 }
+\value{
+a data frame with calculated volume for all trees in the middle of
+a simulation step
+}
 \description{
 two-parameter volume functions for the MLFS
 }

@@ -2,6 +2,9 @@
 #'
 #' One-parameter volume functions (tariffs) for the MLFS (half period)
 #'
+#' @return a data frame with calculated volume for all trees in the middle of
+#' a simulation step
+#'
 #' @keywords internal
 
 volume_tariffs_halfPeriod <- function(df, data_tariffs){

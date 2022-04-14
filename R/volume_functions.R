@@ -7,6 +7,8 @@
 #' @param df_volumeF_parameters data frame with equations and parameters for
 #' n-parametric volume functions
 #'
+#' @return a data frame with calculated volume for all trees
+#'
 #' @examples
 #' library(MLFS)
 #' data(data_v3)

@@ -3,6 +3,9 @@
 #' Function for the calculation of competition index BAL (Basal area in larger
 #' trees)
 #'
+#' @return a data frame with calculated basal area in large trees (BAL) in the
+#' middle of a simulation step
+#'
 #' @keywords internal
 #'
 

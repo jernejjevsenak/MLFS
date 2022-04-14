@@ -43,6 +43,13 @@
 #' @param intermediate_print logical, if TRUE intermediate steps will be printed
 #' while the mortality sub model is running
 #'
+#' @return a list with three elements:
+#' \enumerate{
+#'  \item $predicted_mortality - a data frame with updated tree status (code) based on the predicted mortality
+#'  \item $eval_mortality - a data frame with predicted and observed probabilities of dying for all individual trees, or character string indicating that mortality sub-model was not evaluated
+#'  \item $model_output - the output model for mortality
+#' }
+#'
 #' @examples
 #' data("data_v4")
 #' data("data_mortality")
@@ -169,7 +176,7 @@ if (sim_mortality == TRUE){
 
     if (intermediate_print == TRUE){
 
-      print(paste0("Estimated moratlity share is ", round(mortality_share, 2)))
+      message(paste0("Estimated moratlity share is ", round(mortality_share, 2)))
 
     }
 

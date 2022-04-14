@@ -13,6 +13,9 @@ crownHeight_prediction_halfPeriod(
   BRNN_neurons = 3
 )
 }
+\value{
+a data frame with imputed crown heights in the middle of a simulation step
+}
 \description{
 Models to predict crown height (half period)
 }

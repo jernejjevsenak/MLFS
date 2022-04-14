@@ -15,6 +15,9 @@ BAI_prediction_halfPeriod(
   area_correction = NULL
 )
 }
+\value{
+a data frame with calculated basal area increments in the middle of a simulation step
+}
 \description{
 BAI model for the MLFS to estimate BAI for half period
 }

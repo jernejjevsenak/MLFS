@@ -6,6 +6,10 @@
 \usage{
 transform_data(df, include_climate, df_climate, select_months_climate)
 }
+\value{
+a data frame with transformed data, which is used in the next steps
+of the MLFS
+}
 \description{
 Initial data transformation
 }

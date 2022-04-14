@@ -3,6 +3,9 @@
 #' The calculation of individual tree volume using form factors, which can be
 #' defined per species, per plot, or per species and per plot
 #'
+#' @return a data frame with calculated volume for all trees in the middle of
+#' a simulation step
+#'
 #' @keywords internal
 
 volume_form_factors_halfPeriod <- function(df, form_factors = NULL, form_factors_level = "species",

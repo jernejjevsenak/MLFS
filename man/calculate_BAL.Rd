@@ -11,6 +11,9 @@ calculate_BAL(df)
 area and the upscale factors. All trees should also be described with plotID
 and year variables}
 }
+\value{
+a data frame with calculated basal area in large trees (BAL)
+}
 \description{
 This function calculates the competition index BAL (Basal Area in Large trees)
 and adds it to the table of individual tree measurements that include basal

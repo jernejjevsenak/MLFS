@@ -42,8 +42,17 @@ used in the brnn method.}
 \item{blocked_cv}{logical, should the blocked cross-validation be used in the
 evaluation phase?}
 }
+\value{
+a list with four elements:
+\enumerate{
+ \item $predicted_crownHeight - a data frame with imputed crown heights
+ \item $eval_crownHeight - a data frame with predicted and observed crown heights, or a character string indicating that crown height model was not evaluated
+ \item $model_species - the output model for crown heights (species level)
+ \item $model_speciesGroups - the output model for crown heights (species group level)
+}
+}
 \description{
-Models to predict crown height
+Model for predicting crown height
 }
 \examples{
 library(MLFS)

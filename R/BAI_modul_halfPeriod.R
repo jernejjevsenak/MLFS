@@ -1,6 +1,9 @@
 #' BAI_prediction_halfPeriod
 #'
 #' BAI model for the MLFS to estimate BAI for half period
+#'
+#' @return a data frame with calculated basal area increments in the middle of a simulation step
+#'
 #' @keywords internal
 
 BAI_prediction_halfPeriod <- function(df_fit, df_predict,
@@ -122,7 +125,6 @@ for (M in unique_dv){
 
   }
 
-  # library(data.table)
   # dv_temporal_predict <- data.table(dv_temporal_predict)
   # class(dv_temporal_predict)
   # dv_temporal_predict[, ':='(BA_mid = BA + BAI_new / 2,

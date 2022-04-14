@@ -6,6 +6,10 @@
 \usage{
 volume_tariffs_halfPeriod(df, data_tariffs)
 }
+\value{
+a data frame with calculated volume for all trees in the middle of
+a simulation step
+}
 \description{
 One-parameter volume functions (tariffs) for the MLFS (half period)
 }

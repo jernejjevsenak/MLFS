@@ -1,6 +1,6 @@
 #' predict_ingrowth
 #'
-#' Ingrowth model for predicting new trees within the MLFS
+#' ingrowth model for predicting new trees within the MLFS
 #'
 #' @param df_fit a plot-level data with plotID, stand variables and site
 #' descriptors, and the two target variables describing the number of ingrowth
@@ -28,6 +28,14 @@
 #' @param DBH_distribution_parameters A list with deciles of DBH distributions
 #' that are used to simulate DBH for new trees, separately for each ingrowth
 #' category
+#'
+#' @return a list with four elements:
+#' \enumerate{
+#'  \item $predicted_ingrowth - a data frame with newly added trees based on the ingrowth predictions
+#'  \item $eval_ingrowth - a data frame with predicted and observed number of new trees, separately for each ingrowth level, or character string indicating that ingrowth model was not evaluated
+#'  \item $mod_ing_3 - the output model for predicting the ingrowth of trees with code 3
+#'  \item $mod_ing_15 - the output model for predicting the ingrowth of trees with code 15 (the output name depends on the code used for this particular ingrowth level)
+#' }
 #'
 #' @examples
 #'

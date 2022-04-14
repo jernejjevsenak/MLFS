@@ -6,6 +6,10 @@
 \usage{
 volume_functions_halfPeriod(df, df_volumeF_parameters = NULL)
 }
+\value{
+a data frame with calculated volume for all trees in the middle of
+a simulation step
+}
 \description{
 n-parameter volume functions for the MLFS (half period)
 }

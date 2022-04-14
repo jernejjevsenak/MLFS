@@ -53,14 +53,14 @@ and increment sub-model; and to upscale plot-level data to hectares.}
 and 2) DBH_threshold and 3) the correction factor to be multiplied by weight
 for this particular category}
 }
-\description{
-The Basal Area Increment BAI sub model that is run within the MLFS
+\value{
+a list with four elements:
+\enumerate{
+ \item $predicted_BAI - a data frame with calculated basal area increments (BAI)
+ \item $eval_BAI - a data frame with predicted and observed basal area increments (BAI), or a character string indicating that BAI model was not evaluated
+ \item $rf_model_species - the output model for BAI (species level)
+ \item $rf_model_speciesGroups - the output model for BAI (species group level)
 }
-\examples{
-library(MLFS)
-data(data_BAI)
-data(data_v6)
-data(measurement_thresholds)
 
 # add BA to measurement thresholds
 measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)^2 * pi)/10000
@@ -78,5 +78,14 @@ BAI_outputs <- BAI_prediction(df_fit = data_BAI,
 # get the ranger objects
 BAI_outputs_model_species <- BAI_outputs$rf_model_species
 BAI_outputs_model_groups <- BAI_outputs$rf_model_speciesGroups
+}
+\description{
+The Basal Area Increment BAI sub model that is run within the MLFS
+}
+\examples{
+library(MLFS)
+data(data_BAI)
+data(data_v6)
+data(measurement_thresholds)
 
 }

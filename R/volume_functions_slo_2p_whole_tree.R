@@ -1,6 +1,9 @@
 #' volume_whole_tree
 #'
 #' two-parameter volume functions for the MLFS
+#'
+#' @return a data frame with calculated volume for all trees
+#'
 #' @keywords internal
 
 

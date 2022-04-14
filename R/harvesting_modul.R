@@ -47,6 +47,9 @@
 #' @param forest_area_ha the total area of all forest which are subject of the
 #' simulation
 #'
+#' @return a data frame with updated status (code) of all individual trees based
+#' on the simulation of harvesting
+#'
 #' @examples
 #'
 #' library(MLFS)

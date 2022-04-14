@@ -1,17 +1,78 @@
 Dear CRAN
 
-This is the first submission of the R package MLFS. MLFS is designed to enable simulations of future forests based on machine learning algorithms. It is fully data-driven and as such does not need to be parameterized. It is applicable to all types of forests and runs on forest inventory data collected in almost every country in the world. Therefore, we believe it can make a significant contribution to forest and environmental modelling.
+this is a resubmission of the R package MLFS. I have received the first comments
+from CRAN with the instructions and suggestions for improvement. I would like to
+thank you for your time and effort in reviewing my package. I have implemented 
+all the suggestions and am now submitting the updated and corrected version. 
+Please read my responses and described actions below. I have also performed all
+the necessary tests listed at the end of this message.
 
-We are also preparing a publication to present our new model, which will be submitted in the next few days. Please note that some functions are very computationally intensive, so we have packaged them as 'dontrun', but they have all been tested in different environments and all examples have worked. We have also added some sample data that will be used to test different functions.
-
-Spell checking has been done and all misspelled words have been corrected. 
-
-Best, 
+Best,
 Jernej
 
 
-##  First submission
-* This is the first submission of the package MLFS.
+CRAN cooments
+
+* 1. If there are references describing the methods in your package, please 
+add these in the description field of your DESCRIPTION file in the form
+authors (year) <doi:...>
+authors (year) <arXiv:...>
+authors (year, ISBN:...)
+or if those are not available: <https:...>
+with no space after 'doi:', 'arXiv:', 'https:' and angle brackets for 
+auto-linking.
+(If you want to add a title as well please put it in quotes: "Title")
+
+  * Author: Two references are now added in the DESCRIPTION file. 
+
+
+* 2. Please add \value to .Rd files regarding exported methods and explain 
+the functions results in the documentation. Please write about the 
+structure of the output (class) and also what the output means. (If a 
+function does not return a value, please document that too, e.g. 
+\value{No return value, called for side effects} or similar).
+Missing Rd-tags in up to 25 .Rd files, e.g.:
+      add_stand_variables_halfPeriod.Rd: \value
+      add_stand_variables.Rd: \value
+      BAI_prediction_halfPeriod.Rd: \value
+      BAI_prediction.Rd: \value
+      calculate_BAL_halfPeriod.Rd: \value
+      calculate_BAL.Rd: \value
+      ...
+
+  * Author: I have now described the outputs of all functions. I used @return tag. 
+
+* 3. \ dontrun{} should only be used if the example really cannot be executed 
+(e.g. because of missing additional software, missing API keys, ...) by 
+the user. That's why wrapping examples in \ dontrun{} adds the comment 
+("# Not run:") as a warning for the user.
+Does not seem necessary.
+Please unwrap the examples if they are executable in < 5 sec, or replace 
+\dontrun{} with \donttest{}.
+
+  * Author: The example which was previously wrapped in \ dontrun{}, is now wrapped in \ donttest{}. The reason for wrapping is because it is not executable in < 5 sec.
+
+
+
+* 4. If you use a package which is only needed in examples, please list it in 
+'Suggests' and wrap these examples in if(requireNamespace("pkgname")){} 
+instead.
+
+  * Author: In the originally submitted version, I had an R package that was only needed in one example, lmfor. However, the R package lmfor was recently removed from CRAN. Therefore, I disabled the functionality related to the R package lmfor and also removed the example. There are no other R package dependencies that would be used only in the examples.
+
+* 5. You write information messages to the console that cannot be easily 
+suppressed.
+It is more R like to generate objects that can be used to extract the 
+information a user is interested in, and then print() that object.
+Instead of print()/cat() rather use message()/warning()  or 
+if(verbose)cat(..) (or maybe stop()) if you really have to write text to 
+the console.
+(except for print, summary, interactive functions)
+Please fix and resubmit.
+  * Author: I use now message() instead of print(). 
+
+##  Resubmission submission
+* This is a re-submission of the package MLFS after the first CRAN comments.
 
 ## Test environments
 * local OS X install, R 4.1.1

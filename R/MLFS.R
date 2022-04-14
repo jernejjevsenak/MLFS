@@ -158,8 +158,28 @@
 #' @param intermediate_print logical, if TRUE intermediate steps will be printed
 #' while MLFS is running
 #'
+#' @return a list of class mlfs with at least 15 elements:
+#' \enumerate{
+#'  \item $sim_results - a data frame with the simulation results
+#'  \item $height_eval - a data frame with predicted and observed tree heights, or a character string indicating that tree heights were not evaluated
+#'  \item $crownHeight_eval - a data frame with predicted and observed crown heights, or character string indicating that crown heights were not evaluated
+#'  \item $mortality_eval - a data frame with predicted and observed probabilities of dying for all individual trees, or character string indicating that mortality sub-model was not evaluated
+#'  \item $ingrowth_eval - a data frame with predicted and observed number of new ingrowth trees, separately for each ingrowth level, or character string indicating that ingrowth model was not evaluated
+#'  \item $BAI_eval - a data frame with predicted and observed basal area increments (BAI), or character string indicating that BAI model was not evaluated
+#'  \item $height_model_species - the output model for tree heights (species level)
+#'  \item $height_model_speciesGroups - the output model for tree heights (species group level)
+#'  \item $crownHeight_model_species - the output model for crown heights (species level)
+#'  \item $crownHeight_model_speciesGroups - the output model for crown heights (species group level)
+#'  \item $mortality_model - the output model for mortality
+#'  \item $BAI_model_species - the output model for basal area increments (species level)
+#'  \item $BAI_model_speciesGroups - the output model for basal area increments (species group level)
+#'  \item $max_size - a data frame with maximum allowed diameter at breast height (DBH) for each species
+#'  \item $ingrowth_model_3 - the output model for ingrowth (level 1) – the output name depends on ingrowth codes
+#'  \item $ingrowth_model_15 - the output model for ingrowth (level 2) – optional and the output name depends on ingrowth codes
+#'}
+#'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(MLFS)
 #'
 #' # open example data
@@ -1007,7 +1027,7 @@ MLFS <- function(data_NFI, data_site,
 
     if (intermediate_print == TRUE){
 
-      print(paste0("simulating mortality in step ", sim - 1))
+      message(paste0("simulating mortality in step ", sim - 1))
 
     }
 
@@ -1055,7 +1075,7 @@ MLFS <- function(data_NFI, data_site,
 
       if (intermediate_print == TRUE){
 
-        print(paste0("simulating harvesting in step ", sim - 1))
+        message(paste0("simulating harvesting in step ", sim - 1))
 
       }
 
@@ -1084,7 +1104,7 @@ MLFS <- function(data_NFI, data_site,
 
     if (intermediate_print == TRUE){
 
-      print(paste0("simulating BAI in step ", sim - 1))
+      message(paste0("simulating BAI in step ", sim - 1))
 
     }
 
@@ -1128,7 +1148,7 @@ MLFS <- function(data_NFI, data_site,
 
       if (intermediate_print == TRUE){
 
-        print(paste0("simulating ingrowth in step ", sim - 1))
+        message(paste0("simulating ingrowth in step ", sim - 1))
 
       }
 
@@ -1171,7 +1191,7 @@ MLFS <- function(data_NFI, data_site,
 
     if (intermediate_print == TRUE){
 
-      print(paste0("updating tree heights in step ", sim - 1))
+      message(paste0("updating tree heights in step ", sim - 1))
 
     }
 
@@ -1187,7 +1207,7 @@ MLFS <- function(data_NFI, data_site,
 
       if (intermediate_print == TRUE){
 
-        print(paste0("updating crown heights in step ", sim - 1))
+        message(paste0("updating crown heights in step ", sim - 1))
 
       }
 
@@ -1204,7 +1224,7 @@ MLFS <- function(data_NFI, data_site,
 
     if (intermediate_print == TRUE){
 
-      print(paste0("calculating tree volume in step ", sim - 1))
+      message(paste0("calculating tree volume in step ", sim - 1))
 
     }
 
@@ -1415,6 +1435,8 @@ MLFS <- function(data_NFI, data_site,
   }
 
   close(pb)
+
+  class(final_ouputs) <- 'mlfs'
 
   return(final_ouputs)
 

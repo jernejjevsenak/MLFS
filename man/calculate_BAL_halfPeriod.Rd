@@ -6,6 +6,10 @@
 \usage{
 calculate_BAL_halfPeriod(df)
 }
+\value{
+a data frame with calculated basal area in large trees (BAL) in the
+middle of a simulation step
+}
 \description{
 Function for the calculation of competition index BAL (Basal area in larger
 trees)
