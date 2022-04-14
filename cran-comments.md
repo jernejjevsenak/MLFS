@@ -77,9 +77,9 @@ Please fix and resubmit.
 ## Test environments
 * local OS X install, R 4.1.1
 
-* rhub Windows Server 2022 (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-528bf27f02674d8396b073f911a356ad)
-* rhub Ubuntu (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-c4868e3e6b79456fb27d50facaf55c53)
-* rhub Fedora Linux (https://builder.r-hub.io/status/original/MLFS_0.3.9.tar.gz-bf76c3f96b08429bb163f25b0e661ae7)
+* rhub Windows Server 2022 (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-b1861bd7cc234364851f4cf391b875be)
+* rhub Ubuntu (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-f9f77252a2c24fac827722d948a07cfb)
+* rhub Fedora Linux (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-e9168e618cb847a58956dcb25a8db705)
 
 * win-check oldrelease (https://win-builder.r-project.org/Ot2b4WJk8daC/00check.log)
 * win-check release (https://win-builder.r-project.org/kcU9eqG7W7h1/00check.log)
