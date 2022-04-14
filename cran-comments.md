@@ -71,19 +71,19 @@ the console.
 Please fix and resubmit.
   * Author: I use now message() instead of print(). 
 
-##  Resubmission submission
+##  Resubmission
 * This is a re-submission of the package MLFS after the first CRAN comments.
 
 ## Test environments
 * local OS X install, R 4.1.1
 
-* rhub Windows Server 2022 (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-b1861bd7cc234364851f4cf391b875be)
-* rhub Ubuntu (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-f9f77252a2c24fac827722d948a07cfb)
-* rhub Fedora Linux (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-e9168e618cb847a58956dcb25a8db705)
+* rhub Windows Server 2022 (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-4fc260117dfd4a69b2727534dd6da16c)
+* rhub Ubuntu (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-de3fafb504a647cea84deefc198da401)
+* rhub Fedora Linux (https://builder.r-hub.io/status/original/MLFS_0.4.1.tar.gz-86dc7147234e4b6eaf3c5976453ba57d)
 
-* win-check oldrelease (https://win-builder.r-project.org/Ot2b4WJk8daC/00check.log)
-* win-check release (https://win-builder.r-project.org/kcU9eqG7W7h1/00check.log)
-* win-check devel (https://win-builder.r-project.org/SsmZKi7IB5I6/00check.log)
+* win-check oldrelease (https://win-builder.r-project.org/FJ6LM7pa3652/00check.log)
+* win-check release ()
+* win-check devel (https://win-builder.r-project.org/MTj5S9315Af4/00check.log)
 
 ## R CMD check results
 There were 0 ERRORs, 0 WARNINGs and 0 NOTEs
