@@ -232,26 +232,76 @@ DF_predictions <- rbind(DF_predictions_species, DF_predictions_sGroups)
 # In case area correction factors are provided we use them to correct plot weights
 measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)^2 * pi)/10000
 
-if (!is.null(area_correction)){
+#if (!is.null(area_correction)){
+#
+#  DF_predictions <- DF_predictions %>% mutate(weight_mid = ifelse(BA_mid >= max(measurement_thresholds$BA_threshold),
+#                                          measurement_thresholds[, "weight"][which.max(measurement_thresholds$BA_threshold)],
+#                                          measurement_thresholds[, "weight"][which.min(measurement_thresholds$BA_threshold)]),
+#
+#                          DBH_threshold = ifelse(BA_mid >= max(measurement_thresholds$BA_threshold),
+#                                                 measurement_thresholds[, "DBH_threshold"][which.max(measurement_thresholds$BA_threshold)],
+#                                                 measurement_thresholds[, "DBH_threshold"][which.min(measurement_thresholds$BA_threshold)]))
+#
+#  DF_predictions <- merge(DF_predictions, area_correction, by = c("plotID", "DBH_threshold"), all.x = TRUE)
+#
+#  DF_predictions <- dplyr::mutate(DF_predictions, area_factor = ifelse(is.na(area_factor), 1, area_factor),
+#                        weight_mid = weight_mid*area_factor, area_factor = NULL, DBH_threshold = NULL)
+#
+#} else {
+#
+#  DF_predictions <- DF_predictions %>% mutate(weight_mid = ifelse(BA_mid >= max(measurement_thresholds$BA_threshold),
+#                                                                  measurement_thresholds[, "weight"][which.max(measurement_thresholds$BA_threshold)],
+#                                                                  measurement_thresholds[, "weight"][which.min(measurement_thresholds$BA_threshold)]))
+#}
+#
+#return(DF_predictions)
+#
 
-  DF_predictions <- DF_predictions %>% mutate(weight_mid = ifelse(BA_mid >= max(measurement_thresholds$BA_threshold),
-                                          measurement_thresholds[, "weight"][which.max(measurement_thresholds$BA_threshold)],
-                                          measurement_thresholds[, "weight"][which.min(measurement_thresholds$BA_threshold)]),
 
-                          DBH_threshold = ifelse(BA_mid >= max(measurement_thresholds$BA_threshold),
-                                                 measurement_thresholds[, "DBH_threshold"][which.max(measurement_thresholds$BA_threshold)],
-                                                 measurement_thresholds[, "DBH_threshold"][which.min(measurement_thresholds$BA_threshold)]))
-
-  DF_predictions <- merge(DF_predictions, area_correction, by = c("plotID", "DBH_threshold"), all.x = TRUE)
-
-  DF_predictions <- dplyr::mutate(DF_predictions, area_factor = ifelse(is.na(area_factor), 1, area_factor),
-                        weight_mid = weight_mid*area_factor, area_factor = NULL, DBH_threshold = NULL)
-
+if (!is.null(area_correction)) {
+  
+  # Precompute threshold rows
+  max_row <- which.max(measurement_thresholds$BA_threshold)
+  min_row <- which.min(measurement_thresholds$BA_threshold)
+  
+  high_w    <- measurement_thresholds$weight[max_row]
+  low_w     <- measurement_thresholds$weight[min_row]
+  high_dbh  <- measurement_thresholds$DBH_threshold[max_row]
+  low_dbh   <- measurement_thresholds$DBH_threshold[min_row]
+  
+  DF_predictions <- DF_predictions %>%
+    mutate(
+      weight_mid    = if_else(BA_mid >= measurement_thresholds$BA_threshold[max_row], high_w,   low_w),
+      DBH_threshold = if_else(BA_mid >= measurement_thresholds$BA_threshold[max_row], high_dbh, low_dbh)
+    )
+  
+  DF_predictions <- merge(
+    DF_predictions,
+    area_correction,
+    by = c("plotID", "DBH_threshold"),
+    all.x = TRUE
+  )
+  
+  DF_predictions <- DF_predictions %>%
+    mutate(
+      area_factor       = if_else(is.na(area_factor), 1, area_factor),
+      weight_mid        = weight_mid * area_factor
+    ) %>%
+    select(-area_factor, -DBH_threshold)
+  
 } else {
-
-  DF_predictions <- DF_predictions %>% mutate(weight_mid = ifelse(BA_mid >= max(measurement_thresholds$BA_threshold),
-                                                                  measurement_thresholds[, "weight"][which.max(measurement_thresholds$BA_threshold)],
-                                                                  measurement_thresholds[, "weight"][which.min(measurement_thresholds$BA_threshold)]))
+  
+  # Precompute for simpler branch
+  max_row <- which.max(measurement_thresholds$BA_threshold)
+  min_row <- which.min(measurement_thresholds$BA_threshold)
+  
+  high_w <- measurement_thresholds$weight[max_row]
+  low_w  <- measurement_thresholds$weight[min_row]
+  
+  DF_predictions <- DF_predictions %>%
+    mutate(
+      weight_mid = if_else(BA_mid >= measurement_thresholds$BA_threshold[max_row], high_w, low_w)
+    )
 }
 
 return(DF_predictions)
