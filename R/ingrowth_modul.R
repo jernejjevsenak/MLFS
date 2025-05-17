@@ -393,6 +393,8 @@ predict_ingrowth <- function(df_fit, df_predict, site_vars = site_vars,
 
   new_trees <-  dplyr::select(new_trees, colnames(df_before))
 
+  new_trees$year <- max(df_before$year, na.rm = TRUE)
+
   both_df <- rbind(df_before, new_trees)
   both_df$BAL <- NA
   both_df$stand_BA <- NA

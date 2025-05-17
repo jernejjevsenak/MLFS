@@ -90,6 +90,7 @@ BAI_prediction <- function(df_fit, df_predict,
   weight_mid <- NULL
   area_factor <- NULL
   ranger <- NULL
+  DBH_threshold <- NULL
 
 #####################################
 # 2 Predict BAI for next NFI period #
@@ -456,45 +457,45 @@ measurement_thresholds$BA_threshold <- ((measurement_thresholds$DBH_threshold/2)
 #)
 
 if (!is.null(area_correction)) {
-  
+
   # Precompute threshold rows and corresponding values
   max_row <- which.max(measurement_thresholds$BA_threshold)
   min_row <- which.min(measurement_thresholds$BA_threshold)
-  
+
   high_w    <- measurement_thresholds$weight[max_row]
   low_w     <- measurement_thresholds$weight[min_row]
   high_dbh  <- measurement_thresholds$DBH_threshold[max_row]
   low_dbh   <- measurement_thresholds$DBH_threshold[min_row]
-  
+
   DF_predictions <- DF_predictions %>%
     mutate(
       weight        = if_else(BA >= measurement_thresholds$BA_threshold[max_row], high_w,   low_w),
       DBH_threshold = if_else(BA >= measurement_thresholds$BA_threshold[max_row], high_dbh, low_dbh)
     )
-  
+
   DF_predictions <- merge(
     DF_predictions,
     area_correction,
     by = c("plotID", "DBH_threshold"),
     all.x = TRUE
   )
-  
+
   DF_predictions <- DF_predictions %>%
     mutate(
       area_factor = if_else(is.na(area_factor), 1, area_factor),
       weight      = weight * area_factor
     ) %>%
     select(-area_factor, -DBH_threshold)
-  
+
 } else {
-  
+
   # Precompute for simpler branch
   max_row <- which.max(measurement_thresholds$BA_threshold)
   min_row <- which.min(measurement_thresholds$BA_threshold)
-  
+
   high_w <- measurement_thresholds$weight[max_row]
   low_w  <- measurement_thresholds$weight[min_row]
-  
+
   DF_predictions <- DF_predictions %>%
     mutate(
       weight = if_else(BA >= measurement_thresholds$BA_threshold[max_row], high_w, low_w)

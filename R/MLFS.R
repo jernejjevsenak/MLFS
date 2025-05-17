@@ -407,7 +407,7 @@ MLFS <- function(data_NFI, data_site,
   #                                              measurement_thresholds[, "DBH_threshold"][which.max(measurement_thresholds$BA_threshold)],
   #                                               measurement_thresholds[, "DBH_threshold"][which.min(measurement_thresholds$BA_threshold)]))
 
-  data <- data %>% 
+  data <- data %>%
     mutate(
       weight = ifelse(
         BA >= max(measurement_thresholds$BA_threshold),
@@ -420,8 +420,8 @@ MLFS <- function(data_NFI, data_site,
         measurement_thresholds$DBH_threshold[which.min(measurement_thresholds$BA_threshold)]
       )
     )
-  
-  
+
+
   # In case area correction factors are provided we use them to correct plot weights
   if (!is.null(area_correction)){
 
