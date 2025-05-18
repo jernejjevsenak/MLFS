@@ -380,7 +380,7 @@ MLFS <- function(data_NFI, data_site,
   site_vars <- colnames(data_site)[!(colnames(data_site) %in% c("plotID"))]
 
   # merge NFI and site descriptors
-  data <- merge(data_NFI, data_site, by = "plotID")
+  data <- merge(data_NFI, data_site, by = "plotID", all.x = TRUE)
 
   # remove the objects to make free space
   rm(data_NFI)
@@ -580,6 +580,11 @@ MLFS <- function(data_NFI, data_site,
   ######################################################################################
 
   initial_df <- data
+
+  current_max_year <- max(initial_df$year)
+
+  # Here we subset and keep only the most recent NFI year
+  initial_df <- dplyr::filter(initial_df, year == current_max_year)
 
   # remove data
   rm(data)
