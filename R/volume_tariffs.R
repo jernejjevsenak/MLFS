@@ -22,7 +22,12 @@ tarifa_class <- NULL
 
   initial_colnames <- colnames(df)
 
-  df <- merge(df, data_tariffs, by = c("plotID", "species"))
+    # unique(df$species[!  (df$species %in% data_tariffs$species)])
+
+  df <- merge(df, data_tariffs, by = c("plotID", "species"), all.x = TRUE)
+
+  # df_ <- dplyr::filter(df_, is.na(v45))
+  # write.csv(df_, "missing_tariffs.csv", row.names = FALSE)
 
   df <- mutate(df,
                D = sqrt(4*BA/pi) * 100,

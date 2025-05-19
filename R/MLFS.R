@@ -276,7 +276,7 @@ MLFS <- function(data_NFI, data_site,
                  export_csv = FALSE,
                  sim_export_mode = TRUE,
                  include_mortality_BAI = TRUE,
-                 intermediate_print = FALSE
+                 intermediate_print = FALSEtemp_df_x
                  ){
 
   # Define global variables
@@ -637,7 +637,7 @@ MLFS <- function(data_NFI, data_site,
 
     }
 
-    initial_df <- volume_functions(df = initial_df, df_volumeF_parameters = df_volumeF_parameters)
+    initial_df_ <- volume_functions(df = initial_df, df_volumeF_parameters = df_volumeF_parameters)
 
   } else if (volume_calculation == "tariffs"){
 

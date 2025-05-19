@@ -64,7 +64,14 @@ data_above_threshold <- NULL
 if (any(!(unique(df_predict$speciesGroup)%in% uniq_tSk))){
 
   missing_spG <-  unique(df_predict$speciesGroup)[!(unique(df_predict$speciesGroup)%in% uniq_tSk)]
-  unique_species_missing_spG <- unique(df_predict[df_predict$speciesGroup==missing_spG,"species"])
+
+  unique_species_missing_spG <-
+    unique(
+      df_predict[
+        df_predict$speciesGroup %in% missing_spG,
+        "species"
+      ]
+    )
 
   # are these already in unique_dv?
   if (any(!(missing_spG %in% unique_dv))){
