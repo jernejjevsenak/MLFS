@@ -19,14 +19,34 @@ volume_tariffs <- function(df, data_tariffs){
 BA <- NULL
 p_BA <- NULL
 tarifa_class <- NULL
+year <- NULL
+species <- NULL
+plotID <- NULL
+v45 <- NULL
+
+  # assume your data.frame is called df
+  years_to_add <- (max(data_tariffs$year) + 1):2100  # i.e. 2025:2100
+
+  # 1. pull out just the 2024 rows
+  df_2024 <- subset(data_tariffs, year == max(data_tariffs$year))
+
+  # 2. replicate them for each new year
+  new_rows <- do.call(rbind, lapply(years_to_add, function(y) {
+    tmp <- df_2024
+    tmp$year <- y
+    tmp
+  }))
+
+  # 3. bind back to the original
+  data_tariffs_ <- rbind(data_tariffs, new_rows)
 
   initial_colnames <- colnames(df)
 
-    # unique(df$species[!  (df$species %in% data_tariffs$species)])
+  # unique(df$species[!  (df$species %in% data_tariffs$species)])
 
-  df <- merge(df, data_tariffs, by = c("plotID", "species", "year"), all.x = TRUE)
+  df <- merge(df, data_tariffs_, by = c("plotID", "species", "year"), all.x = TRUE)
 
-  test_df <- dplyr::filter(df, is.na(v45)) %>% dplyr::select(plotID, species, year)
+  test_df <- dplyr::filter(df, is.na(v45)) %>% dplyr::select(plotID, species, year) %>% distinct()
 
   if (nrow(test_df) > 0) {
 

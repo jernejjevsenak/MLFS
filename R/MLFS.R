@@ -369,27 +369,6 @@ MLFS <- function(data_NFI, data_site,
   sim_step_years <- sort(unique(as.numeric(data_NFI$year)))
   sim_step_years <- sim_step_years[length(sim_step_years)] - sim_step_years[length(sim_step_years)-1]
 
-  # expand the data_tarifs
-  if (volume_calculation == "tariffs"){
-
-    # assume your data.frame is called df
-    years_to_add <- (max(data_tariffs$year) + 1):2100  # i.e. 2025:2100
-
-    # 1. pull out just the 2024 rows
-    df_2024 <- subset(data_tariffs, year == max(data_tariffs$year))
-
-    # 2. replicate them for each new year
-    new_rows <- do.call(rbind, lapply(years_to_add, function(y) {
-      tmp <- df_2024
-      tmp$year <- y
-      tmp
-    }))
-
-    # 3. bind back to the original
-    data_tariffs <- rbind(data_tariffs, new_rows)
-
-  }
-
   # check the first column
   if (colnames(data_site)[1] != "plotID"){
 

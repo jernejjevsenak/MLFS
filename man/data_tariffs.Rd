@@ -11,6 +11,7 @@ A data frame with 1196 rows and 4 variables:
   \item{plotID}{plot identifier}
   \item{species}{species name as used in data_NFI}
   \item{v45}{volume of tree with DBH 45 cm}
+  \item{year}{year for which the specifief tariff will be considered}
 }
 }
 \usage{
