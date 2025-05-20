@@ -24,7 +24,58 @@ tarifa_class <- NULL
 
     # unique(df$species[!  (df$species %in% data_tariffs$species)])
 
-  df <- merge(df, data_tariffs, by = c("plotID", "species"), all.x = TRUE)
+  df <- merge(df, data_tariffs, by = c("plotID", "species", "year"), all.x = TRUE)
+
+  test_df <- dplyr::filter(df, is.na(v45)) %>% dplyr::select(plotID, species, year)
+
+  if (nrow(test_df) > 0) {
+
+    # 1) catch any actual NA’s in species or plotID
+    na_rows <- which(is.na(test_df$species) | is.na(test_df$plotID))
+    if (length(na_rows) > 0) {
+      msgs1 <- sapply(na_rows, function(i) {
+        sp  <- ifelse(is.na(test_df$species[i]), "<MISSING_SPECIES>", test_df$species[i])
+        pid <- ifelse(is.na(test_df$plotID[i]),   "<MISSING_PLOTID>",   test_df$plotID[i])
+        paste0("row ", i, ": species='", sp, "' @ plotID='", pid, "'")
+      })
+      stop(
+        paste0(
+          "Missing data in data_tariffs (NA’s): ",
+          paste(msgs1, collapse = "; ")
+        )
+      )
+    }
+
+    # 2) build the full grid of all observed species × plotID
+    full_grid <- expand.grid(
+      plotID  = unique(test_df$plotID),
+      species = unique(test_df$species),
+      stringsAsFactors = FALSE
+    )
+
+    # pull out just the species/plot pairs you actually have
+    observed <- unique(test_df[, c("plotID", "species")])
+
+    # find the combos in full_grid that never occur in observed
+    missing_grid <- merge(full_grid, observed,
+                          by = c("plotID", "species"),
+                          all.x = TRUE
+    )
+    missing_grid <- missing_grid[ ! (paste0(missing_grid$plotID, "|", missing_grid$species)
+                                     %in% paste0(observed$plotID, "|", observed$species)),
+    ]
+
+    if (nrow(missing_grid) > 0) {
+      msgs2 <- with(missing_grid,
+                    paste0("species='", species, "' @ plotID='", plotID, "'"))
+      stop(
+        paste0(
+          "Missing data in data_tariffs (absent combos): ",
+          paste(msgs2, collapse = "; ")
+        )
+      )
+    }
+  }
 
   # df_ <- dplyr::filter(df_, is.na(v45))
   # write.csv(df_, "missing_tariffs.csv", row.names = FALSE)

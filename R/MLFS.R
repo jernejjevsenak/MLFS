@@ -276,7 +276,7 @@ MLFS <- function(data_NFI, data_site,
                  export_csv = FALSE,
                  sim_export_mode = TRUE,
                  include_mortality_BAI = TRUE,
-                 intermediate_print = FALSEtemp_df_x
+                 intermediate_print = FALSE
                  ){
 
   # Define global variables
