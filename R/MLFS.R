@@ -157,6 +157,8 @@
 #' used as independent variable for predicting individual tree morality?
 #' @param intermediate_print logical, if TRUE intermediate steps will be printed
 #' while MLFS is running
+#' @param use_max_size_threshold logical - should the principle of maxium size
+#' be applied?
 #'
 #' @return a list of class mlfs with at least 15 elements:
 #' \enumerate{
@@ -276,7 +278,8 @@ MLFS <- function(data_NFI, data_site,
                  export_csv = FALSE,
                  sim_export_mode = TRUE,
                  include_mortality_BAI = TRUE,
-                 intermediate_print = FALSE
+                 intermediate_print = FALSE,
+                 use_max_size_threshold = FALSE
                  ){
 
   # Define global variables
@@ -1071,7 +1074,8 @@ MLFS <- function(data_NFI, data_site,
                                            df_max_size = max_size_data,
                                            ingrowth_codes = ingrowth_codes,
                                            include_mortality_BAI = include_mortality_BAI,
-                                           intermediate_print = intermediate_print
+                                           intermediate_print = intermediate_print,
+                                           use_max_size_threshold = use_max_size_threshold
                                            )
 
     initial_df <- mortality_outputs$predicted_mortality

@@ -25,7 +25,8 @@ predict_mortality(
   df_max_size = NULL,
   ingrowth_codes = 3,
   include_mortality_BAI = TRUE,
-  intermediate_print = FALSE
+  intermediate_print = FALSE,
+  use_max_size_threshold = FALSE
 )
 }
 \arguments{
@@ -87,6 +88,9 @@ used as independent variable for predicting individual tree morality?}
 
 \item{intermediate_print}{logical, if TRUE intermediate steps will be printed
 while the mortality sub model is running}
+
+\item{use_max_size_threshold}{logical - should the principle of maxium size
+be applied?}
 }
 \value{
 a list with three elements:

@@ -42,6 +42,8 @@
 #' used as independent variable for predicting individual tree morality?
 #' @param intermediate_print logical, if TRUE intermediate steps will be printed
 #' while the mortality sub model is running
+#' @param use_max_size_threshold logical - should the principle of maxium size
+#' be applied?
 #'
 #' @return a list with three elements:
 #' \enumerate{
@@ -89,7 +91,7 @@ predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = 
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL,
                               df_max_size = NULL, ingrowth_codes = 3, include_mortality_BAI = TRUE,
-                              intermediate_print = FALSE){
+                              intermediate_print = FALSE, use_max_size_threshold = FALSE){
 
 
 
@@ -328,12 +330,23 @@ if (sim_mortality == TRUE){
 
   }
 
-  df_predict <- merge(df_predict, df_max_size, by = 'species', all.x = TRUE)
+  if (use_max_size_threshold == TRUE){
 
-  df_predict <- dplyr::mutate(df_predict, p_mortality = ifelse(BA_mid > BA_max, 1, p_mortality),
-                              BA_max = NULL
-                              ) %>%
-    arrange(-p_mortality)
+    df_predict <- merge(df_predict, df_max_size, by = 'species', all.x = TRUE)
+
+    df_predict <- dplyr::mutate(df_predict, p_mortality = ifelse(BA_mid > BA_max, 1, p_mortality),
+                                BA_max = NULL
+    ) %>%
+      arrange(-p_mortality)
+
+  } else {
+
+    df_predict <- df_predict %>%
+      arrange(-p_mortality)
+
+  }
+
+
 
   if (mortality_share_type == "volume"){
 

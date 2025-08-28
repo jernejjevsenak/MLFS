@@ -50,7 +50,7 @@ v45 <- NULL
 
   if (nrow(test_df) > 0) {
 
-    # 1) catch any actual NA’s in species or plotID
+    # 1) catch any actual missing values in species or plotID
     na_rows <- which(is.na(test_df$species) | is.na(test_df$plotID))
     if (length(na_rows) > 0) {
       msgs1 <- sapply(na_rows, function(i) {
@@ -60,13 +60,13 @@ v45 <- NULL
       })
       stop(
         paste0(
-          "Missing data in data_tariffs (NA’s): ",
+          "Missing data in data_tariffs: ",
           paste(msgs1, collapse = "; ")
         )
       )
     }
 
-    # 2) build the full grid of all observed species × plotID
+    # 2) build the full grid of all observed species and plotID
     full_grid <- expand.grid(
       plotID  = unique(test_df$plotID),
       species = unique(test_df$species),
