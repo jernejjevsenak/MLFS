@@ -160,22 +160,7 @@
 #' @param use_max_size_threshold logical - should the principle of maxium size
 #' be applied?
 #' @param mortality_bias_adjusted Logical (length-one). If `TRUE` (default),
-#' perform the stratified resampling to mitigate mortality-size bias using
-#' `min_per`/`max_per`. If `FALSE`, return `data` unchanged (the sampling
-#' bounds are ignored). Set to `FALSE` when you want the original
-#' distribution (e.g., for benchmarking, external weighting, or to avoid
-#' double-adjustment).
-#' @param min_per A length-one numeric in `(0, 1]`. Lower proportional bound,
-#' applied to the **average stratum size**. After rebalancing, each stratum's
-#' target count will be **at least** `min_per * mean(n_obs)`.
-#' For example, `min_per = 0.75` ensures no stratum is resampled to fewer than
-#' 75% of the average stratum size (small strata will be up-sampled if needed).
-#' Default is `0.75`.
-#' @param max_per A length-one numeric `>= 1`. Upper proportional bound,
-#' applied to the **average stratum size**. After rebalancing, each stratum's
-#' target count will be **at most** `max_per * mean(n_obs)`.
-#' For example, `max_per = 1.25` ensures no stratum exceeds 125% of the average
-#' stratum size (large strata will be down-sampled if needed). Default is `1.25`
+#' perform quantile sampling to keep more large trees alive
 #'
 #' @return a list of class mlfs with at least 15 elements:
 #' \enumerate{
@@ -298,8 +283,7 @@ MLFS <- function(data_NFI, data_site,
                  intermediate_print = FALSE,
                  use_max_size_threshold = FALSE,
 
-                 mortality_bias_adjusted = TRUE,
-                 max_per = 1.25, min_per = 0.75
+                 mortality_bias_adjusted = TRUE
 
                  ){
 
@@ -1097,8 +1081,7 @@ MLFS <- function(data_NFI, data_site,
                                            include_mortality_BAI = include_mortality_BAI,
                                            intermediate_print = intermediate_print,
                                            use_max_size_threshold = use_max_size_threshold,
-                                           mortality_bias_adjusted = mortality_bias_adjusted,
-                                           max_per = max_per, min_per = min_per)
+                                           mortality_bias_adjusted = mortality_bias_adjusted)
 
     initial_df <- mortality_outputs$predicted_mortality
 
