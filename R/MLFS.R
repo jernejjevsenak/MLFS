@@ -1096,8 +1096,9 @@ MLFS <- function(data_NFI, data_site,
                                            ingrowth_codes = ingrowth_codes,
                                            include_mortality_BAI = include_mortality_BAI,
                                            intermediate_print = intermediate_print,
-                                           use_max_size_threshold = use_max_size_threshold
-                                           )
+                                           use_max_size_threshold = use_max_size_threshold,
+                                           mortality_bias_adjusted = mortality_bias_adjusted,
+                                           max_per = max_per, min_per = min_per)
 
     initial_df <- mortality_outputs$predicted_mortality
 
