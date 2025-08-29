@@ -36,7 +36,8 @@ importFrom("magrittr", "%>%")
 importFrom("ranger", "ranger")
 importFrom("dplyr", "summarise", "group_by", "filter", "select", "mutate",
            "arrange", "rename", "summarise_all", "distinct", "row_number",
-           "bind_rows", "rowwise", "if_else")
+           "bind_rows", "rowwise", "if_else", "count", "right_join", "reframe",
+           "slice_sample", "pick", "everything", "n",  "ungroup")
 importFrom("tidyselect", "all_of")
 importFrom("tidyr", "replace_na")
 importFrom("naivebayes", "naive_bayes")

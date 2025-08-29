@@ -44,7 +44,23 @@
 #' while the mortality sub model is running
 #' @param use_max_size_threshold logical - should the principle of maxium size
 #' be applied?
-#'
+#' @param mortality_bias_adjusted Logical (length-one). If `TRUE` (default),
+#' perform the stratified resampling to mitigate mortality-size bias using
+#' `min_per`/`max_per`. If `FALSE`, return `data` unchanged (the sampling
+#' bounds are ignored). Set to `FALSE` when you want the original
+#' distribution (e.g., for benchmarking, external weighting, or to avoid
+#' double-adjustment).
+#' @param min_per A length-one numeric in `(0, 1]`. Lower proportional bound,
+#' applied to the **average stratum size**. After rebalancing, each stratum's
+#' target count will be **at least** `min_per * mean(n_obs)`.
+#' For example, `min_per = 0.75` ensures no stratum is resampled to fewer than
+#' 75% of the average stratum size (small strata will be up-sampled if needed).
+#' Default is `0.75`.
+#' @param max_per A length-one numeric `>= 1`. Upper proportional bound,
+#' applied to the **average stratum size**. After rebalancing, each stratum's
+#' target count will be **at most** `max_per * mean(n_obs)`.
+#' For example, `max_per = 1.25` ensures no stratum exceeds 125% of the average
+#' stratum size (large strata will be down-sampled if needed). Default is `1.25`
 #' @return a list with three elements:
 #' \enumerate{
 #'  \item $predicted_mortality - a data frame with updated tree status (code) based on the predicted mortality
@@ -91,9 +107,12 @@ predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = 
                               k = 10, eval_model_mortality = TRUE, blocked_cv = TRUE,
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL,
                               df_max_size = NULL, ingrowth_codes = 3, include_mortality_BAI = TRUE,
-                              intermediate_print = FALSE, use_max_size_threshold = FALSE){
+                              intermediate_print = FALSE, use_max_size_threshold = FALSE,
+                              mortality_bias_adjusted = TRUE,
+                              max_per = 1.25, min_per = 0.75
 
 
+                              ){
 
 # Define global variables
 year <- NULL
@@ -121,6 +140,10 @@ BA_max <- NULL
 ranger <- NULL
 BAI <- NULL
 BAI_mid <- NULL
+n_obs <- NULL
+BA_bin <- NULL
+n_tgt <- NULL
+
 
 if (sim_mortality == TRUE){
 
@@ -295,6 +318,56 @@ if (sim_mortality == TRUE){
 
   }
 
+
+  #################
+  # Balance data #
+  ################
+
+  # Mortality model could bias mortality predictions towards trees with larger DBH
+  # Here you can sub sample your data to reduce this bias
+
+  if (mortality_bias_adjusted == TRUE){
+
+    # 1) Make mortality a factor and create BA bins (e.g., deciles)
+    df_fit <- df_fit %>%
+      mutate(
+        mortality = factor(mortality, levels = c(0,1), labels = c("alive","dead")),
+        BA_bin = cut(BA_mid,
+                     breaks = quantile(BA_mid, probs = seq(0,1,0.1), na.rm = TRUE),
+                     include.lowest = TRUE)
+      )
+
+    # 2) Decide target counts per (BA_bin × mortality) cell
+    #    Strategy: (a) keep overall size similar to original,
+    #              (b) ensure enough examples in big-tree bins.
+    tab <- df_fit %>% count(BA_bin, mortality, name = "n_obs")
+
+    # e.g., target each cell to min(max_per_bin, round(mean cell size))
+    mean_cell <- mean(tab$n_obs)
+
+
+    tab <- tab %>%
+      mutate(
+        n_tgt = pmin(pmax(round(mean_cell, 0), round(min_per*mean_cell,0)), round(max_per*mean_cell,0))
+      )
+
+    # 3) Sample to target per cell (with replacement when needed)
+    df_fit <- df_fit %>%
+      right_join(tab, by = c("BA_bin","mortality")) %>%
+      group_by(BA_bin, mortality) %>%
+      reframe(
+        slice_sample(pick(everything()), n = n_tgt[1], replace = n() < n_tgt[1])
+      ) %>%
+      ungroup() %>%
+      select(-n_obs, -n_tgt)
+
+  }
+
+
+
+
+
+
   ####################
   # Prediction phase #
   ####################
@@ -308,7 +381,11 @@ if (sim_mortality == TRUE){
 
     if (is.null(rf_mtry)){
 
-      model_mortality <- ranger(formula, data = df_fit)
+      model_mortality <- ranger(formula, data = df_fit,
+                                importance = "permutation",   # or "impurity"
+                                probability = TRUE
+
+                                )
 
     } else {
 
