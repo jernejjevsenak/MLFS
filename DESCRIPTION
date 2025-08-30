@@ -10,12 +10,16 @@ Authors@R: c(
     role   = c("aut", "cre", "cph")
   )
  )
-Description: Climate-sensitive forest simulator based on machine learning.
-  It simulates key forest processes: radial growth, height growth, mortality,
-  crown recession, regeneration, and harvesting. The method for predicting
-  tree heights was described by Skudnik and Jevšenak (2022) <doi:10.1016/j.foreco.2022.120017>,
-  and the method for predicting basal area increments (BAI) by Jevšenak and
-  Skudnik (2021) <doi:10.1016/j.foreco.2020.118601>.
+Description: Climate-sensitive, single-tree forest simulator based on
+  data-driven machine learning. It simulates the main forest processes—
+  radial growth, height growth, mortality, crown recession, regeneration,
+  and harvesting—so users can assess stand development under climate and
+  management scenarios. The height model is described by Skudnik and
+  Jevšenak (2022) <doi:10.1016/j.foreco.2022.120017>, the basal-area
+  increment model by Jevšenak and Skudnik (2021) <doi:10.1016/j.foreco.2020.118601>,
+  and an overview of the MLFS package, workflow, and applications is
+  provided by Jevšenak, Arnič, Krajnc, and Skudnik (2023), Ecological
+  Informatics <doi:10.1016/j.ecoinf.2023.102115>.
 License: GPL-3
 URL: https://CRAN.R-project.org/package=MLFS
 BugReports: https://github.com/jernejjevsenak/MLFS/issues
