@@ -5,7 +5,7 @@ Version: 0.4.3
 Authors@R: c(
   person(
     given  = "Jernej",
-    family = "Jevšenak",
+    family = "Jevsenak",
     email  = "jernej.jevsenak@gmail.com",
     role   = c("aut", "cre", "cph")
   )
@@ -18,7 +18,7 @@ Description: Climate-sensitive forest simulator based on machine learning.
   Skudnik (2021) <doi:10.1016/j.foreco.2020.118601>.
 License: GPL-3
 URL: https://CRAN.R-project.org/package=MLFS
-BugReports: https://github.com/jernej_jevsenak/MLFS/issues
+BugReports: https://github.com/jernejjevsenak/MLFS/issues
 Imports:
     brnn (>= 0.6),
     ranger (>= 0.13.1),
