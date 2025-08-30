@@ -27,7 +27,8 @@ predict_mortality(
   include_mortality_BAI = TRUE,
   intermediate_print = FALSE,
   use_max_size_threshold = FALSE,
-  mortality_bias_adjusted = TRUE
+  mortality_bias_adjusted = TRUE,
+  bias_adj_factor = 2
 )
 }
 \arguments{
@@ -94,7 +95,14 @@ while the mortality sub model is running}
 be applied?}
 
 \item{mortality_bias_adjusted}{Logical (length-one). If `TRUE` (default),
-perform quantile sampling to keep more large trees alive}
+applies a simple bias fix so large trees aren’t over-removed. The frequency
+of adjustment is controlled by the `bias_adj_factor` argument. If `FALSE`,
+predicted probabilities are left unchanged.}
+
+\item{bias_adj_factor}{Integer (>= 2). Controls how sparsely you reduce
+death probabilities among the top-ranked trees. Starting from the 3rd row,
+every `bias_adj_factor`-th tree has its probability set to zero—so `2` keeps
+every second high-risk tree alive, `3` every third, and so on.}
 }
 \value{
 a list with three elements:

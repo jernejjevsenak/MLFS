@@ -45,7 +45,13 @@
 #' @param use_max_size_threshold logical - should the principle of maxium size
 #' be applied?
 #' @param mortality_bias_adjusted Logical (length-one). If `TRUE` (default),
-#' perform quantile sampling to keep more large trees alive
+#'   applies a simple bias fix so large trees aren’t over-removed. The frequency
+#'   of adjustment is controlled by the `bias_adj_factor` argument. If `FALSE`,
+#'   predicted probabilities are left unchanged.
+#' @param bias_adj_factor Integer (>= 2). Controls how sparsely you reduce
+#' death probabilities among the top-ranked trees. Starting from the 3rd row,
+#' every `bias_adj_factor`-th tree has its probability set to zero—so `2` keeps
+#' every second high-risk tree alive, `3` every third, and so on.
 #'
 #' @return a list with three elements:
 #' \enumerate{
@@ -94,7 +100,7 @@ predict_mortality <- function(df_fit, df_predict, df_climate, mortality_share = 
                               sim_mortality = TRUE, sim_step_years = 5, rf_mtry = NULL,
                               df_max_size = NULL, ingrowth_codes = 3, include_mortality_BAI = TRUE,
                               intermediate_print = FALSE, use_max_size_threshold = FALSE,
-                              mortality_bias_adjusted = TRUE
+                              mortality_bias_adjusted = TRUE, bias_adj_factor = 2
 
 
                               ){
@@ -393,7 +399,7 @@ if (sim_mortality == TRUE){
     p <- df_predict$p_mortality
 
     # pick rows 3, 6, 9, ...
-    idx <- seq(3, length(p), by = 3)
+    idx <- seq(3, length(p), by = bias_adj_factor)
 
     # df_predict$p_mortality_adj <- p
     df_predict$p_mortality[idx] <- 0

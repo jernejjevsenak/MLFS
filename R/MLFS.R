@@ -160,8 +160,13 @@
 #' @param use_max_size_threshold logical - should the principle of maxium size
 #' be applied?
 #' @param mortality_bias_adjusted Logical (length-one). If `TRUE` (default),
-#' perform quantile sampling to keep more large trees alive
-#'
+#'   applies a simple bias fix so large trees aren’t over-removed. The frequency
+#'   of adjustment is controlled by the `bias_adj_factor` argument. If `FALSE`,
+#'   predicted probabilities are left unchanged.
+#' @param bias_adj_factor Integer (>= 2). Controls how sparsely you reduce
+#' death probabilities among the top-ranked trees. Starting from the 3rd row,
+#' every `bias_adj_factor`-th tree has its probability set to zero—so `2` keeps
+#' every second high-risk tree alive, `3` every third, and so on.
 #' @return a list of class mlfs with at least 15 elements:
 #' \enumerate{
 #'  \item $sim_results - a data frame with the simulation results
@@ -283,7 +288,8 @@ MLFS <- function(data_NFI, data_site,
                  intermediate_print = FALSE,
                  use_max_size_threshold = FALSE,
 
-                 mortality_bias_adjusted = TRUE
+                 mortality_bias_adjusted = TRUE,
+                 bias_adj_factor = 3
 
                  ){
 
@@ -1081,7 +1087,9 @@ MLFS <- function(data_NFI, data_site,
                                            include_mortality_BAI = include_mortality_BAI,
                                            intermediate_print = intermediate_print,
                                            use_max_size_threshold = use_max_size_threshold,
-                                           mortality_bias_adjusted = mortality_bias_adjusted)
+                                           mortality_bias_adjusted = mortality_bias_adjusted,
+                                           bias_adj_factor = bias_adj_factor
+                                           )
 
     initial_df <- mortality_outputs$predicted_mortality
 
