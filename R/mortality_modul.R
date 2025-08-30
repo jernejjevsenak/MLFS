@@ -388,28 +388,35 @@ if (sim_mortality == TRUE){
 
 
 
-  #################
-  # Balance data #
-  ################
+  #######################
+  # Balance predictions #
+  ######################
 
   # Mortality model could bias mortality predictions towards trees with larger DBH
   if (mortality_bias_adjusted == TRUE){
 
-    # assume numeric p_mortality and descending order already applied
-    p <- df_predict$p_mortality
+    if (!is.numeric(bias_adj_factor) || length(bias_adj_factor) != 1 ||
+        is.na(bias_adj_factor) || bias_adj_factor < 2) {
 
-    # pick rows 3, 6, 9, ...
-    idx <- seq(3, length(p), by = bias_adj_factor)
+      warning("`bias_adj_factor` must be a single integer >= 2; bias adjustment not applied.")
 
-    # df_predict$p_mortality_adj <- p
-    df_predict$p_mortality[idx] <- 0
+    } else {
 
-    df_predict <- df_predict %>%
-      arrange(-p_mortality)
+      # assume numeric p_mortality and descending order already applied
+      p <- df_predict$p_mortality
+
+      # pick rows 3, 6, 9, ...
+      idx <- seq(3, length(p), by = bias_adj_factor)
+
+      # df_predict$p_mortality_adj <- p
+      df_predict$p_mortality[idx] <- 0
+
+      df_predict <- df_predict %>%
+        arrange(-p_mortality)
+
+    }
 
   }
-
-
 
   if (mortality_share_type == "volume"){
 
