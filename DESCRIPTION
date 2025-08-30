@@ -2,22 +2,35 @@ Package: MLFS
 Type: Package
 Title: Machine Learning Forest Simulator
 Version: 0.4.3
-Author: Jernej Jevsenak
-Maintainer: Jernej Jevsenak <jernej.jevsenak@gmail.com>
-Description: Climate-sensitive forest simulator based on the principles of 
-  machine learning. It stimulates all key processes in the forest: radial growth, 
-  height growth, mortality, crown recession, regeneration and harvesting. The 
-  method for predicting tree heights was described by Skudnik and Jevšenak
-  (2022) <doi:10.1016/j.foreco.2022.120017>, while the method for predicting
-  basal area increments (BAI) was described by Jevšenak and Skudnik (2021) 
-  <doi:10.1016/j.foreco.2020.118601>.
+Authors@R: c(
+  person(
+    given  = "Jernej",
+    family = "Jevšenak",
+    email  = "jernej.jevsenak@gmail.com",
+    role   = c("aut", "cre", "cph")
+  )
+ )
+Description: Climate-sensitive forest simulator based on machine learning.
+  It simulates key forest processes: radial growth, height growth, mortality,
+  crown recession, regeneration, and harvesting. The method for predicting
+  tree heights was described by Skudnik and Jevšenak (2022) <doi:10.1016/j.foreco.2022.120017>,
+  and the method for predicting basal area increments (BAI) by Jevšenak and
+  Skudnik (2021) <doi:10.1016/j.foreco.2020.118601>.
 License: GPL-3
-Imports: brnn(>= 0.6), ranger(>= 0.13.1), reshape2 (>= 1.4.4), pscl (>= 1.5.5),
-   naivebayes(>= 0.9.7), magrittr(>= 1.5), dplyr(>= 0.7.0),tidyr (>= 1.1.3),
-  tidyselect(>= 1.0.0)
+URL: https://CRAN.R-project.org/package=MLFS
+BugReports: https://github.com/jernej_jevsenak/MLFS/issues
+Imports:
+    brnn (>= 0.6),
+    ranger (>= 0.13.1),
+    reshape2 (>= 1.4.4),
+    pscl (>= 1.5.5),
+    naivebayes (>= 0.9.7),
+    magrittr (>= 1.5),
+    dplyr (>= 0.7.0),
+    tidyr (>= 1.1.3),
+    tidyselect (>= 1.0.0)
 Encoding: UTF-8
 LazyData: true
-Depends: R(>= 3.4)
+Depends: R (>= 3.4)
 NeedsCompilation: no
-Repository: CRAN
 RoxygenNote: 7.3.2
