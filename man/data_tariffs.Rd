@@ -5,13 +5,13 @@
 \alias{data_tariffs}
 \title{An example of table with one-parametric volume functions (adapted uniform French tariffs)}
 \format{
-A data frame with 1196 rows and 4 variables:
+A data frame with 1196 rows and 5 variables:
 \describe{
-  \item{tarifa_class}{tariff class for a particular species on this plot}
-  \item{plotID}{plot identifier}
-  \item{species}{species name as used in data_NFI}
-  \item{v45}{volume of tree with DBH 45 cm}
-  \item{year}{year for which the specifief tariff will be considered}
+  \item{tarifa_class}{Tariff class assigned to the species on the given plot (integer).}
+  \item{plotID}{Unique plot identifier (character).}
+  \item{species}{Species name as used in \code{data_NFI} (character).}
+  \item{v45}{Volume of a reference tree with DBH = 45 cm, in cubic metres (\eqn{m^3}; numeric).}
+  \item{year}{Calendar year to which the specified tariff applies (integer).}
 }
 }
 \usage{
